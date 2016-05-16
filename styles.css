@@ -1,0 +1,136 @@
+@font-face {
+  font-family: 'Avenir';
+  src: url("/assets/fonts/Avenir.ttc"); }
+
+@font-face {
+  font-family: 'KnockoutBantam';
+  src: url("/assets/fonts/Knockout-HTF67-FullBantamwt.otf"); }
+
+@font-face {
+  font-family: 'KnockoutCruiser';
+  src: url("/assets/fonts/Knockout-HTF72-FullCruiserwt.otf"); }
+
+@font-face {
+  font-family: 'MyriadPro';
+  src: url("/assets/fonts/MyriadPro-Regular.otf"); }
+
+@font-face {
+  font-family: 'Painthand';
+  src: url("/assets/fonts/Paint-hand_limited-set.ttf"); }
+
+.module-type {
+  font-family: 'Painthand';
+  text-transform: uppercase; }
+
+.module-title {
+  font-family: 'KnockoutBantam';
+  text-transform: uppercase; }
+
+h3 {
+  font-family: 'KnockoutBantam';
+  text-transform: uppercase;
+  font-size: 30px;
+  line-height: 1; }
+
+svg-icon.selected * {
+  fill: black; }
+
+.clickable {
+  cursor: pointer;
+  user-select: none;
+  text-decoration: underline; }
+
+.selected {
+  font-weight: bold;
+  text-decoration: none; }
+
+.border-top {
+  border-top: 2px solid black;
+  padding-top: 12px;
+  padding-bottom: 12px; }
+
+.border-bottom {
+  border-bottom: 2px solid black;
+  padding-top: 12px;
+  padding-bottom: 12px; }
+
+.tactic {
+  color: #f68412; }
+
+.methodology {
+  color: #9a2999; }
+
+.principle {
+  color: #4365b9; }
+
+.theory {
+  color: #ee2a32; }
+
+.story {
+  color: #60c671; }
+
+.gray {
+  color: #b3b3b3; }
+
+.gallery-sort {
+  text-align: center; }
+  .gallery-sort .sort-by {
+    text-transform: uppercase; }
+  .gallery-sort .view-as, .gallery-sort .sort-by {
+    margin-bottom: 48px; }
+
+.gallery-module-grid .make-it-square {
+  margin-top: 110%; }
+
+.gallery-module-grid .module-save {
+  padding-top: 12px; }
+
+.gallery-module-grid .module-type {
+  font-size: 20px;
+  line-height: 22px; }
+
+.gallery-module-grid .module-title {
+  color: white;
+  font-size: 30px;
+  line-height: 1; }
+
+.gallery-module-grid .module-content {
+  overflow: hidden;
+  background-size: cover;
+  padding: 12px;
+  z-index: 100; }
+
+.gallery-module-grid .module-overlay {
+  background: black;
+  opacity: 0.5;
+  z-index: 50; }
+
+.gallery-module-grid .module-content, .gallery-module-grid .module-overlay, .gallery-module-grid .module-image, .gallery-module-grid .module-snapshot {
+  position: absolute;
+  top: 12px;
+  bottom: 12px;
+  left: 12px;
+  right: 12px; }
+
+.gallery-module-grid .module-snapshot {
+  z-index: -1;
+  opacity: 0; }
+
+.gallery-module-grid .module-snapshot, .gallery-module-grid .module-hide-on-hover, .gallery-module-grid .module-overlay {
+  -webkit-transition: opacity 0.25s ease-in-out;
+  -moz-transition: opacity 0.25s ease-in-out;
+  transition: opacity 0.25s ease-in-out; }
+
+.language-selection span {
+  cursor: pointer;
+  font-size: 30px;
+  border-left: 2px solid black;
+  padding: 5px; }
+  .language-selection span:first-of-type {
+    border-left: none; }
+  .language-selection span.selected {
+    font-weight: bold;
+    font-style: italic; }
+  .language-selection span.disabled {
+    pointer-events: none;
+    color: lightgray; }
