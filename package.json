@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "scripts": {
     "start": "concurrently \"npm run tsc:w\" \"npm run lite\" \"npm run sass\" ",    
+    "server": "concurrently \"npm run tsc:w\" \"serve\" \"npm run sass\" ",
     "lite": "lite-server",
     "postinstall": "typings install",
     "tsc": "tsc",
@@ -28,7 +29,8 @@
     "zone.js": "^0.6.12",
 
     "lodash": "^4.10.0",
-    "node-sass": "^3.4.2"
+    "node-sass": "^3.4.2",
+    "serve": "^1.4.0"
   },
   "devDependencies": {
     "concurrently": "^2.0.0",
