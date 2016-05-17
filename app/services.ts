@@ -9,7 +9,7 @@ import {Observable} from 'rxjs/Observable';
 // Content Service (for fetching API content)
 @Injectable()
 export class ContentService {
-    private _contentUrl = 'https://api-testing.beautifulrising.org/api/v1/all';
+    private _contentUrl = 'https://api.beautifulrising.org/api/v1/all';
 
     constructor(private http: Http) { }
     getContent(language: string) { 
