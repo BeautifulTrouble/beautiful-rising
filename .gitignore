@@ -1,0 +1,7 @@
+typings
+node_modules
+app/**/*.js
+app/**/*.map
+app/old
+assets/images
+*.swp
