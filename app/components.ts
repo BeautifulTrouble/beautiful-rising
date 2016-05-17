@@ -138,10 +138,22 @@ export class GalleryComponent implements OnInit {
 @Component({
     selector: 'detail',
     template: `
+        <br><button (click)="clear.next()">Gallery</button>
+        <h1>{{ module.title }}</h1>
+        {{ module.type }}<br>
+        {{ module.authors }}<br>
+        <img src="/assets/images/{{ module.image }}"><br>
+        <div [innerHTML]="module['image-caption']"></div>
+        <div [innerHTML]="module.snapshot"></div>
+        <hr>
+        <div *ngIf="module['full-write-up']" [innerHTML]="module['full-write-up']"></div>
     `,
     styles: []
 })
 export class DetailComponent {
+    @Input() module;
+    @Input() modules;
+    @Output() clear = new EventEmitter();
     _ = _;
 }
 
@@ -174,12 +186,10 @@ export class ModalComponent {
                       [class.disabled]="offlineMode">{{ lang|uppercase }}</span>
             </div>
             <modal></modal>
-            <div *ngIf="currentModule">
-                <br><button (click)="currentModule = null">Gallery</button>
-                <h1>{{ currentModule.title }}</h1>
-                {{ currentModule.type }}
-                {{ currentModule.authors }}
-            </div>
+            <detail *ngIf="currentModule" 
+                    [module]="currentModule"
+                    [modules]="modules"
+                    (clear)="currentModule = null"></detail>
             <gallery *ngIf="!currentModule" 
                      [modules]="modules" 
                      [modulesByTag]="modulesByTag"
@@ -187,8 +197,9 @@ export class ModalComponent {
         </div>
     `,
     directives: [
+        ModalComponent,
         GalleryComponent,
-        ModalComponent
+        DetailComponent
     ],
     providers: [
         HTTP_PROVIDERS,
