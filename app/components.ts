@@ -145,8 +145,18 @@ export class GalleryComponent implements OnInit {
         <img src="/assets/images/{{ module.image }}"><br>
         <div [innerHTML]="module['image-caption']"></div>
         <div [innerHTML]="module.snapshot"></div>
-        <hr>
+        <h1>Full write up</h1><hr>
         <div *ngIf="module['full-write-up']" [innerHTML]="module['full-write-up']"></div>
+        <h1>Why it worked</h1><hr>
+        <div *ngIf="module['why-it-worked']" [innerHTML]="module['why-it-worked']"></div>
+        <h1>Why it failed</h1><hr>
+        <div *ngIf="module['why-it-failed']" [innerHTML]="module['why-it-failed']"></div>
+        <h1>Related Theories</h1><hr>
+        <div *ngIf="module.theories">{{ module.theories }}</div>
+        <h1>Related Tactics</h1><hr>
+        <div *ngIf="module.tactics">{{ module.tactics }}</div>
+        <h1>Related Principles</h1><hr>
+        <div *ngIf="module.principles">{{ module.principles }}</div>
     `,
     styles: []
 })
