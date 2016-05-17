@@ -1,6 +1,6 @@
 // Define all site components here.
 
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, Output, OnInit, EventEmitter} from '@angular/core';
 import {HTTP_PROVIDERS} from '@angular/http';
 
 import {CapitalizePipe, SVGIconComponent} from './utilities';
@@ -49,7 +49,10 @@ import {ContentService, ClientStorageService, ModuleSavingService, LocalStorage}
             </div>
             <div class="gallery-list col-md-9">
                 <div *ngIf="viewStyle == 'grid'">
-                    <div class="gallery-module-grid col-md-4" *ngFor="let module of filterModules()">
+                    <div class="col-md-4 gallery-module-grid" *ngFor="let module of filterModules()" (click)="moduleSelect.next(module)">
+
+                        <!-- Rethink the structure of this whole section -->
+
                         <div class="make-it-square"></div>
                         <div class="module-image" [ngStyle]="{'background-image': 'url(/assets/images/' + module.image + ')'}"></div>
                         <div class="module-overlay"></div>
@@ -60,8 +63,8 @@ import {ContentService, ClientStorageService, ModuleSavingService, LocalStorage}
                                     <div class="module-title">{{ module.title }}</div>
                                 </div>
                                 <div class="module-save" (click)="savingService.toggleSaved(module)" [ngSwitch]="savingService.isSaved(module)">
-                                    <svg-icon *ngSwitchWhen="true" src="/assets/icons/-_tileandmodule.svg"></svg-icon>
-                                    <svg-icon *ngSwitchWhen="false" src="/assets/icons/+_tileandmodule.svg"></svg-icon>
+                                    <svg-icon class="ignore-click" *ngSwitchWhen="true" src="/assets/icons/-_tileandmodule.svg"></svg-icon>
+                                    <svg-icon class="ignore-click" *ngSwitchWhen="false" src="/assets/icons/+_tileandmodule.svg"></svg-icon>
                                 </div>
                             </div>
                             <div [ngClass]="['module-snapshot', module.type]" [innerHTML]="module.snapshot"></div>
@@ -69,11 +72,17 @@ import {ContentService, ClientStorageService, ModuleSavingService, LocalStorage}
                     </div>
                 </div>
                 <div *ngIf="viewStyle == 'list'">
-                    <div class="gallery-module-list col-md-6" *ngFor="let module of filterModules()">
-                        <div class="module-content">
-                            <div [ngClass]="['module-type', module.type]">{{ module.type }}</div>
-                            <div class="module-title">{{ module.title }}</div>
-                            <div [ngClass]="['snapshot', module.type]" [innerHTML]="module.snapshot"></div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-11">
+                        <div class="row">
+                        <div class="gallery-module-list col-sm-6" *ngFor="let module of filterModules()" (click)="moduleSelect.next(module)">
+                            <div class="module-content">
+                                <div class="module-type-accent"></div>
+                                <div [ngClass]="['module-type', module.type]">{{ module.type }}</div>
+                                <div class="module-title">{{ module.title }}</div>
+                                <div class="module-snapshot" [innerHTML]="module.snapshot"></div>
+                            </div>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -86,11 +95,13 @@ import {ContentService, ClientStorageService, ModuleSavingService, LocalStorage}
     styles: []
 })
 export class GalleryComponent implements OnInit {
+    @Input() modulesByTag;
+    @Input() modules;
+    @Output() moduleSelect = new EventEmitter();
+
     _ = _;
     sortKey;
     viewStyle;
-    @Input() modules;
-    @Input() modulesByTag;
 
     constructor(
         private savingService: ModuleSavingService) { 
@@ -98,7 +109,6 @@ export class GalleryComponent implements OnInit {
     ngOnInit() {
         this.sortKey = this.sortKey || 'title';
         this.viewStyle = this.viewStyle || 'grid';
-        this.modules.forEach(m => { m.top_offset = Math.random() * 40; });
     }
     setTag(tag) { 
         this.sortTag = this.sortTag == tag ? null : tag; 
@@ -115,7 +125,8 @@ export class GalleryComponent implements OnInit {
         }
         return modules;
     }
-    crazyHover(event,a,b,c) {
+    crazyHover($event,a,b,c) {
+        // TODO: think of some other way to structure the html/css!
         // Hover state covers up save button, so jump through some hoops
         var parent = event.target.parentElement
         parent.style.opacity = a;
@@ -125,16 +136,30 @@ export class GalleryComponent implements OnInit {
 }
 
 @Component({
+    selector: 'detail',
+    template: `
+    `,
+    styles: []
+})
+export class DetailComponent {
+    _ = _;
+}
+
+@Component({
     selector: 'modal',
     template: `
-        <div class="modal-window">
-            <h1>Modal Window</h1>
+        <div *ngIf="!seenPopup" class="modal-window row" style="border: 2px dotted gray; padding: 20px;">
+            <h1>Popup Window</h1>
+            <h4>(it won't look like this)</h4>
+            <button (click)="seenPopup = true">I've seen it</button>
         </div>
     `,
     styles: []
 })
 export class ModalComponent {
     _ = _;
+    //@LocalStorage() seenPopup;
+    seenPopup;
 }
 
 
@@ -148,12 +173,22 @@ export class ModalComponent {
                       [class.selected]="language===lang" 
                       [class.disabled]="offlineMode">{{ lang|uppercase }}</span>
             </div>
-            <gallery [modules]="modules" 
-                     [modulesByTag]="modulesByTag"></gallery>
+            <modal></modal>
+            <div *ngIf="currentModule">
+                <br><button (click)="currentModule = null">Gallery</button>
+                <h1>{{ currentModule.title }}</h1>
+                {{ currentModule.type }}
+                {{ currentModule.authors }}
+            </div>
+            <gallery *ngIf="!currentModule" 
+                     [modules]="modules" 
+                     [modulesByTag]="modulesByTag"
+                     (moduleSelect)="currentModule = $event"></gallery>
         </div>
     `,
     directives: [
-        GalleryComponent
+        GalleryComponent,
+        ModalComponent
     ],
     providers: [
         HTTP_PROVIDERS,
@@ -165,6 +200,9 @@ export class ModalComponent {
 })
 export class AppComponent implements OnInit {
     _ = _;
+    currentModule;
+    languages = ['ar','es','en'];
+    @LocalStorage() _language;
     @LocalStorage() offlineMode;
 
     constructor(
@@ -176,9 +214,6 @@ export class AppComponent implements OnInit {
         this.language = _.includes(this.languages, userLanguage) ? userLanguage : 'en'; 
         this.getContent();
     }
-
-    languages = ['ar','es','en'];
-    @LocalStorage() _language;
     get language() { return this._language }
     set language(language) {
         // Implicitly fetch all content whenever the language is changed
@@ -224,5 +259,6 @@ export class AppComponent implements OnInit {
                     }
                 }
             });
+    }
 }
 

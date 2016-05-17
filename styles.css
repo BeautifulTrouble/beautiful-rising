@@ -18,6 +18,16 @@
   font-family: 'Painthand';
   src: url("/assets/fonts/Paint-hand_limited-set.ttf"); }
 
+body {
+  font-family: "Avenir";
+  font-size: 14px; }
+
+h3 {
+  font-family: 'KnockoutBantam';
+  text-transform: uppercase;
+  font-size: 30px;
+  line-height: 1; }
+
 .module-type {
   font-family: 'Painthand';
   text-transform: uppercase; }
@@ -25,12 +35,6 @@
 .module-title {
   font-family: 'KnockoutBantam';
   text-transform: uppercase; }
-
-h3 {
-  font-family: 'KnockoutBantam';
-  text-transform: uppercase;
-  font-size: 30px;
-  line-height: 1; }
 
 svg-icon.selected * {
   fill: black; }
@@ -79,20 +83,22 @@ svg-icon.selected * {
   .gallery-sort .view-as, .gallery-sort .sort-by {
     margin-bottom: 48px; }
 
+.gallery-list .module-type {
+  font-size: 20px;
+  line-height: 22px; }
+
+.gallery-list .module-title {
+  font-size: 30px;
+  line-height: 1; }
+
 .gallery-module-grid .make-it-square {
   margin-top: 110%; }
 
 .gallery-module-grid .module-save {
   padding-top: 12px; }
 
-.gallery-module-grid .module-type {
-  font-size: 20px;
-  line-height: 22px; }
-
 .gallery-module-grid .module-title {
-  color: white;
-  font-size: 30px;
-  line-height: 1; }
+  color: white; }
 
 .gallery-module-grid .module-content {
   overflow: hidden;
@@ -113,13 +119,26 @@ svg-icon.selected * {
   right: 12px; }
 
 .gallery-module-grid .module-snapshot {
-  z-index: -1;
+  font-weight: bold;
+  z-index: -50;
   opacity: 0; }
 
 .gallery-module-grid .module-snapshot, .gallery-module-grid .module-hide-on-hover, .gallery-module-grid .module-overlay {
   -webkit-transition: opacity 0.25s ease-in-out;
   -moz-transition: opacity 0.25s ease-in-out;
   transition: opacity 0.25s ease-in-out; }
+
+.gallery-module-list .module-type-accent {
+  padding-top: 24px;
+  margin-bottom: 12px;
+  width: 15%;
+  border-bottom: 2px solid black; }
+
+.gallery-module-list .module-content {
+  height: 216px; }
+
+.gallery-module-list .module-snapshot {
+  padding-top: 18px; }
 
 .language-selection span {
   cursor: pointer;

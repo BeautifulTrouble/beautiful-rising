@@ -28,6 +28,16 @@
     font-family: 'Painthand';
     src: url('/assets/fonts/Paint-hand_limited-set.ttf');
 }
+body {
+    font-family: "Avenir";
+    font-size: 14px;
+}
+h3 {
+    font-family: 'KnockoutBantam';
+    text-transform: uppercase;
+    font-size: 30px;
+    line-height: 1;
+}
 .module-type {
     font-family: 'Painthand';
     text-transform: uppercase;
@@ -35,12 +45,6 @@
 .module-title {
     font-family: 'KnockoutBantam';
     text-transform: uppercase;
-}
-h3 {
-    font-family: 'KnockoutBantam';
-    text-transform: uppercase;
-    font-size: 30px;
-    line-height: 1;
 }
 
 
@@ -91,6 +95,16 @@ svg-icon.selected * {
         margin-bottom: 8 * $margin;
     }
 }
+.gallery-list {
+    .module-type {
+        font-size: 20px;
+        line-height: 22px;
+    }
+    .module-title {
+        font-size: 30px;
+        line-height: 1;
+    }
+}
 .gallery-module-grid {
     .make-it-square {
         margin-top: 110%;
@@ -98,14 +112,8 @@ svg-icon.selected * {
     .module-save {
         padding-top: 2 * $margin;
     }
-    .module-type {
-        font-size: 20px;
-        line-height: 22px;
-    }
     .module-title {
         color: white;
-        font-size: 30px;
-        line-height: 1;
     }
     .module-content {
         overflow: hidden;
@@ -124,11 +132,26 @@ svg-icon.selected * {
         left: 2 * $margin; right: 2 * $margin;
     }
     .module-snapshot {
-        z-index: -1;
+        font-weight: bold;
+        z-index: -50;
         opacity: 0;
     }
     .module-snapshot, .module-hide-on-hover, .module-overlay {
         @include prefix(transition, opacity $transition ease-in-out, webkit moz);
+    }
+}
+.gallery-module-list {
+    .module-type-accent {
+        padding-top: 4 * $margin;
+        margin-bottom: 2 * $margin;
+        width: 15%;
+        border-bottom: 2px solid black;
+    }
+    .module-content {
+        height: 36 * $margin;
+    }
+    .module-snapshot {
+        padding-top: 3 * $margin;
     }
 }
 

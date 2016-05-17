@@ -22,9 +22,9 @@ export class SVGIconComponent implements OnInit {
 	@Input() src;
 	iconData = '';
 
-	constructor(private http: Http) {
-	}
-	ngOnInit() {
+    constructor(private http: Http) {
+    }
+    ngOnInit() {
         var observable = SVGIconCache.cache[this.src];
         if (!observable) {
             observable = SVGIconCache.cache[this.src] = this.http.get(this.src)
@@ -36,7 +36,7 @@ export class SVGIconComponent implements OnInit {
             data => { this.iconData = data; },
             err => { console.error(err); }
         );
-	}
+    }
 }
 class SVGIconCache {
     static cache = {};
