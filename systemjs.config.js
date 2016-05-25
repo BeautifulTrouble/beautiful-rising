@@ -2,13 +2,19 @@
 
 (function(global) {
     var map = {
-        '@angular':     'node_modules/@angular',
-        'rxjs':         'node_modules/rxjs'
+        '@angular':             'node_modules/@angular',
+        'rxjs':                 'node_modules/rxjs',
+        'lodash':               'node_modules/lodash',
+        'markdown-it':          'node_modules/markdown-it/dist',
+        'markdown-it-footnote': 'node_modules/markdown-it-footnote/dist'
     };
 
     var packages = {
-        'app':          { main: 'main.js', defaultExtension: 'js' },
-        'rxjs':         { defaultExtension: 'js' }
+        'app':                  { main: 'main.js', defaultExtension: 'js' },
+        'rxjs':                 { defaultExtension: 'js' },
+        'lodash':               { main: 'lodash.min.js' },
+        'markdown-it':          { main: 'markdown-it.min.js' },
+        'markdown-it-footnote': { main: 'markdown-it-footnote.min.js'}
     };
     [
         '@angular/common',
@@ -20,7 +26,7 @@
         '@angular/router',
         '@angular/router-deprecated',
         '@angular/testing',
-        '@angular/upgrade',
+        '@angular/upgrade'
     ].forEach(function(pkg) {
         packages[pkg] = { main: 'index.js', defaultExtension: 'js' };
     });
