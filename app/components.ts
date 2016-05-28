@@ -220,8 +220,8 @@ export class GalleryComponent implements OnInit {
                                               ['key-theories', 'theory', 'theories']]">
                         <div *ngIf="module[type[0]]">
                             <div *ngFor="let each of getKeyModules(type[0]); let first=first; let last=last;">
-                                <div *ngIf="first && last" [ngClass]="['module-type', type[1]]">key {{ type[1] }}</div>
-                                <div *ngIf="first && !last" [ngClass]="['module-type', type[1]]">key {{ type[2] }}</div>
+                                <div *ngIf="first && last" [ngClass]="['module-type', type[1]]">key {{ type[1] }}</div><!-- first && last meaning length == 1 -->
+                                <div *ngIf="first && !last" [ngClass]="['module-type', type[1]]">key {{ type[2] }}</div><!-- first && !last meaning length > 1 -->
                                 <h3>{{ each[0] }}</h3><p [innerHTML]="each[1]"></p>
                             </div>
                         </div>
@@ -351,8 +351,8 @@ export class MenuComponent {
         <div *ngIf="opened" class="sidebar">
             <div *ngIf="visible == 'news-feed'">
                 <div class="border-bottom">
-                    <svg-inline (click)="newsTab = 'twitter'" [class.selected]="newsTab == 'twitter'" class="sidebar-icon" src="/assets/icons/Twitter.svg"></svg-inline>
-                    <svg-inline (click)="newsTab = 'facebook'" [class.selected]="newsTab == 'facebook'" class="sidebar-icon" src="/assets/icons/facebook.svg"></svg-inline>
+                    <svg-inline (click)="newsTab = 'twitter'" [class.selected]="newsTab == 'twitter'" class="sidebar-icon clickable" src="/assets/icons/Twitter.svg"></svg-inline>
+                    <svg-inline (click)="newsTab = 'facebook'" [class.selected]="newsTab == 'facebook'" class="sidebar-icon clickable" src="/assets/icons/facebook.svg"></svg-inline>
                 </div>
                 <div class="news-feed">
                     <h2>Coming soon: Trending posts from Twitter and Facebook</h2>
@@ -360,8 +360,8 @@ export class MenuComponent {
             </div>
             <div *ngIf="visible == 'my-tools'">
                 <div class="border-bottom">
-                    <svg-inline (click)="toolTab = 'pdf'" [class.selected]="toolTab == 'pdf'" class="sidebar-icon fix-icon" src="/assets/icons/PDF.svg"></svg-inline>
-                    <svg-inline (click)="toolTab = 'email'" [class.selected]="toolTab == 'email'" class="sidebar-icon" src="/assets/icons/Email.svg"></svg-inline>
+                    <svg-inline (click)="toolTab = 'pdf'" [class.selected]="toolTab == 'pdf'" class="sidebar-icon clickable fix-icon" src="/assets/icons/PDF.svg"></svg-inline>
+                    <svg-inline (click)="toolTab = 'email'" [class.selected]="toolTab == 'email'" class="sidebar-icon clickable" src="/assets/icons/Email.svg"></svg-inline>
                 </div>
                 <div class="downloaders">
                     <div *ngIf="toolTab == 'pdf'"><h2>Coming Soon: Download a PDF of these modules</h2></div>
