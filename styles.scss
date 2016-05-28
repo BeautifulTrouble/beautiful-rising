@@ -5,12 +5,44 @@
   }
   #{$property}: $value;
 }
+@mixin placeholder {
+  &::-webkit-input-placeholder {@content}
+  &::-moz-placeholder          {@content}
+  &:-moz-placeholder           {@content}
+  &:-ms-input-placeholder      {@content}  
+}
+
+
+// Colors
+$tactic: #ff9200;       
+$methodology: #b700c2; 
+$principle: #166ce3;    
+$theory: #f93732;       
+$story: #08eb8c;        
+$gray: #b3b3b3;         
+.tactic { color: $tactic; }
+.methodology { color: $methodology }
+.principle { color: $principle; }
+.theory { color: $theory; }
+.story { color: $story; }
+.gray { color: $gray; }
+.type-story { a:link, a:visited, a:hover, a:active { color: $story; } }
+.type-theory { a:link, a:visited, a:hover, a:active { color: $theory; } }
+.type-tactic { a:link, a:visited, a:hover, a:active { color: $tactic; } }
+.type-principle { a:link, a:visited, a:hover, a:active { color: $principle; } }
+.type-methodology { a:link, a:visited, a:hover, a:active { color: $methodology; } }
+$lightgray: #afafaf;
 
 
 // Typography
 @font-face {
     font-family: 'Avenir';
-    src: url('/assets/fonts/Avenir.ttc');
+    src: url('/assets/fonts/Avenir-Book.ttf');
+}
+@font-face {
+    font-family: 'Avenir';
+    font-weight: bold;
+    src: url('/assets/fonts/Avenir-Black.ttf');
 }
 @font-face {
     font-family: 'KnockoutBantam';
@@ -28,41 +60,66 @@
     font-family: 'Painthand';
     src: url('/assets/fonts/Paint-hand_limited-set.ttf');
 }
+html {
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
 body {
     font-family: "Avenir";
     font-size: 14px;
 }
+a:link, a:visited, a:hover, a:active { 
+    color: $theory; 
+} 
 h3 {
     font-family: 'KnockoutBantam';
     text-transform: uppercase;
     font-size: 30px;
     line-height: 1;
 }
+h4 {
+    font-family: 'Avenir';
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 16px;
+    line-height: 1;
+}
 .module-type {
     font-family: 'Painthand';
     text-transform: uppercase;
+    font-size: 20px;
+    line-height: 22px;
 }
 .module-title {
     font-family: 'KnockoutBantam';
     text-transform: uppercase;
+    font-size: 30px;
+    line-height: 1;
 }
 
 
 // General
 $margin: 6px;
-$transition: 0.25s;
+$transition: 0.1s;
+$shifted: 240px;
 
-svg-icon.selected * {
-    fill: black;
+svg * {
+    @include prefix(transition, fill $transition ease-in-out, webkit moz);
+    fill: $lightgray;
 }
-.clickable {
-    cursor: pointer;
-    user-select: none;
-    text-decoration: underline;
+svg-inline.selected * {
+    fill: black;
 }
 .selected {
     font-weight: bold;
     text-decoration: none;
+    svg-inline * {
+        fill: black;
+    }
+}
+.clickable {
+    cursor: pointer;
+    user-select: none;
 }
 .border-top {
     border-top: 2px solid black;
@@ -76,14 +133,148 @@ svg-icon.selected * {
 }
 
 
-// Colors
-.tactic         { color: #f68412; }
-.methodology    { color: #9a2999; }
-.principle      { color: #4365b9; }
-.theory         { color: #ee2a32; }
-.story          { color: #60c671; }
-.gray           { color: #b3b3b3; }
+// Content area
+.contentarea {
+    position: relative;
+    @include prefix(transition, right $transition ease-in-out, webkit moz);
+    right: 0;
+}
+.logo {
+    position: relative;
+    left: 20px;
+    top: 20px;
+    width: 35%;
+    z-index: 100;
+    display: inline-block;
+}
 
+
+// Tools
+.tools {
+    position: absolute;
+    border: 2px solid black;
+    padding: $margin;
+    right: -18 * $margin;
+    min-height: 100%; 
+    text-align: center;
+    width: $margin * 11;
+    .tool-text {
+        text-transform: uppercase;
+        font-weight: bold;
+        color: $lightgray;
+        @include prefix(transition, color $transition ease-in-out, webkit moz);
+    }
+    .selected .tool-text {
+        color: black;
+    }
+    svg-inline div {
+        padding: 4 * $margin 0 $margin 0;
+    }
+    svg-inline.tools-toggle div {
+        padding: 2 * $margin 0;
+    }
+    .tools-toggle svg {
+        margin: $margin;
+        transform: translate(-2px,0) rotate(0deg);
+        @include prefix(transition, transform $transition ease-in-out, webkit moz);
+    }
+    &.opened {
+        .tools-toggle svg { transform: translate(-4px,-2px) rotate(60deg); }
+        .tools-toggle svg * { fill: black; }
+    }
+}
+$sidebar: 265px;
+.sidebar {
+    position: absolute;
+    width: $sidebar;
+    right: 2 -$sidebar - $margin * 18;
+    border: 2px solid black;
+    min-height: 100%;
+    //border-left: none;
+    >div >div {
+        padding: 2 * $margin;
+    }
+    .sidebar-icon {
+        margin: $margin 0;
+        width: 49%;
+        display: inline-block;
+        vertical-align: middle;
+        text-align: center;
+        height: $margin * 5;
+        &.fix-icon path { fill: white; } // For the PDF icon
+    }
+    .sidebar-icon:first-of-type {
+        border-right: 2px solid black;  // TODO: fix for arabic
+    }
+    .downloaders, .saved-module, .news-feed, .information {
+        margin: 2 * $margin;
+    }
+    .information svg-inline {
+        display: inline-block;
+        position: relative;
+        top: 8px;
+    }
+    .saved-module {
+        .module-snapshot {
+            padding: 2 * $margin 0;
+        }
+        .module-title {
+            padding-top: 2 * $margin;
+        }
+        .module-unsave, .module-share {
+            svg-inline {
+                display: inline-block;
+                vertical-align: middle;
+            }
+            text-transform: uppercase;
+            font-weight: bold;
+            color: $gray;
+        }
+        border-top: 2px solid black;
+        &.first {
+            margin-top: 0;
+            border-top: 0;
+            padding-top: 0;
+        }
+    }
+}
+
+
+// Menu
+menu {
+    display: inline-block;
+    padding: 0;
+}
+.hamburger-menu-icon svg-inline {
+    display: inline-block;
+    position: relative;
+    left: 6px;
+}
+.hamburger-menu {
+    z-index: 1000;
+    .overlay {
+        left: 0; right: 0;
+        top: 0; bottom: 0;
+        opacity: .25;
+        background: $gray;
+        z-index: 950;
+    }
+}
+
+
+// Search
+#search-box {
+    padding: $margin * 2;
+    padding-top: $margin * 4;
+    width: 100%;
+    border: 2px solid black;
+    outline: none;
+    @include placeholder {
+        font-style: italic;
+    }
+}
+
+// Types
 
 // Gallery
 .gallery-sort {
@@ -94,15 +285,25 @@ svg-icon.selected * {
     .view-as, .sort-by {
         margin-bottom: 8 * $margin;
     }
+    .clickable {
+        text-decoration: underline;
+    }
+}
+.gallery-search-info {
+    padding-top: 2 * $margin;
+}
+.gallery-search-clear {
+    font-weight: bold;
+    padding-right: 4 * $margin;
+    text-transform: uppercase;
+    .gallery-search-icon {
+        font-size: 150%;
+    }
 }
 .gallery-list {
     .module-type {
-        font-size: 20px;
-        line-height: 22px;
     }
     .module-title {
-        font-size: 30px;
-        line-height: 1;
     }
 }
 .gallery-module-grid {
@@ -126,12 +327,15 @@ svg-icon.selected * {
         opacity: 0.5;
         z-index: 50;
     }
-    .module-content, .module-overlay, .module-image, .module-snapshot {
+    .module-content, .module-overlay, .module-image, {
+        position: absolute;
+        top: 4 * $margin; bottom: 0;
+        left: 4 * $margin; right: 0;
+    }
+    .module-snapshot {
         position: absolute;
         top: 2 * $margin; bottom: 2 * $margin;
         left: 2 * $margin; right: 2 * $margin;
-    }
-    .module-snapshot {
         font-weight: bold;
         z-index: -50;
         opacity: 0;
@@ -156,23 +360,121 @@ svg-icon.selected * {
 }
 
 
-
-
-.language-selection span {
-  cursor: pointer;
-  font-size: 30px;
-  border-left: 2px solid black;
-  padding: 5px;
-  &:first-of-type {
-    border-left: none;
-  }
-  &.selected {
-    font-weight: bold;
-    font-style: italic;
-  }
-  &.disabled {
-    pointer-events: none;
-    color: lightgray;
-  }
+// Detail
+detail {
+    h5 {
+        text-transform: uppercase;
+        padding: $margin 2 * $margin;
+        border: 2px solid black;
+        cursor: pointer;
+        font-weight: bold;
+        display: inline-block;
+    }
+    .module-image {
+        padding-top: 34%;
+        background-size: cover;
+        position: relative;
+        .overlay {
+            position: absolute;
+            top: 0; bottom: 0;
+            left: 0; right: 0;
+            z-index: 50;
+            background: black;
+            opacity: .25;
+        }
+        .module-header, .module-image-caption {
+            position: absolute;
+            top: 18%; bottom: 0;
+            left: 7%; right: 7%;
+            color: white;
+            z-index: 100;
+        }
+        .module-image-caption {
+            top: initial; 
+        }
+        .module-type {
+            font-size: 42px;
+        }
+        .module-title {
+            margin-top: 10px;
+            font-size: 80px;
+        }
+        .module-save, .module-share {
+            display: inline-block;
+            text-transform: uppercase;
+            font-weight: bold;
+            svg-inline {
+                display: inline-block;
+                position: relative;
+                top: 8px;
+                width: 35px;
+            }
+            svg * {
+                fill: white;
+            }
+        }
+    }
+    .contributor {
+        h3.bigger {
+            padding-bottom: 0;
+            color: black;
+            font-size: 42px;
+        }
+        h4 {
+            text-decoration: underline;
+            padding: $margin 0;
+        }
+        .clickable {
+            text-decoration: underline;
+        }
+        .contributor-image {
+            width: 100%;
+            max-height: 250px;
+            border: 2px solid black;
+        }
+    }
+    .content {
+        padding-top: 32px;
+        h3 {
+            margin-top: 0;
+            margin-bottom: 2 * $margin;
+        }
+        .module-type {
+            margin-top: 3 * $margin;
+        }
+        .epigraphs {
+            margin: 0 2*$margin 2*$margin 2*$margin;
+            .attribution { color: $gray; }
+        }
+    }
 }
 
+// Development styles
+.language-selection {
+    display: none;
+    span {
+        cursor: pointer;
+        font-size: 30px;
+        border-left: 2px solid black;
+        padding: 5px;
+        &:first-of-type {
+            border-left: none;
+        }
+        &.selected {
+            font-weight: bold;
+            font-style: italic;
+        }
+        &.disabled {
+            pointer-events: none;
+            color: lightgray;
+        }
+    }
+}
+
+.module-share {
+    cursor: not-allowed !important;
+    color: #ddd !important;
+    svg * {
+        fill: #ddd !important;
+    }
+}
