@@ -12,11 +12,12 @@ export class ContentService {
     private _contentUrl = 'https://api.beautifulrising.org/api/v1/all';
 
     constructor(private http: Http) { }
-    getContent(language: string) { 
+    getContent(language: string, callback: Function) { 
         var params = new URLSearchParams(`lang=${language}`);
-        return this.http.get(this._contentUrl, {search: params})
+        this.http.get(this._contentUrl, {search: params})
             .map(result => result.json())
-            .catch(err => Observable.throw('Server error'));
+            .catch(err => Observable.throw('Server error'))
+            .subscribe(callback);
     }
 }
 
@@ -51,11 +52,10 @@ function StorageDecoratorFactory(key, store) {
                 value = v;
             }
         });
-        StorageEmitter.subscribe(_.debounce(() => {
-            // XXX: make sure this debouncing sufficiently reduces churn
+        StorageEmitter.subscribe(() => {
             if (value === undefined) value = JSON.parse(store.getItem(propertyName) || 'null');
             store.setItem(propertyName, JSON.stringify(value));
-        }, 500));
+        });
     }
 }
 
@@ -92,7 +92,8 @@ export class ModuleSavingService {
         return _.includes(this.savedModules, module.slug);
     }
     toggleSaved(module) {
-        // TODO: implement backend API saving
+        // TODO: implement backend API saving, auto-sort, return actual modules?
+        if (!module.slug) return;
         this.isSaved(module) ? _.pull(this.savedModules, module.slug) : this.savedModules.push(module.slug);
     }
 }

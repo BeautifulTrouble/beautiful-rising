@@ -13,9 +13,9 @@ export class CapitalizePipe implements PipeTransform {
 }
 
 
-// Inline an svg file with <svg-icon src="url"></svg-icon> tags
+// Inline an svg file with <svg-inline src="url"></svg-inline> tags
 @Component({
-	selector: 'svg-icon',
+	selector: 'svg-inline',
 	template: `<div [innerHTML]="iconData"></div>`
 })
 export class SVGIconComponent implements OnInit {
