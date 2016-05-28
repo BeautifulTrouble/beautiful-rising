@@ -4,6 +4,7 @@
     var map = {
         '@angular':             'node_modules/@angular',
         'rxjs':                 'node_modules/rxjs',
+        'elasticlunr':          'node_modules/elasticlunr',
         'lodash':               'node_modules/lodash',
         'markdown-it':          'node_modules/markdown-it/dist',
         'markdown-it-footnote': 'node_modules/markdown-it-footnote/dist'
@@ -12,6 +13,7 @@
     var packages = {
         'app':                  { main: 'main.js', defaultExtension: 'js' },
         'rxjs':                 { defaultExtension: 'js' },
+        'elasticlunr':          { main: 'elasticlunr.min.js' },
         'lodash':               { main: 'lodash.min.js' },
         'markdown-it':          { main: 'markdown-it.min.js' },
         'markdown-it-footnote': { main: 'markdown-it-footnote.min.js'}
