@@ -32,7 +32,8 @@
     "markdown-it": "^6.0.0",
     "markdown-it-footnote": "^2.0.0",
     "node-sass": "^3.4.2",
-    "serve": "^1.4.0"
+    "serve": "^1.4.0",
+    "elasticlunr": "0.8.8"
   },
   "devDependencies": {
     "concurrently": "^2.0.0",
