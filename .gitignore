@@ -3,5 +3,5 @@ node_modules
 app/**/*.js
 app/**/*.map
 app/old
-assets/images
+assets/content
 *.swp
