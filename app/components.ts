@@ -295,6 +295,16 @@ export class DetailComponent implements OnInit {
         this.tactics = this.getRelatedModules('tactics');
         this.principles = this.getRelatedModules('principles');
         this.theories = this.getRelatedModules('theories');
+
+        if (this.module['full-write-up'] && this.module['pull-quote']) {
+            let blockquote = '<blockquote class="pull-quote">' + this.module['pull-quote'] + '</blockquote>';
+            let splitParas = this.module['full-write-up'].split(/(<\/p>)/);
+            splitParas.splice(Math.floor(splitParas.length/2) - splitParas.length%2, 0, blockquote);
+            this.module['full-write-up'] = splitParas.join('');
+            delete this.module['pull-quote'];
+        }
+
+
     }
     getKeyModules(type) { // Returns [['title','text'], ['title','text'], ...] for the given 'key-whatever' type
         return _.map(this.module[type], (text) => [text.split(/\s+[-]\s+/, 1)[0], text.replace(/^.+\s+[-]\s+/, '')]);

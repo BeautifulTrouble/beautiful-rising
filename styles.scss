@@ -125,7 +125,6 @@ blockquote::before {
     position: absolute;
     content: "";
     width: 42px;
-    height: 0;
     border-top: 2px solid black;
 }
 .module-type {
@@ -305,7 +304,7 @@ menu {
     text-align: center;
     color: $gray;
     font-style: italic;
-    font-size: 10px;
+    font-size: 11px;
     img {
         padding: 2 * $margin;
     }

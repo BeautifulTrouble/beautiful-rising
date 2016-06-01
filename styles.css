@@ -112,7 +112,6 @@ blockquote::before {
   position: absolute;
   content: "";
   width: 42px;
-  height: 0;
   border-top: 2px solid black; }
 
 .module-type {
@@ -271,7 +270,7 @@ menu {
   text-align: center;
   color: #b3b3b3;
   font-style: italic;
-  font-size: 10px; }
+  font-size: 11px; }
   .footer img {
     padding: 12px; }
 
