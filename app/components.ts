@@ -172,12 +172,17 @@ export class GalleryComponent implements OnInit {
             </div>
         </div>
         <div [ngClass]="['row', 'type-' + module.type]">
-            <div class="col-sm-6 col-md-2 contributor">
+            <div class="col-xs-6 col-md-2 left-side">
                 <h3 class="border-bottom bigger">Contributed by</h3>
                 <div *ngFor="let author of authors">
                     <img *ngIf="author.image" class="contributor-image" src="{{ config['asset-path'] }}/{{ author.image }}">
                     <h4>{{ author.title }}</h4>
-                    <p [innerHTML]="author.bio"></p>
+                    <p *ngIf="author.bio" [innerHTML]="author.bio"></p>
+                    <p *ngIf="!author.bio && author['team-bio']" [innerHTML]="author['team-bio']"></p>
+                </div>
+                <div *ngIf="!authors.length">
+                    <img class="contributor-image" src="/assets/icons/anon.png">
+                    <h4>It could be you</h4>
                 </div>
                 <div *ngIf="module.tags">
                     <h3 class="border-bottom">Tags</h3>
@@ -201,19 +206,24 @@ export class GalleryComponent implements OnInit {
                         <h5 *ngIf="!gallery" (click)="collapsed = false">Read more</h5>
                     </div>
                     <div *ngIf="!collapsed">
-                        <div *ngIf="module.epigraphs">
-                            <div *ngFor="let epigraph of getEpigraphs()" class="epigraphs">
-                                <div class="epigraph">{{ epigraph[0] }}</div>
-                                <div class="attribution">&mdash;{{ epigraph[1] }}</div>
-                            </div>
+                        <div *ngFor="let epigraph of epigraphs" class="epigraphs">
+                            <div class="epigraph">{{ epigraph[0] }}</div>
+                            <div class="attribution">&mdash;{{ epigraph[1] }}</div>
                         </div>
-                        <div *ngIf="!gallery">
-                            not gallery
+                        <div *ngIf="!gallery" [innerHTML]="module['full-write-up']">
                         </div>
                         <div *ngIf="gallery">
                             gallery
                         </div>
                         <h5 (click)="collapsed = true">Read less</h5>
+                    </div>
+                    <div *ngIf="module['why-it-worked']" class="why">
+                        <h4>Why it worked</h4>
+                        <p [innerHTML]="module['why-it-worked']"></p>
+                    </div>
+                    <div *ngIf="module['why-it-failed']" class="why">
+                        <h4>Why it failed</h4>
+                        <p [innerHTML]="module['why-it-failed']"></p>
                     </div>
                     <div *ngFor="let type of [['key-tactics', 'tactic', 'tactics'], 
                                               ['key-principles', 'principle', 'principles'], 
@@ -228,31 +238,33 @@ export class GalleryComponent implements OnInit {
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 related" style="background-color: blue">
-            </div>
-
-            <!--
-                <h1>{{ module.title }}</h1>
-                {{ module.type }}<br>
-                {{ module.authors }}<br>
-                <div class="sm-col-12">
-                    <img src="{{ config['asset-path'] }}/{{ module.image }}"><br>
+            <div class="col-md-4 right-side">
+                <div *ngIf="module['potential-risks']" (click)="riskCollapsed = !riskCollapsed" [ngClass]="{'risks':true, 'clickable': module['potential-risks-short']}">
+                    <div class="heading">
+                        <svg-inline src="/assets/icons/pr.svg" [ngClass]="'type-' + module.type"></svg-inline>
+                        <h3 class="bigger">Potential risks</h3>
+                        <svg-inline *ngIf="module['potential-risks-short']" [ngClass]="{'arrow':true, 'selected':!riskCollapsed}" src="/assets/icons/arrow.svg"></svg-inline>
+                    </div>
+                    <div *ngIf="riskCollapsed && module['potential-risks-short']" [innerHTML]="module['potential-risks-short']"></div>
+                    <div *ngIf="riskCollapsed && !module['potential-risks-short']" [innerHTML]="module['potential-risks']"></div>
+                    <div *ngIf="!riskCollapsed" [innerHTML]="module['potential-risks']"></div>
                 </div>
-                <div [innerHTML]="module['image-caption']"></div>
-                <div [innerHTML]="module.snapshot"></div>
-                <h1>Full write up</h1><hr>
-                <div *ngIf="module['full-write-up']" [innerHTML]="module['full-write-up']"></div>
-                <h1>Why it worked</h1><hr>
-                <div *ngIf="module['why-it-worked']" [innerHTML]="module['why-it-worked']"></div>
-                <h1>Why it failed</h1><hr>
-                <div *ngIf="module['why-it-failed']" [innerHTML]="module['why-it-failed']"></div>
-                <h1>Related Theories</h1><hr>
-                <div *ngIf="module.theories">{{ module.theories }}</div>
-                <h1>Related Tactics</h1><hr>
-                <div *ngIf="module.tactics">{{ module.tactics }}</div>
-                <h1>Related Principles</h1><hr>
-                <div *ngIf="module.principles">{{ module.principles }}</div>
-            -->
+                <div *ngIf="tactics.length || principles.length || theories.length" class="related">
+                    <h3 class="bigger">Related Modules</h3>
+                    <div *ngIf="tactics.length">
+                        <h3 class="indent">Tactics</h3>
+                        <ul><li *ngFor="let m of tactics"><span class="tactic clickable">{{ m.title }}</span></li></ul>
+                    </div>
+                    <div *ngIf="principles.length">
+                        <h3 class="indent">Principles</h3>
+                        <ul><li *ngFor="let m of principles"><span class="principle clickable">{{ m.title }}</span></li></ul>
+                    </div>
+                    <div *ngIf="theories.length">
+                        <h3 class="indent">Theories</h3>
+                        <ul><li *ngFor="let m of theories"><span class="theory clickable">{{ m.title }}</span></li></ul>
+                    </div>
+                </div>
+            </div>
         </div>
     `,
     directives: [
@@ -266,27 +278,29 @@ export class DetailComponent implements OnInit {
     @Input() modulesBySlug;
     @Input() peopleBySlug;
     _ = _;
-    collapsed;
-    gallery;
-    snapshot;
-    authors;
 
     constructor(
         private savingService: ModuleSavingService) { 
     }
     ngOnInit() {
+        // HACK: Fix a few accidental snapshots
+        if (/In a page .500 words. or less/.test(this.module['full-write-up'])) delete this.module['full-write-up'];
+
         this.collapsed = true;
-        this.snapshot = !this.module['full-write-up'] && !this.module['short-write-up']
+        this.riskCollapsed = true;
+        this.authors = _.filter(_.map((this.module.authors || []).sort(), (author) => this.peopleBySlug[author]));
+        this.snapshot = this.authors.length == 0 || (!this.module['full-write-up'] && !this.module['short-write-up'])
         this.gallery = !this.module['full-write-up'] && this.module['short-write-up']
-        this.authors = _.map(this.module.authors.sort(), (author) => this.peopleBySlug[author]);
-        console.log(this.getEpigraphs());
+        this.epigraphs = _.map(this.module.epigraphs || [], (text) => text.split(/\s+[—]([^\s].+)/, 2));
+        this.tactics = this.getRelatedModules('tactics');
+        this.principles = this.getRelatedModules('principles');
+        this.theories = this.getRelatedModules('theories');
     }
-    getKeyModules(type) {
-        // Returns [['title','text'], ['title','text'], ...] for the given 'key-whatever' type
-        return _.map(this.module[type], (text) => [text.split(/\s+-\s+/, 1)[0], text.replace(/^.+\s+-\s+/, '')]);
+    getKeyModules(type) { // Returns [['title','text'], ['title','text'], ...] for the given 'key-whatever' type
+        return _.map(this.module[type], (text) => [text.split(/\s+[-]\s+/, 1)[0], text.replace(/^.+\s+[-]\s+/, '')]);
     }
-    getEpigraphs() {
-        return _.map(this.module.epigraphs || [], (text) => text.split(/\s+[-—]/, 2));
+    getRelatedModules(type) {
+        return _.filter(_.map(this.module[type] || [], (slug) => this.modulesBySlug[slug]));
     }
 }
 
@@ -455,6 +469,14 @@ export class ToolsComponent {
                     [tags]="tags"
                     (moduleSelect)="currentModule = $event"
                     (search)="doSearch($event)"></gallery>
+                <div class="footer row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
+                        <img src="/assets/icons/Creative_Commons.svg">
+                        <p>Beautiful Rising by Beautiful Rising, various authors is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License. Permissions beyond the scope of this license may be available at beautifulrising.org.</p>
+                    </div>
+                    <div class="col-md-2"></div>
+                </div>
             </div>
         </div>
     `,
@@ -557,8 +579,13 @@ export class AppComponent implements OnInit {
                 }
             }
             this.tags = _.keys(this.modulesByTag).sort();
-            // XXX: are these objects guaranteed to be the same in all collections?
-            // XXX: why do some unicode strings get destroyed by the markdown parser (see: epigraphs)?
+            // Prepare truncated version of potential-risks before rendering as markdown
+            this.config.markdown.push('potential-risks-short');
+            for (let module of this.modules) {
+                if (module['potential-risks'] && module['potential-risks'].length > 470) {
+                    module['potential-risks-short'] = _.truncate(module['potential-risks'], {length: 470, separator: /\s+ /});
+                }
+            }
             // Render markdown
             var md = new MarkdownIt().use(markdownitFootnote);
             for (let collection of [this.contentByType.person, this.modules]) {
@@ -572,13 +599,17 @@ export class AppComponent implements OnInit {
                     }
                 }
             }
+            // Insert pull-quotes
+
             // Prepare search engine
             this.index = ElasticLunr();
             this.config.search.forEach(field => this.index.addField(field));
             this.index.setRef('slug');
             this.modules.forEach(module => this.index.addDoc(module));
             
-            this.currentModule = this.modulesBySlug['jail-solidarity'];
+            //this.currentModule = this.modulesBySlug['jail-solidarity'];
+            //this.currentModule = this.modulesBySlug['fail-forward'];
+            this.currentModule = this.modulesBySlug['sign-language-sit-in'];
         });
     }
 }

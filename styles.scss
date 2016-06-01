@@ -26,11 +26,26 @@ $gray: #b3b3b3;
 .theory { color: $theory; }
 .story { color: $story; }
 .gray { color: $gray; }
-.type-story { a:link, a:visited, a:hover, a:active { color: $story; } }
-.type-theory { a:link, a:visited, a:hover, a:active { color: $theory; } }
-.type-tactic { a:link, a:visited, a:hover, a:active { color: $tactic; } }
-.type-principle { a:link, a:visited, a:hover, a:active { color: $principle; } }
-.type-methodology { a:link, a:visited, a:hover, a:active { color: $methodology; } }
+.type-story { 
+    a:link, a:visited, a:hover, a:active { color: $story; } 
+    svg * { fill: $story; }
+}
+.type-theory { 
+    a:link, a:visited, a:hover, a:active { color: $theory; } 
+    svg * { fill: $theory; }
+}
+.type-tactic { 
+    a:link, a:visited, a:hover, a:active { color: $tactic; } 
+    svg * { fill: $tactic; }
+}
+.type-principle { 
+    a:link, a:visited, a:hover, a:active { color: $principle; } 
+    svg * { fill: $principle; }
+}
+.type-methodology { 
+    a:link, a:visited, a:hover, a:active { color: $methodology; } 
+    svg * { fill: $methodology; }
+}
 $lightgray: #afafaf;
 
 
@@ -60,6 +75,13 @@ $lightgray: #afafaf;
     font-family: 'Painthand';
     src: url('/assets/fonts/Paint-hand_limited-set.ttf');
 }
+
+
+// General
+$margin: 6px;
+$transition: 0.1s;
+$shifted: 240px;
+
 html {
     overflow-y: scroll;
     overflow-x: hidden;
@@ -84,6 +106,28 @@ h4 {
     font-size: 16px;
     line-height: 1;
 }
+blockquote {
+    font-family: 'Painthand';
+    text-transform: uppercase;
+    border-left: none;
+    position: relative;
+    line-height: 1.75;
+    margin-bottom: 0;
+    p {
+        padding-top: 3 * $margin;
+    }
+    &.pull-quote {
+        width: 50%;
+        float: left;
+    }
+}
+blockquote::before {
+    position: absolute;
+    content: "";
+    width: 42px;
+    height: 0;
+    border-top: 2px solid black;
+}
 .module-type {
     font-family: 'Painthand';
     text-transform: uppercase;
@@ -96,12 +140,6 @@ h4 {
     font-size: 30px;
     line-height: 1;
 }
-
-
-// General
-$margin: 6px;
-$transition: 0.1s;
-$shifted: 240px;
 
 svg * {
     @include prefix(transition, fill $transition ease-in-out, webkit moz);
@@ -119,7 +157,6 @@ svg-inline.selected * {
 }
 .clickable {
     cursor: pointer;
-    user-select: none;
 }
 .border-top {
     border-top: 2px solid black;
@@ -261,6 +298,19 @@ menu {
     }
 }
 
+// Footer
+.footer {
+    margin: 16 * $margin 0 4 * $margin 0;
+    border-top: 2px solid black;
+    text-align: center;
+    color: $gray;
+    font-style: italic;
+    font-size: 10px;
+    img {
+        padding: 2 * $margin;
+    }
+}
+
 
 // Search
 #search-box {
@@ -300,12 +350,6 @@ menu {
         font-size: 150%;
     }
 }
-.gallery-list {
-    .module-type {
-    }
-    .module-title {
-    }
-}
 .gallery-module-grid {
     .make-it-square {
         margin-top: 110%;
@@ -318,9 +362,11 @@ menu {
     }
     .module-content {
         overflow: hidden;
-        background-size: cover;
         padding: 2 * $margin;
         z-index: 100;
+    }
+    .module-image {
+        background-size: cover;
     }
     .module-overlay {
         background: black;
@@ -414,14 +460,16 @@ detail {
             }
         }
     }
-    .contributor {
+    .left-side, .right-side {
+        margin-top: 32px;
         h3.bigger {
+            padding-top: 0;
             padding-bottom: 0;
             color: black;
             font-size: 42px;
+            margin-top: 0;
         }
         h4 {
-            text-decoration: underline;
             padding: $margin 0;
         }
         .clickable {
@@ -433,8 +481,47 @@ detail {
             border: 2px solid black;
         }
     }
+    .right-side {
+        .risks {
+            margin-bottom: 32px;
+            &.clickable {
+                text-decoration: none;
+            }
+            .heading {
+                border-bottom: $margin solid black;
+                margin-bottom: $margin * 2;
+                svg-inline, h3 {
+                    display: inline-block;
+                }
+                h3 {
+                    margin-left: $margin;
+                    margin-bottom: 4px;
+                }
+                .arrow {
+                    @include prefix(transition, transform $transition ease-in-out, webkit moz);
+                    transform: rotate(-90deg) scale(0.75);
+                    svg * { fill: $gray; }
+                }
+                .arrow.selected {
+                    transform: rotate(90deg) scale(0.75);
+                    svg * { fill: black; }
+                }
+            }
+        }
+        .related {
+            padding-left: 3 * $margin;
+            ul { 
+                list-style-type: square;
+                text-transform: uppercase;
+            }
+            li {
+                font-weight: bold;
+                padding: 4px 0;
+            }
+        }
+    }
     .content {
-        padding-top: 32px;
+        margin-top: 32px;
         h3 {
             margin-top: 0;
             margin-bottom: 2 * $margin;
@@ -445,6 +532,9 @@ detail {
         .epigraphs {
             margin: 0 2*$margin 2*$margin 2*$margin;
             .attribution { color: $gray; }
+        }
+        hr.footnotes-sep {
+            display: none;
         }
     }
 }
