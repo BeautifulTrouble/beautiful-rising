@@ -91,7 +91,7 @@ body {
     font-size: 14px;
 }
 a:link, a:visited, a:hover, a:active { 
-    color: $theory; 
+    color: $gray; 
 } 
 h3 {
     font-family: 'KnockoutBantam';
@@ -264,7 +264,7 @@ $sidebar: 265px;
             }
             text-transform: uppercase;
             font-weight: bold;
-            color: $gray;
+            color: $lightgray;
         }
         border-top: 2px solid black;
         &.first {
@@ -499,7 +499,7 @@ detail {
                 .arrow {
                     @include prefix(transition, transform $transition ease-in-out, webkit moz);
                     transform: rotate(-90deg) scale(0.75);
-                    svg * { fill: $gray; }
+                    svg * { fill: $lightgray; }
                 }
                 .arrow.selected {
                     transform: rotate(90deg) scale(0.75);
@@ -534,6 +534,16 @@ detail {
         }
         hr.footnotes-sep {
             display: none;
+        }
+        .learn-more {
+            h4 {
+                margin: 3 * $margin 0;
+            }
+            a {
+                color: $gray;
+                font-weight: bold;
+                text-decoration: underline;
+            }
         }
     }
 }

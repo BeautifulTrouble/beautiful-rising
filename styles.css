@@ -80,7 +80,7 @@ body {
   font-size: 14px; }
 
 a:link, a:visited, a:hover, a:active {
-  color: #f93732; }
+  color: #b3b3b3; }
 
 h3 {
   font-family: 'KnockoutBantam';
@@ -235,7 +235,7 @@ svg-inline.selected * {
     .sidebar .saved-module .module-unsave, .sidebar .saved-module .module-share {
       text-transform: uppercase;
       font-weight: bold;
-      color: #b3b3b3; }
+      color: #afafaf; }
       .sidebar .saved-module .module-unsave svg-inline, .sidebar .saved-module .module-share svg-inline {
         display: inline-block;
         vertical-align: middle; }
@@ -447,7 +447,7 @@ detail .right-side .risks {
       transition: transform 0.1s ease-in-out;
       transform: rotate(-90deg) scale(0.75); }
       detail .right-side .risks .heading .arrow svg * {
-        fill: #b3b3b3; }
+        fill: #afafaf; }
     detail .right-side .risks .heading .arrow.selected {
       transform: rotate(90deg) scale(0.75); }
       detail .right-side .risks .heading .arrow.selected svg * {
@@ -475,6 +475,12 @@ detail .content {
       color: #b3b3b3; }
   detail .content hr.footnotes-sep {
     display: none; }
+  detail .content .learn-more h4 {
+    margin: 18px 0; }
+  detail .content .learn-more a {
+    color: #b3b3b3;
+    font-weight: bold;
+    text-decoration: underline; }
 
 .language-selection {
   display: none; }

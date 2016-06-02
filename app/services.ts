@@ -22,7 +22,7 @@ export class ContentService {
 }
 
 
-// Client Storage Service (auto-persist decorated ngModel values to session/localStorage)
+// Client Storage Service (auto-persist decorated values to session/localStorage)
 @Injectable()
 export class ClientStorageService implements OnDestroy {
     constructor(private _zone: NgZone) {

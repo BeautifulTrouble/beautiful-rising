@@ -4,26 +4,13 @@ import {Component, Input, Output, OnInit, EventEmitter} from '@angular/core';
 import {BrowserDomAdapter} from '@angular/platform-browser/src/browser_common';
 import {HTTP_PROVIDERS} from '@angular/http';
 
-import {CapitalizePipe, SVGIconComponent} from './utilities';
+import {CapitalizePipe, SVGComponent} from './utilities';
 import {ContentService, ClientStorageService, ModuleSavingService, LocalStorage} from './services';
 
 import ElasticLunr from 'elasticlunr';
 import MarkdownIt from 'markdown-it';
 import markdownitFootnote from 'markdown-it-footnote';
 
-
-/* 
- * component tree:
- * ===============
- * beautiful-rising (header/footer)
- *      header??
- *      menu??
- *
- *      search x
- *      modal
- *      sharebar
- *      gallery
- */
 
 @Component({
     selector: 'gallery',
@@ -99,7 +86,7 @@ import markdownitFootnote from 'markdown-it-footnote';
         </div>
     `,
     directives: [
-        SVGIconComponent
+        SVGComponent
     ],
     styles: []
 })
@@ -237,6 +224,14 @@ export class GalleryComponent implements OnInit {
                         </div>
                     </div>
                 </div>
+                <div *ngIf="module['learn-more']" class="learn-more">
+                    <div *ngFor="let learn of module['learn-more']; let first=first;">
+                        <h4 *ngIf="first">Learn more</h4>
+                        <p>
+                            <a target="_blank" href="{{ learn.link }}">{{ learn.title }}</a><span *ngIf="learn.source"> / {{ learn.source }}</span><span *ngIf="learn.year">, {{ learn.year }}</span>
+                        </p>
+                    </div>
+                </div>
             </div>
             <div class="col-md-4 right-side">
                 <div *ngIf="module['potential-risks']" (click)="riskCollapsed = !riskCollapsed" [ngClass]="{'risks':true, 'clickable': module['potential-risks-short']}">
@@ -268,7 +263,7 @@ export class GalleryComponent implements OnInit {
         </div>
     `,
     directives: [
-        SVGIconComponent
+        SVGComponent
     ],
     styles: []
 })
@@ -295,16 +290,14 @@ export class DetailComponent implements OnInit {
         this.tactics = this.getRelatedModules('tactics');
         this.principles = this.getRelatedModules('principles');
         this.theories = this.getRelatedModules('theories');
-
+        // Insert the pull-quote into the full-write-up, then delete it.
         if (this.module['full-write-up'] && this.module['pull-quote']) {
             let blockquote = '<blockquote class="pull-quote">' + this.module['pull-quote'] + '</blockquote>';
             let splitParas = this.module['full-write-up'].split(/(<\/p>)/);
-            splitParas.splice(Math.floor(splitParas.length/2) - splitParas.length%2, 0, blockquote);
+            splitParas.splice(Math.floor(splitParas.length/2) - Math.floor(splitParas.length/2)%2, 0, blockquote);
             this.module['full-write-up'] = splitParas.join('');
             delete this.module['pull-quote'];
         }
-
-
     }
     getKeyModules(type) { // Returns [['title','text'], ['title','text'], ...] for the given 'key-whatever' type
         return _.map(this.module[type], (text) => [text.split(/\s+[-]\s+/, 1)[0], text.replace(/^.+\s+[-]\s+/, '')]);
@@ -362,7 +355,7 @@ export class SearchComponent {
         </div>
     `,
     directives: [
-        SVGIconComponent
+        SVGComponent
     ]
 })
 export class MenuComponent {
@@ -418,7 +411,7 @@ export class MenuComponent {
         </div>
     `,
     directives: [
-        SVGIconComponent
+        SVGComponent
     ]
 })
 export class ToolsComponent {
@@ -596,20 +589,25 @@ export class AppComponent implements OnInit {
                     module['potential-risks-short'] = _.truncate(module['potential-risks'], {length: 470, separator: /\s+ /});
                 }
             }
+            
+
             // Render markdown
             var md = new MarkdownIt().use(markdownitFootnote);
+
+            // Recursive markdown function handles most nested structures
+            var mdAll = (x) => ({
+                'array': a => _.map(a, mdAll),
+                'object': o => _.mapValues(o, mdAll),
+                'string': s => md.render(s)
+            })[x instanceof Array ? 'array' : typeof x](x);
+
             for (let collection of [this.contentByType.person, this.modules]) {
                 for (let module of collection) {
                     for (let field of this.config.markdown) {
-                        if (module[field]) {
-                            module[field] = module[field] instanceof Array
-                                ? module[field] = module[field].forEach(i => md.render(i))
-                                : module[field] = md.render(module[field]);
-                        }
+                        if (module[field]) module[field] = mdAll(module[field]);
                     }
                 }
             }
-            // Insert pull-quotes
 
             // Prepare search engine
             this.index = ElasticLunr();
@@ -618,8 +616,8 @@ export class AppComponent implements OnInit {
             this.modules.forEach(module => this.index.addDoc(module));
             
             //this.currentModule = this.modulesBySlug['jail-solidarity'];
-            //this.currentModule = this.modulesBySlug['fail-forward'];
-            this.currentModule = this.modulesBySlug['sign-language-sit-in'];
+            this.currentModule = this.modulesBySlug['fail-forward'];
+            //this.currentModule = this.modulesBySlug['sign-language-sit-in'];
         });
     }
 }

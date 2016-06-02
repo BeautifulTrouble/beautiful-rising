@@ -16,29 +16,29 @@ export class CapitalizePipe implements PipeTransform {
 // Inline an svg file with <svg-inline src="url"></svg-inline> tags
 @Component({
 	selector: 'svg-inline',
-	template: `<div [innerHTML]="iconData"></div>`
+	template: `<div [innerHTML]="svgData"></div>`
 })
-export class SVGIconComponent implements OnInit {
+export class SVGComponent implements OnInit {
 	@Input() src;
-	iconData = '';
+	svgData = '';
 
     constructor(private http: Http) {
     }
     ngOnInit() {
-        var observable = SVGIconCache.cache[this.src];
+        var observable = SVGCache.cache[this.src];
         if (!observable) {
-            observable = SVGIconCache.cache[this.src] = this.http.get(this.src)
+            observable = SVGCache.cache[this.src] = this.http.get(this.src)
                 .map(res => res.text())
                 .publishLast()
                 .refCount(); // Don't execute multiple HTTP requests
         }
         observable.subscribe(
-            data => { this.iconData = data; },
+            data => { this.svgData = data; },
             err => { console.error(err); }
         );
     }
 }
-class SVGIconCache {
+class SVGCache {
     static cache = {};
 }
 
