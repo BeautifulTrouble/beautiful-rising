@@ -4,7 +4,7 @@ import {Component, Input, Output, OnInit, EventEmitter} from '@angular/core';
 import {BrowserDomAdapter} from '@angular/platform-browser/src/browser_common';
 import {HTTP_PROVIDERS} from '@angular/http';
 
-import {CapitalizePipe, SVGComponent} from './utilities';
+import {CapitalizePipe, NotagPipe, SVGComponent} from './utilities';
 import {ContentService, ClientStorageService, ModuleSavingService, LocalStorage} from './services';
 
 import ElasticLunr from 'elasticlunr';
@@ -228,7 +228,8 @@ export class GalleryComponent implements OnInit {
                     <div *ngFor="let learn of module['learn-more']; let first=first;">
                         <h4 *ngIf="first">Learn more</h4>
                         <p>
-                            <a target="_blank" href="{{ learn.link }}">{{ learn.title }}</a><span *ngIf="learn.source"> / {{ learn.source }}</span><span *ngIf="learn.year">, {{ learn.year }}</span>
+                            <a target="_blank" href="{{ learn.link | notag }}">{{ learn.title | notag }}</a><span *ngIf="learn.source"> / {{ learn.source | notag }}</span>
+                            <span *ngIf="learn.year">, {{ learn.year | notag }}</span>
                         </p>
                     </div>
                 </div>
@@ -265,6 +266,7 @@ export class GalleryComponent implements OnInit {
     directives: [
         SVGComponent
     ],
+    pipes: [NotagPipe],
     styles: []
 })
 export class DetailComponent implements OnInit {
@@ -273,6 +275,7 @@ export class DetailComponent implements OnInit {
     @Input() modulesBySlug;
     @Input() peopleBySlug;
     _ = _;
+    md = md;
 
     constructor(
         private savingService: ModuleSavingService) { 
@@ -592,7 +595,7 @@ export class AppComponent implements OnInit {
             
 
             // Render markdown
-            var md = new MarkdownIt().use(markdownitFootnote);
+            window.md = new MarkdownIt().use(markdownitFootnote);
 
             // Recursive markdown function handles most nested structures
             var mdAll = (x) => ({

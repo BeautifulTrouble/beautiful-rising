@@ -11,6 +11,10 @@ export class CapitalizePipe implements PipeTransform {
     // TODO: Arabic equivalent
     transform = v => _.capitalize(v);
 }
+@Pipe({'name': 'notag'})
+export class NotagPipe implements PipeTransform {
+    transform = v => v.replace(/<[^>]+>/gm, '');
+}
 
 
 // Inline an svg file with <svg-inline src="url"></svg-inline> tags

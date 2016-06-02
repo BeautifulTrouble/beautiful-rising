@@ -167,6 +167,9 @@ svg-inline.selected * {
     padding-top: 2 * $margin;
     padding-bottom: 2 * $margin;
 }
+.nop > p { // For [innerHTML] bindings where you don't want markdown's surrounding <p> tag
+    display: inline;
+}
 
 
 // Content area

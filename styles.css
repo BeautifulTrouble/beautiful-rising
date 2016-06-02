@@ -154,6 +154,9 @@ svg-inline.selected * {
   padding-top: 12px;
   padding-bottom: 12px; }
 
+.nop > p {
+  display: inline; }
+
 .contentarea {
   position: relative;
   -webkit-transition: right 0.1s ease-in-out;
