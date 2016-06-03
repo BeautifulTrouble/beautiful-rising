@@ -5,15 +5,18 @@ import {Pipe, PipeTransform, Component, Input, OnInit} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 
 
-// Template filter to capitalize a word
 @Pipe({'name': 'capitalize'})
 export class CapitalizePipe implements PipeTransform {
     // TODO: Arabic equivalent
     transform = v => _.capitalize(v);
 }
-@Pipe({'name': 'notag'})
-export class NotagPipe implements PipeTransform {
+@Pipe({'name': 'notags'})
+export class NotagsPipe implements PipeTransform {
     transform = v => v.replace(/<[^>]+>/gm, '');
+}
+@Pipe({'name': 'trim'})
+export class TrimPipe implements PipeTransform {
+    transform = v => v.trim();
 }
 
 
