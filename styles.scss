@@ -241,8 +241,18 @@ $sidebar: 265px;
     width: $sidebar;
     right: 2 -$sidebar - $margin * 18;
     border: 2px solid black;
-    min-height: 100%;
-    //border-left: none;
+    height: 100%;
+    .top-buttons {
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        z-index: 50;
+        background: white;
+    }
+    .scrollable {
+        padding-top: 11 * $margin;
+        overflow-y: scroll;
+        height: 100%;
+    }
     >div >div {
         padding: 2 * $margin;
     }

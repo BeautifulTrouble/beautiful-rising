@@ -423,33 +423,37 @@ export class MenuComponent {
     template: `
         <div *ngIf="opened" class="sidebar">
             <div *ngIf="visible == 'news-feed'">
-                <div class="border-bottom">
+                <div class="top-buttons border-bottom">
                     <svg-inline (click)="newsTab = 'twitter'" [class.selected]="newsTab == 'twitter'" class="sidebar-icon clickable" src="/assets/icons/Twitter.svg"></svg-inline>
                     <svg-inline (click)="newsTab = 'facebook'" [class.selected]="newsTab == 'facebook'" class="sidebar-icon clickable" src="/assets/icons/facebook.svg"></svg-inline>
                 </div>
-                <div class="news-feed">
-                    <h2>Coming soon: Trending posts from Twitter and Facebook</h2>
+                <div class="scrollable">
+                    <div class="news-feed">
+                        <h2>Coming soon: Trending posts from Twitter and Facebook</h2>
+                    </div>
                 </div>
             </div>
             <div *ngIf="visible == 'my-tools'">
-                <div class="border-bottom">
+                <div class="top-buttons border-bottom">
                     <svg-inline (click)="toolTab = 'pdf'" [class.selected]="toolTab == 'pdf'" class="sidebar-icon clickable fix-icon" src="/assets/icons/PDF.svg"></svg-inline>
                     <svg-inline (click)="toolTab = 'email'" [class.selected]="toolTab == 'email'" class="sidebar-icon clickable" src="/assets/icons/Email.svg"></svg-inline>
                 </div>
-                <div class="downloaders">
-                    <div *ngIf="toolTab == 'pdf'"><h2>Coming Soon: Download a PDF of these modules</h2></div>
-                    <div *ngIf="toolTab == 'email'"><h2>Coming Soon: Have these modules emailed to you</h2></div>
-                </div>
-                <div *ngIf="!getSavedModules().length" class="information">
-                    <p>You can save your go-to modules here, so that next time you access the toolbox you don’t need to go searching for them all over again!</p>
-                    <p>Click on the <svg-inline src="/assets/icons/+_tileandmodule.svg"></svg-inline> of a module to save it here. You don’t need to login, we’ll remember the next time you visit the site from the same device and keep your modules in store.</p>
-                </div>
-                <div *ngFor="let module of getSavedModules(); let first = first" class="saved-module" [ngClass]="{'first': first}">
-                    <div class="module-title clickable"><a class="black" [routerLink]="['/Detail', {slug: module.slug}]">{{ module.title }}</a></div>
-                    <div class="module-snapshot" [innerHTML]="module.snapshot"></div>
-                    <div class="row">
-                        <div (click)="savingService.toggleSaved(module)" class="col-sm-6 module-unsave clickable"><svg-inline src="/assets/icons/Remove.svg"></svg-inline> Remove</div>
-                        <div (click)="window.alert('Coming soon')" class="col-sm-6 module-share clickable"><svg-inline src="/assets/icons/Share_not_in_module.svg"></svg-inline> Share</div>
+                <div class="scrollable">
+                    <div class="downloaders">
+                        <div *ngIf="toolTab == 'pdf'"><h2>Coming Soon: Download a PDF of these modules</h2></div>
+                        <div *ngIf="toolTab == 'email'"><h2>Coming Soon: Have these modules emailed to you</h2></div>
+                    </div>
+                    <div *ngIf="!getSavedModules().length" class="information">
+                        <p>You can save your go-to modules here, so that next time you access the toolbox you don’t need to go searching for them all over again!</p>
+                        <p>Click on the <svg-inline src="/assets/icons/+_tileandmodule.svg"></svg-inline> of a module to save it here. You don’t need to login, we’ll remember the next time you visit the site from the same device and keep your modules in store.</p>
+                    </div>
+                    <div *ngFor="let module of getSavedModules(); let first = first" class="saved-module" [ngClass]="{'first': first}">
+                        <div (click)="router.navigate(['/Detail', {slug: module.slug}]); toggleOpened()" class="module-title clickable">{{ module.title }}</div>
+                        <div class="module-snapshot" [innerHTML]="module.snapshot"></div>
+                        <div class="row">
+                            <div (click)="savingService.toggleSaved(module)" class="col-sm-6 module-unsave clickable"><svg-inline src="/assets/icons/Remove.svg"></svg-inline> Remove</div>
+                            <div (click)="window.alert('Coming soon')" class="col-sm-6 module-share clickable"><svg-inline src="/assets/icons/Share_not_in_module.svg"></svg-inline> Share</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -482,6 +486,7 @@ export class ToolsComponent {
     modulesBySlug;
 
     constructor(
+        private router: Router,
         private contentService: ContentService,
         private savingService: ModuleSavingService) { 
         this.contentService.injectContent(this);
