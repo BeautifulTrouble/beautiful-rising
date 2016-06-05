@@ -5,6 +5,13 @@ import {Pipe, PipeTransform, Component, Input, OnInit} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 
 
+// Note that these are NOT the same slugs used by the A
+export var slugify = (s) => s.toLowerCase()
+                             .replace(/[^\w\s-]/g, '')
+                             .replace(/[\s_-]+/g, '-')
+                             .replace(/^-+|-+$/g, '');
+
+
 @Pipe({'name': 'capitalize'})
 export class CapitalizePipe implements PipeTransform {
     // TODO: Arabic equivalent
@@ -12,7 +19,12 @@ export class CapitalizePipe implements PipeTransform {
 }
 @Pipe({'name': 'notags'})
 export class NotagsPipe implements PipeTransform {
-    transform = v => v.replace(/<[^>]+>/gm, '');
+    transform = v => {
+        // XXX: Do something different for server-side rendering
+        let el = document.createElement('div');
+        el.innerHTML = v;
+        return el.textContent;
+    };
 }
 @Pipe({'name': 'trim'})
 export class TrimPipe implements PipeTransform {

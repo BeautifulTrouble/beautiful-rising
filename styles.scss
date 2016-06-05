@@ -20,12 +20,7 @@ $principle: #166ce3;
 $theory: #f93732;       
 $story: #08eb8c;        
 $gray: #b3b3b3;         
-.tactic { color: $tactic; }
-.methodology { color: $methodology }
-.principle { color: $principle; }
-.theory { color: $theory; }
-.story { color: $story; }
-.gray { color: $gray; }
+$lightgray: #afafaf;
 .type-story { 
     a:link, a:visited, a:hover, a:active { color: $story; } 
     svg * { fill: $story; }
@@ -46,7 +41,22 @@ $gray: #b3b3b3;
     a:link, a:visited, a:hover, a:active { color: $methodology; } 
     svg * { fill: $methodology; }
 }
-$lightgray: #afafaf;
+a:link, a:visited, a:hover, a:active {
+    &.tactic { color: $tactic; }
+    &.methodology { color: $methodology }
+    &.principle { color: $principle; }
+    &.theory { color: $theory; }
+    &.story { color: $story; }
+    &.black { color: black; }
+    &.gray { color: $gray; }
+}
+.tactic { color: $tactic; }
+.methodology { color: $methodology }
+.principle { color: $principle; }
+.theory { color: $theory; }
+.story { color: $story; }
+.black { color: black; }
+.gray { color: $gray; }
 
 
 // Typography
@@ -197,6 +207,9 @@ svg-inline.selected * {
     min-height: 100%; 
     text-align: center;
     width: $margin * 11;
+    a {
+        color: black;
+    }
     .tool-text {
         text-transform: uppercase;
         font-weight: bold;
@@ -518,7 +531,7 @@ detail {
             }
             li {
                 font-weight: bold;
-                padding: 4px 0;
+                padding: 2px 0;
             }
         }
     }

@@ -1,29 +1,42 @@
 // Define all site components here.
 
-import {Component, Input, Output, OnInit, EventEmitter} from '@angular/core';
+import {Component, Input, Output, OnInit, EventEmitter, ApplicationRef} from '@angular/core';
+import {RouteConfig, Router, RouteParams, ROUTER_DIRECTIVES, ROUTER_PROVIDERS} from '@angular/router-deprecated';
 import {BrowserDomAdapter} from '@angular/platform-browser/src/browser_common';
 import {HTTP_PROVIDERS} from '@angular/http';
 
-import {CapitalizePipe, NotagPipe, SVGComponent} from './utilities';
+import {CapitalizePipe, NotagsPipe, TrimPipe, SVGComponent, slugify} from './utilities';
 import {ContentService, ClientStorageService, ModuleSavingService, LocalStorage} from './services';
 
-import ElasticLunr from 'elasticlunr';
-import MarkdownIt from 'markdown-it';
-import markdownitFootnote from 'markdown-it-footnote';
+
+@Component({
+    selector: 'search',
+    template: `
+        <div class="row">
+            <input [(ngModel)]="query" (ngModelChange)="search.next($event)" id="search-box" 
+                placeholder="Search for keywords, ex: legislation, state repression, etc..." autofocus>
+        </div>
+    `
+})
+export class SearchComponent {
+    @Input() query;
+    @Output() search = new EventEmitter();
+}
 
 
 @Component({
     selector: 'gallery',
     template: `
+        <search [query]="query" (search)="doSearch($event)"></search>
         <div class="row">
             <div class="gallery-sort col-md-3">
                 <h3>View As</h3>
                 <div class="row border-top border-bottom view-as">
                     <div class="col-xs-6">
-                        <svg-inline (click)="viewStyle='grid'" [class.selected]="!query && viewStyle == 'grid'" src="/assets/icons/grid.svg"></svg-inline>
+                        <svg-inline (click)="viewStyle='grid'" [class.selected]="!query && viewStyle == 'grid'" class="clickable" src="/assets/icons/grid.svg"></svg-inline>
                     </div>
                     <div class="col-xs-6">
-                        <svg-inline (click)="viewStyle='list'" [class.selected]="query || viewStyle == 'list'" src="/assets/icons/list.svg"></svg-inline>
+                        <svg-inline (click)="viewStyle='list'" [class.selected]="query || viewStyle == 'list'" class="clickable" src="/assets/icons/list.svg"></svg-inline>
                     </div>
                 </div>
                 <h3>Sort By</h3>
@@ -34,17 +47,17 @@ import markdownitFootnote from 'markdown-it-footnote';
                 <h3>Tags</h3>
                 <div class="row border-top tag-list">
                     <span *ngFor="let tag of tags; let last=last">
-                        <span (click)="toggleTag(tag)" [class.selected]="!query && sortTag == tag" class="clickable">{{ tag }}</span><span *ngIf="!last"> / </span>
+                        <span (click)="setTag(slugify(tag))" [class.selected]="!query && sortTag == slugify(tag)" class="clickable">{{ tag }}</span><span *ngIf="!last"> / </span>
                     </span>
                 </div>
             </div>
             <div class="gallery-list col-md-9">
                 <div *ngIf="!query && viewStyle == 'grid'" class="row">
-                    <div *ngFor="let module of sortModules()" (click)="moduleSelect.next(module)" class="col-md-4 gallery-module-grid">
+                    <div *ngFor="let module of sortModules()" (click)="router.navigate(['/Detail', {slug: module.slug}])" class="col-md-4 gallery-module-grid">
                         <!-- Rethink the structure of this whole section -->
 
                         <div class="make-it-square"></div>
-                        <div class="module-image" [ngStyle]="{'background-image': 'url(' + config['asset-path'] + '/' + module.image + ')'}"></div>
+                        <div class="module-image" [ngStyle]="{'background-image': module.image ? 'url('+config['asset-path']+'/'+module.image+')' : ''}"></div>
                         <div class="module-overlay"></div>
                         <div class="module-content">
                             <div class="module-hide-on-hover">
@@ -71,7 +84,7 @@ import markdownitFootnote from 'markdown-it-footnote';
                                 <span (click)="clearSearch()" class="gallery-search-clear clickable"><span class="gallery-search-icon">&#9746;</span> Clear</span>
                                 <span>Search Results for "{{ query }}" ({{ modulesFiltered.length }} results found)</span>
                             </div>
-                            <div *ngFor="let module of sortModules()" (click)="moduleSelect.next(module)" class="gallery-module-list col-sm-6">
+                            <div *ngFor="let module of sortModules()" (click)="router.navigate(['/Detail', {slug: module.slug}])" class="gallery-module-list col-sm-6">
                                 <div class="module-content clickable">
                                     <div class="module-type-accent"></div>
                                     <div [ngClass]="['module-type', module.type]">{{ module.type }}</div>
@@ -86,46 +99,76 @@ import markdownitFootnote from 'markdown-it-footnote';
         </div>
     `,
     directives: [
+        ROUTER_DIRECTIVES,
+        SearchComponent,
         SVGComponent
     ],
     styles: []
 })
 export class GalleryComponent implements OnInit {
-    @Input() config;
-    @Input() modules;
-    @Input() modulesByTag;
-    @Input() modulesBySlug;
-    @Input() modulesFiltered;
-    @Input() query;
-    @Input() tags;
-    @Output() moduleSelect = new EventEmitter();
-    @Output() search = new EventEmitter();
-    _ = _;
     @LocalStorage() sortKey;
     @LocalStorage() viewStyle;
+    _ = _;
+    query = '';
+    slugify = slugify;
 
     constructor(
         private dom: BrowserDomAdapter,
+        private router: Router,
+        private routeParams: RouteParams,
+        private contentService: ContentService,
         private savingService: ModuleSavingService) { 
-    }
-    ngOnInit() {
+        this.doSearch = _.throttle(this.doSearch, 100);
         this.sortKey = this.sortKey || 'timestamp';
         this.viewStyle = this.viewStyle || 'grid';
     }
+    ngOnInit() {
+        this.contentService.injectContent(this, () => {
+            var params = this.routeParams.params;
+            if (params.query) this.doSearch(decodeURIComponent(params.query));
+            if (params.tag) this.setTag(params.tag);
+        });
+    }
+    doSearch(query) {
+        this.query = query;
+        if (query) {
+            history.replaceState(null, null, '/search/'+query);
+            //history.replaceState(null, null, '/search/'+query.replace(/\s*:\s*/,'@'));
+            // Allow queries like "authors: andrew boyd" which search a specific field
+            //var prefix = query.split(/\s*:\s*/)[0];
+            //var query = query.replace(/[^:]+:\s*/, '');
+            /* if (prefix != query && _.includes(this.config.search, prefix)) {
+                let fields = {}; fields[prefix] = {boost: 2};
+                var results = this.index.search(query, {fields: fields, expand: true});
+            } else { */
+                var results = this.index.search(query, {bool: /\s/.test(query) ? 'AND' : 'OR', expand: true});
+            //}
+            this.modulesFiltered = _.map(results, obj => this.modulesBySlug[obj.ref]);
+        } else {
+            history.replaceState(null, null, '/'); // Using navigate de-focuses the search bar
+            this.modulesFiltered = this.modules;
+        }
+    }
     clearSearch() {
         this.sortTag = null;
-        this.search.next('');
+        this.doSearch('');
     }
-    toggleTag(tag) { 
+    setTag(tag) { 
         if (this.query) this.clearSearch();
-        this.sortTag = this.sortTag == tag ? null : tag; 
+        if (this.sortTag == tag) {
+            this.router.navigate(['/Home']);
+        } else {
+            this.sortTag = tag;
+            this.router.navigate(['/Tag', {tag: tag}]);
+        }
     }
     sortModules() {
         var modules = this.modulesFiltered;
-        if (this.query) return modules;
-        if (this.sortTag) modules = this.modulesByTag[this.sortTag];
+        if (!this.query && this.sortTag) {
+            modules = this.modulesByTag[this.tagsBySlug[this.sortTag]];
+        }
         modules = _.sortBy(modules, this.sortKey);
-        if (this.sortKey === 'timestamp') modules = _.reverse(modules);
+        if (this.sortKey == 'timestamp') modules = _.reverse(modules);
         return modules;
     }
     crazyHover($event,a,b,c) {
@@ -138,169 +181,190 @@ export class GalleryComponent implements OnInit {
     }
 }
 
+
 @Component({
     selector: 'detail',
     template: `
-        <div [ngClass]="['row', 'type-' + module.type]">
-            <div class="col-sm-12">
-                <div class="module-image" [ngStyle]="{'background-image': 'url(' + config['asset-path'] + '/' + module.image + ')'}">
-                    <div class="overlay"></div>
-                    <div class="module-header">
-                        <div [ngClass]="['module-type', module.type]">{{ module.type }}</div>
-                        <div class="module-title">{{ module.title }}</div>
-                        <div (click)="savingService.toggleSaved(module)" [ngSwitch]="savingService.isSaved(module)" class="module-save clickable">
-                            <div *ngSwitchWhen="true"><svg-inline src="/assets/icons/-_tileandmodule.svg"></svg-inline>Remove this module from your tools</div>
-                            <div *ngSwitchWhen="false"><svg-inline src="/assets/icons/+_tileandmodule.svg"></svg-inline>Save this module</div>
-                        </div><br>
-                        <div class="module-share clickable"><svg-inline src="/assets/icons/share_in_module.svg"></svg-inline>Share this module</div>
+        <div *ngIf="!module"></div>
+        <div *ngIf="module">
+            <div [ngClass]="['row', 'type-' + module.type]">
+                <div class="col-sm-12">
+                    <div class="module-image" [ngStyle]="{'background-image': module.image ? 'url('+config['asset-path']+'/'+module.image+')' : ''}">
+                        <div class="overlay"></div>
+                        <div class="module-header">
+                            <div [ngClass]="['module-type', module.type]">{{ module.type }}</div>
+                            <div class="module-title">{{ module.title }}</div>
+                            <div (click)="savingService.toggleSaved(module)" [ngSwitch]="savingService.isSaved(module)" class="module-save clickable">
+                                <div *ngSwitchWhen="true"><svg-inline src="/assets/icons/-_tileandmodule.svg"></svg-inline>Remove this module from your tools</div>
+                                <div *ngSwitchWhen="false"><svg-inline src="/assets/icons/+_tileandmodule.svg"></svg-inline>Save this module</div>
+                            </div><br>
+                            <div class="module-share clickable"><svg-inline src="/assets/icons/share_in_module.svg"></svg-inline>Share this module</div>
+                        </div>
+                        <div class="module-image-caption" [innerHTML]="module['image-caption']"></div>
                     </div>
-                    <div class="module-image-caption" [innerHTML]="module['image-caption']"></div>
                 </div>
             </div>
-        </div>
-        <div [ngClass]="['row', 'type-' + module.type]">
-            <div class="col-xs-6 col-md-2 left-side">
-                <h3 class="border-bottom bigger">Contributed by</h3>
-                <div *ngFor="let author of authors">
-                    <img *ngIf="author.image" class="contributor-image" src="{{ config['asset-path'] }}/{{ author.image }}">
-                    <h4>{{ author.title }}</h4>
-                    <p *ngIf="author.bio" [innerHTML]="author.bio"></p>
-                    <p *ngIf="!author.bio && author['team-bio']" [innerHTML]="author['team-bio']"></p>
-                </div>
-                <div *ngIf="!authors.length">
-                    <img class="contributor-image" src="/assets/icons/anon.png">
-                    <h4>It could be you</h4>
-                </div>
-                <div *ngIf="module.tags">
-                    <h3 class="border-bottom">Tags</h3>
-                    <span *ngFor="let tag of module.tags; let last=last">
-                        <span (click)="toggleTag(tag)" class="clickable">{{ tag }}</span><span *ngIf="!last"> / </span>
-                    </span>
-                </div>
-            </div>
-            <div class="hidden-xs hidden-sm col-md-1 spacer">&nbsp;</div>
-            <div class="col-md-5 content">
-                <div *ngIf="snapshot">
-                    <p [innerHTML]="module.snapshot"></p>
-                    <p><strong>Hey, this isn't written yet but people like you are likely using it in all kinds of ways. Do you have insights to share on how to use this theory? Go ahead and share them through the form below...</strong></p>
-                    <div class="row">
-                        <div *ngIf="module['bt-link']" class="col-sm-6"><a href="{{ module['bt-link'] }}" target="_blank"><h4>See &rdquo;{{ module.title }}&ldquo; in <em>Beautiful Trouble</em></h4></a></div>
+            <div [ngClass]="['row', 'type-' + module.type]">
+                <div class="col-xs-3 col-md-2 left-side">
+                    <h3 class="border-bottom bigger">Contributed by</h3>
+                    <div *ngFor="let author of authors" >
+                        <a [routerLink]="['/Search', {query: 'authors@' + author.slug}]" class="black">
+                            <img *ngIf="author.image" class="contributor-image" src="{{ config['asset-path'] }}/{{ author.image }}">
+                            <h4>{{ author.title }}</h4>
+                        </a>
+                        <p *ngIf="author.bio" [innerHTML]="author.bio"></p>
+                        <p *ngIf="!author.bio && author['team-bio']" [innerHTML]="author['team-bio']"></p>
+                    </div>
+                    <div *ngIf="!authors.length">
+                        <img class="contributor-image" src="/assets/icons/anon.png">
+                        <h4>It could be you</h4>
+                    </div>
+                    <div *ngIf="module.tags">
+                        <h3 class="border-bottom">Tags</h3>
+                        <span *ngFor="let tag of module.tags; let last=last">
+                            <a [routerLink]="['/Tag', {tag: slugify(tag)}]" class="black">{{ tag }}</a><span *ngIf="!last"> / </span>
+                        </span>
                     </div>
                 </div>
-                <div *ngIf="!snapshot">
-                    <div *ngIf="collapsed">
-                        <div class="short-write-up" [innerHTML]="module['short-write-up']"></div>
-                        <h5 *ngIf="!gallery" (click)="collapsed = false">Read more</h5>
-                    </div>
-                    <div *ngIf="!collapsed">
-                        <div *ngFor="let epigraph of epigraphs" class="epigraphs">
-                            <div class="epigraph">{{ epigraph[0] }}</div>
-                            <div class="attribution">&mdash;{{ epigraph[1] }}</div>
+                <div class="hidden-xs hidden-sm col-md-1 spacer">&nbsp;</div>
+                <div class="col-xs-9 col-md-5 content">
+                    <div *ngIf="snapshot">
+                        <p [innerHTML]="module.snapshot"></p>
+                        <p><strong>Hey, this isn't written yet but people like you are likely using it in all kinds of ways. Do you have insights to share on how to use this theory? Go ahead and share them through the form below...</strong></p>
+                        <div class="row">
+                            <div *ngIf="module['bt-link']" class="col-sm-6"><a href="{{ module['bt-link'] }}" target="_blank"><h4>See &rdquo;{{ module.title }}&ldquo; in <em>Beautiful Trouble</em></h4></a></div>
                         </div>
-                        <div *ngIf="!gallery" [innerHTML]="module['full-write-up']">
+                    </div>
+                    <div *ngIf="!snapshot">
+                        <div *ngIf="collapsed">
+                            <div class="short-write-up" [innerHTML]="module['short-write-up']"></div>
+                            <h5 *ngIf="!gallery" (click)="collapsed = false">Read more</h5>
                         </div>
-                        <div *ngIf="gallery">
-                            gallery
+                        <div *ngIf="!collapsed">
+                            <div *ngFor="let epigraph of epigraphs" class="epigraphs">
+                                <div class="epigraph">{{ epigraph[0] }}</div>
+                                <div class="attribution">&mdash;{{ epigraph[1] }}</div>
+                            </div>
+                            <div *ngIf="!gallery" [innerHTML]="module['full-write-up']">
+                            </div>
+                            <div *ngIf="gallery">
+                                gallery
+                            </div>
+                            <h5 (click)="collapsed = true">Read less</h5>
                         </div>
-                        <h5 (click)="collapsed = true">Read less</h5>
-                    </div>
-                    <div *ngIf="module['why-it-worked']" class="why">
-                        <h4>Why it worked</h4>
-                        <p [innerHTML]="module['why-it-worked']"></p>
-                    </div>
-                    <div *ngIf="module['why-it-failed']" class="why">
-                        <h4>Why it failed</h4>
-                        <p [innerHTML]="module['why-it-failed']"></p>
-                    </div>
-                    <div *ngFor="let type of [['key-tactics', 'tactic', 'tactics'], 
-                                              ['key-principles', 'principle', 'principles'], 
-                                              ['key-theories', 'theory', 'theories']]">
-                        <div *ngIf="module[type[0]]">
-                            <div *ngFor="let each of getKeyModules(type[0]); let first=first; let last=last;">
-                                <div *ngIf="first && last" [ngClass]="['module-type', type[1]]">key {{ type[1] }}</div><!-- first && last meaning length == 1 -->
-                                <div *ngIf="first && !last" [ngClass]="['module-type', type[1]]">key {{ type[2] }}</div><!-- first && !last meaning length > 1 -->
-                                <h3>{{ each[0] }}</h3><p [innerHTML]="each[1]"></p>
+                        <div *ngIf="module['why-it-worked']" class="why">
+                            <h4>Why it worked</h4>
+                            <p [innerHTML]="module['why-it-worked']"></p>
+                        </div>
+                        <div *ngIf="module['why-it-failed']" class="why">
+                            <h4>Why it failed</h4>
+                            <p [innerHTML]="module['why-it-failed']"></p>
+                        </div>
+                        <div *ngFor="let type of [['key-tactics', 'tactic', 'tactics'], 
+                                                  ['key-principles', 'principle', 'principles'], 
+                                                  ['key-theories', 'theory', 'theories']]">
+                            <div *ngIf="module[type[0]]">
+                                <div *ngFor="let each of getKeyModules(type[0]); let first=first; let last=last;">
+                                    <div *ngIf="first && last" [ngClass]="['module-type', type[1]]">key {{ type[1] }}</div><!-- first && last meaning length == 1 -->
+                                    <div *ngIf="first && !last" [ngClass]="['module-type', type[1]]">key {{ type[2] }}</div><!-- first && !last meaning length > 1 -->
+                                    <h3>{{ each[0] }}</h3><p [innerHTML]="each[1]"></p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div *ngIf="module['learn-more']" class="learn-more">
-                    <div *ngFor="let learn of module['learn-more']; let first=first;">
-                        <h4 *ngIf="first">Learn more</h4>
-                        <p>
-                            <a target="_blank" href="{{ learn.link | notag }}">{{ learn.title | notag }}</a><span *ngIf="learn.source"> / {{ learn.source | notag }}</span>
-                            <span *ngIf="learn.year">, {{ learn.year | notag }}</span>
-                        </p>
+                    <div *ngIf="module['learn-more']" class="learn-more">
+                        <div *ngFor="let learn of module['learn-more']; let first=first;">
+                            <h4 *ngIf="first">Learn more</h4>
+                            <p>
+                                <a target="_blank" href="{{ learn.link | notags | trim }}">{{ learn.title | notags | trim }}</a><span *ngIf="learn.source"> / {{ learn.source | notags }}</span>
+                                <span *ngIf="learn.year">, {{ learn.year | notags }}</span>
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4 right-side">
-                <div *ngIf="module['potential-risks']" (click)="riskCollapsed = !riskCollapsed" [ngClass]="{'risks':true, 'clickable': module['potential-risks-short']}">
-                    <div class="heading">
-                        <svg-inline src="/assets/icons/pr.svg" [ngClass]="'type-' + module.type"></svg-inline>
-                        <h3 class="bigger">Potential risks</h3>
-                        <svg-inline *ngIf="module['potential-risks-short']" [ngClass]="{'arrow':true, 'selected':!riskCollapsed}" src="/assets/icons/arrow.svg"></svg-inline>
+                <div class="col-md-4 right-side">
+                    <div *ngIf="module['potential-risks']" (click)="riskCollapsed = !riskCollapsed" [ngClass]="{'risks':true, 'clickable': module['potential-risks-short']}">
+                        <div class="heading">
+                            <svg-inline src="/assets/icons/pr.svg" [ngClass]="'type-' + module.type"></svg-inline>
+                            <h3 class="bigger">Potential risks</h3>
+                            <svg-inline *ngIf="module['potential-risks-short']" [ngClass]="{'arrow':true, 'selected':!riskCollapsed}" src="/assets/icons/arrow.svg"></svg-inline>
+                        </div>
+                        <div *ngIf="riskCollapsed && module['potential-risks-short']" [innerHTML]="module['potential-risks-short']"></div>
+                        <div *ngIf="riskCollapsed && !module['potential-risks-short']" [innerHTML]="module['potential-risks']"></div>
+                        <div *ngIf="!riskCollapsed" [innerHTML]="module['potential-risks']"></div>
                     </div>
-                    <div *ngIf="riskCollapsed && module['potential-risks-short']" [innerHTML]="module['potential-risks-short']"></div>
-                    <div *ngIf="riskCollapsed && !module['potential-risks-short']" [innerHTML]="module['potential-risks']"></div>
-                    <div *ngIf="!riskCollapsed" [innerHTML]="module['potential-risks']"></div>
-                </div>
-                <div *ngIf="tactics.length || principles.length || theories.length" class="related">
-                    <h3 class="bigger">Related Modules</h3>
-                    <div *ngIf="tactics.length">
-                        <h3 class="indent">Tactics</h3>
-                        <ul><li *ngFor="let m of tactics"><span class="tactic clickable">{{ m.title }}</span></li></ul>
-                    </div>
-                    <div *ngIf="principles.length">
-                        <h3 class="indent">Principles</h3>
-                        <ul><li *ngFor="let m of principles"><span class="principle clickable">{{ m.title }}</span></li></ul>
-                    </div>
-                    <div *ngIf="theories.length">
-                        <h3 class="indent">Theories</h3>
-                        <ul><li *ngFor="let m of theories"><span class="theory clickable">{{ m.title }}</span></li></ul>
+                    <div *ngIf="tactics.length || principles.length || theories.length" class="related">
+                        <h3 class="bigger">Related Modules</h3>
+                        <div *ngIf="tactics.length">
+                            <h3 class="indent">Tactics</h3>
+                            <ul><li *ngFor="let m of tactics">
+                                <a [routerLink]="['Detail', {slug: m.slug}]" class="tactic">{{ m.title }}</a>
+                            </li></ul>
+                        </div>
+                        <div *ngIf="principles.length">
+                            <h3 class="indent">Principles</h3>
+                            <ul><li *ngFor="let m of principles">
+                                <a [routerLink]="['Detail', {slug: m.slug}]" class="principle">{{ m.title }}</a>
+                            </li></ul>
+                        </div>
+                        <div *ngIf="theories.length">
+                            <h3 class="indent">Theories</h3>
+                            <ul><li *ngFor="let m of theories">
+                                <a [routerLink]="['Detail', {slug: m.slug}]" class="theory">{{ m.title }}</a>
+                            </li></ul>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     `,
     directives: [
+        ROUTER_DIRECTIVES,
         SVGComponent
     ],
-    pipes: [NotagPipe],
+    pipes: [
+        NotagsPipe, 
+        TrimPipe
+    ],
     styles: []
 })
 export class DetailComponent implements OnInit {
-    @Input() config;
-    @Input() module;
-    @Input() modulesBySlug;
-    @Input() peopleBySlug;
+    module;
     _ = _;
-    md = md;
+    slugify = slugify;
 
     constructor(
+        private router: Router,
+        private routeParams: RouteParams,
+        private contentService: ContentService,
         private savingService: ModuleSavingService) { 
     }
     ngOnInit() {
-        // HACK: Fix a few accidental snapshots
-        if (/In a page .500 words. or less/.test(this.module['full-write-up'])) delete this.module['full-write-up'];
+        window.scrollTo(0,0);
+        this.contentService.injectContent(this, () => {
+            this.module = this.modulesBySlug[this.routeParams.params.slug];
 
-        this.collapsed = true;
-        this.riskCollapsed = true;
-        this.authors = _.filter(_.map((this.module.authors || []).sort(), (author) => this.peopleBySlug[author]));
-        this.snapshot = this.authors.length == 0 || (!this.module['full-write-up'] && !this.module['short-write-up'])
-        this.gallery = !this.module['full-write-up'] && this.module['short-write-up']
-        this.epigraphs = _.map(this.module.epigraphs || [], (text) => text.split(/\s+[—]([^\s].+)/, 2));
-        this.tactics = this.getRelatedModules('tactics');
-        this.principles = this.getRelatedModules('principles');
-        this.theories = this.getRelatedModules('theories');
-        // Insert the pull-quote into the full-write-up, then delete it.
-        if (this.module['full-write-up'] && this.module['pull-quote']) {
-            let blockquote = '<blockquote class="pull-quote">' + this.module['pull-quote'] + '</blockquote>';
-            let splitParas = this.module['full-write-up'].split(/(<\/p>)/);
-            splitParas.splice(Math.floor(splitParas.length/2) - Math.floor(splitParas.length/2)%2, 0, blockquote);
-            this.module['full-write-up'] = splitParas.join('');
-            delete this.module['pull-quote'];
-        }
+            // HACK: Fix a few accidental snapshots
+            if (/In a page .500 words. or less/.test(this.module['full-write-up'])) delete this.module['full-write-up'];
+
+            this.collapsed = true;
+            this.riskCollapsed = true;
+            this.authors = _.filter(_.map((this.module.authors || []).sort(), (author) => this.peopleBySlug[author]));
+            this.snapshot = this.authors.length == 0 || (!this.module['full-write-up'] && !this.module['short-write-up'])
+            this.gallery = !this.module['full-write-up'] && this.module['short-write-up']
+            this.epigraphs = _.map(this.module.epigraphs || [], (text) => text.split(/\s+[—]([^\s].+)/, 2));
+            this.tactics = this.getRelatedModules('tactics');
+            this.principles = this.getRelatedModules('principles');
+            this.theories = this.getRelatedModules('theories');
+            // Insert the pull-quote into the full-write-up, then delete it.
+            if (this.module['full-write-up'] && this.module['pull-quote']) {
+                let blockquote = '<blockquote class="pull-quote">' + this.module['pull-quote'] + '</blockquote>';
+                let splitParas = this.module['full-write-up'].split(/(<\/p>)/);
+                splitParas.splice(Math.floor(splitParas.length/2) - Math.floor(splitParas.length/2)%2, 0, blockquote);
+                this.module['full-write-up'] = splitParas.join('');
+                delete this.module['pull-quote'];
+            }
+        });
     }
     getKeyModules(type) { // Returns [['title','text'], ['title','text'], ...] for the given 'key-whatever' type
         return _.map(this.module[type], (text) => [text.split(/\s+[-]\s+/, 1)[0], text.replace(/^.+\s+[-]\s+/, '')]);
@@ -327,21 +391,6 @@ export class ModalComponent {
     _ = _;
     //@LocalStorage() seenPopup;
     seenPopup;
-}
-
-
-@Component({
-    selector: 'search',
-    template: `
-        <div class="row">
-            <input [(ngModel)]="query" (ngModelChange)="search.next($event)" id="search-box" 
-                placeholder="Search for keywords, ex: legislation, state repression, etc..." autofocus>
-        </div>
-    `
-})
-export class SearchComponent {
-    @Input() query;
-    @Output() search = new EventEmitter();
 }
 
 
@@ -392,7 +441,7 @@ export class MenuComponent {
                     <p>Click on the <svg-inline src="/assets/icons/+_tileandmodule.svg"></svg-inline> of a module to save it here. You don’t need to login, we’ll remember the next time you visit the site from the same device and keep your modules in store.</p>
                 </div>
                 <div *ngFor="let module of getSavedModules(); let first = first" class="saved-module" [ngClass]="{'first': first}">
-                    <div class="module-title">{{ module.title }}</div>
+                    <div class="module-title clickable"><a class="black" [routerLink]="['/Detail', {slug: module.slug}]">{{ module.title }}</a></div>
                     <div class="module-snapshot" [innerHTML]="module.snapshot"></div>
                     <div class="row">
                         <div (click)="savingService.toggleSaved(module)" class="col-sm-6 module-unsave clickable"><svg-inline src="/assets/icons/Remove.svg"></svg-inline> Remove</div>
@@ -402,7 +451,7 @@ export class MenuComponent {
             </div>
         </div>
         <div class="tools" [class.opened]="opened">
-            <svg-inline class="clickable tools-toggle" (click)="toggleTools()" src="/assets/icons/arrow.svg"></svg-inline>
+            <svg-inline class="clickable tools-toggle" (click)="toggleOpened()" src="/assets/icons/arrow.svg"></svg-inline>
             <div class="clickable news-feed-icon" [class.selected]="opened && visible == 'news-feed'" (click)="selectTool('news-feed')">
                 <svg-inline src="/assets/icons/News_Feed.svg"></svg-inline>
                 <div class="tool-text">News feed</div>
@@ -414,11 +463,11 @@ export class MenuComponent {
         </div>
     `,
     directives: [
+        ROUTER_DIRECTIVES,
         SVGComponent
     ]
 })
 export class ToolsComponent {
-    @Input() modulesBySlug;
     @Output() open = new EventEmitter();
     @Output() close = new EventEmitter();
     _ = _;
@@ -426,16 +475,19 @@ export class ToolsComponent {
     visible = 'my-tools';
     newsTab = 'twitter';
     toolTab = 'pdf';
+    modulesBySlug;
 
     constructor(
+        private contentService: ContentService,
         private savingService: ModuleSavingService) { 
+        this.contentService.injectContent(this);
     }
-    toggleTools() {
+    toggleOpened() {
         (this.opened ? this.close : this.open).next()
         this.opened = !this.opened;
     }
     selectTool(tool) {
-        if (!(this.opened && tool != this.visible)) this.toggleTools();
+        if (!(this.opened && tool != this.visible)) this.toggleOpened();
         this.visible = tool;
     }
     getSavedModules() {
@@ -447,34 +499,16 @@ export class ToolsComponent {
 @Component({
     selector: 'beautiful-rising',
     template: `
-        <div [ngStyle]="{'direction': language==='ar' ? 'rtl' : 'ltr'}">
+        <div [ngStyle]="{'direction': contentService.language==='ar' ? 'rtl' : 'ltr'}">
             <div class="language-selection">
-                <span *ngFor="let lang of languages"
-                    (click)="language=lang"
-                    [class.selected]="language===lang">{{ lang|uppercase }}</span>
+                <span *ngFor="let lang of languages" (click)="language=lang" [class.selected]="language===lang">{{ lang|uppercase }}</span>
             </div>
             <!-- <modal></modal> -->
             <menu></menu>
-            <img (click)="currentModule = null" class="logo" src="/assets/icons/logo.png">
+            <a [routerLink]="['/Home']"><img class="logo" src="/assets/icons/logo.png"></a>
             <div class="contentarea" (window:resize)="setToolsOffset()" [ngStyle]="{'right': opened ? toolsOffset : '0'}">
-                <tools (open)="opened = true" (close)="opened = false"
-                    [modulesBySlug]="modulesBySlug"></tools>
-                <search *ngIf="!currentModule" [query]="query" (search)="doSearch($event)"></search>
-                <detail *ngIf="currentModule" 
-                    [config]="config"
-                    [module]="currentModule"
-                    [modulesBySlug]="modulesBySlug"
-                    [peopleBySlug]="peopleBySlug"></detail>
-                <gallery *ngIf="!currentModule"
-                    [config]="config"
-                    [modules]="modules" 
-                    [modulesByTag]="modulesByTag"
-                    [modulesBySlug]="modulesBySlug"
-                    [modulesFiltered]="modulesFiltered" 
-                    [query]="query"
-                    [tags]="tags"
-                    (moduleSelect)="currentModule = $event"
-                    (search)="doSearch($event)"></gallery>
+                <tools (open)="opened = true" (close)="opened = false"></tools>
+                <router-outlet></router-outlet>
                 <div class="footer row">
                     <div class="col-md-2"></div>
                     <div class="col-md-8">
@@ -487,60 +521,43 @@ export class ToolsComponent {
         </div>
     `,
     directives: [
+        ROUTER_DIRECTIVES,
         ModalComponent,
         MenuComponent,
         ToolsComponent,
-        SearchComponent,
-        GalleryComponent,
-        DetailComponent
     ],
     providers: [
+        ROUTER_PROVIDERS,
         HTTP_PROVIDERS,
         BrowserDomAdapter,
         ContentService,
         ClientStorageService,
         ModuleSavingService,
-    ],
-    pipes: [CapitalizePipe]
+    ]
 })
-export class AppComponent implements OnInit {
+@RouteConfig([
+    {path: '/module/:slug',         component: DetailComponent,     name: 'Detail'},
+    {path: '/search/:query',        component: GalleryComponent,    name: 'Search'},
+    {path: '/tag/:tag',             component: GalleryComponent,    name: 'Tag'},
+    {path: '',                      component: GalleryComponent,    name: 'Home'},
+    {path: '*',                     component: GalleryComponent,    name: '404'},
+])
+export class AppComponent implements OnInit, OnActivate {
+    @LocalStorage() language;
     _ = _;
-    currentModule;
-    modulesFiltered;
-    offset = '0';
     opened = false;
-    languages = ['ar','es','en'];
-    @LocalStorage() _language;
 
     constructor(
         private dom: BrowserDomAdapter,
-        private contentService: ContentService,
-        private storageService: ClientStorageService) {
-        this.doSearch = _.throttle(this.doSearch, 100);
+        private router: Router,
+        private contentService: ContentService) {
         this.setToolsOffset = _.throttle(this.setToolsOffset, 100);
     }
     ngOnInit() {
-        var userLanguage = this._language || (navigator.languages || ['en'])[0].slice(0,2);
-        this.language = _.includes(this.languages, userLanguage) ? userLanguage : 'en'; 
-        this.getContent();
+        // Attempt to guess and the language
+        var userLanguage = this.language || (navigator.languages || ['en'])[0].slice(0,2);
+        this.contentService.language = _.includes(['ar', 'es', 'en'], userLanguage) ? userLanguage : 'en';
         this.setToolsOffset();
-    }
-    get language() { return this._language }
-    set language(language) {
-        // Implicitly fetch all content whenever the language is changed
-        if (this._language !== language) {
-            this._language = language;
-            this.getContent();
-        }
-    }
-    doSearch(query) {
-        this.query = query;
-        if (query) {
-            var results = this.index.search(query, {boolean: /\s/.test(query) ? 'AND' : 'OR', expand: true});
-            this.modulesFiltered = _.map(results, obj => this.modulesBySlug[obj.ref]);
-        } else {
-            this.modulesFiltered = this.modules;
-        }
     }
     setToolsOffset() {
         // Calculate how much to shift the contentarea when the tools panel is expanded
@@ -548,80 +565,6 @@ export class AppComponent implements OnInit {
         var currentOffset = getComputedStyle(this.dom.query('.contentarea')).right.slice(0,-2);
         var spaceToRight = document.documentElement.clientWidth - (toolsRect.left + toolsRect.width) - currentOffset;
         this.toolsOffset = Math.max(265 - spaceToRight, 0);
-    }
-
-    config;
-    content;
-    contentByType;
-    contentBySlug;
-    pagesBySlug;
-    peopleBySlug;
-    moduleTypes;
-    modulesByType;
-    modules;
-    modulesBySlug;
-    getContent() {
-        this.contentService.getContent(this._language, content => {
-            this.config = _.find(content, {'type': 'config', 'slug': 'api'});
-            this.content = content;
-            // Bundle content into types
-            this.contentByType = _.groupBy(content, 'type');
-            // Mappings by slug are useful for grabbing related content
-            this.contentBySlug = _.keyBy(content, 'slug');
-            this.pagesBySlug = _.keyBy(this.contentByType.page, 'slug');
-            this.peopleBySlug = _.keyBy(this.contentByType.person, 'slug');
-            // Prepare a few useful representations of modules
-            this.moduleTypes = _.map(this.config['types-modules'], t => t.one);
-            this.modulesByType = _.pick(this.contentByType, this.moduleTypes);
-            this.modules = _.flatten(_.values(this.modulesByType));
-            this.modulesFiltered = this.modules;
-            this.modulesBySlug = _.keyBy(this.modules, 'slug');
-            // Collect all tags
-            this.modulesByTag = {};
-            for (let module of this.modules) {
-                for (let tag of module['tags'] || []) {
-                    this.modulesByTag[tag] = this.modulesByTag[tag] || [];
-                    this.modulesByTag[tag].push(module);
-                }
-            }
-            this.tags = _.keys(this.modulesByTag).sort();
-            // Prepare truncated version of potential-risks before rendering as markdown
-            this.config.markdown.push('potential-risks-short');
-            for (let module of this.modules) {
-                if (module['potential-risks'] && module['potential-risks'].length > 470) {
-                    module['potential-risks-short'] = _.truncate(module['potential-risks'], {length: 470, separator: /\s+ /});
-                }
-            }
-            
-
-            // Render markdown
-            window.md = new MarkdownIt().use(markdownitFootnote);
-
-            // Recursive markdown function handles most nested structures
-            var mdAll = (x) => ({
-                'array': a => _.map(a, mdAll),
-                'object': o => _.mapValues(o, mdAll),
-                'string': s => md.render(s)
-            })[x instanceof Array ? 'array' : typeof x](x);
-
-            for (let collection of [this.contentByType.person, this.modules]) {
-                for (let module of collection) {
-                    for (let field of this.config.markdown) {
-                        if (module[field]) module[field] = mdAll(module[field]);
-                    }
-                }
-            }
-
-            // Prepare search engine
-            this.index = ElasticLunr();
-            this.config.search.forEach(field => this.index.addField(field));
-            this.index.setRef('slug');
-            this.modules.forEach(module => this.index.addDoc(module));
-            
-            //this.currentModule = this.modulesBySlug['jail-solidarity'];
-            this.currentModule = this.modulesBySlug['fail-forward'];
-            //this.currentModule = this.modulesBySlug['sign-language-sit-in'];
-        });
     }
 }
 

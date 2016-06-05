@@ -10,6 +10,8 @@ import ElasticLunr from 'elasticlunr';
 import MarkdownIt from 'markdown-it';
 import markdownitFootnote from 'markdown-it-footnote';
 
+import {slugify} from './utilities';
+
 
 // Content Service (for fetching and transforming API content)
 @Injectable()
@@ -20,7 +22,9 @@ export class ContentService {
     contentStream = this.contentSource.asObservable();
     contentCacheByLanguage = {};
 
-    constructor(private http: Http) { }
+    constructor(private http: Http) { 
+        this.getContent = _.throttle(this.getContent, 500);
+    }
 
     // Returns an object containing several sorted and ordered forms of the API content
     getContent(callback) {
@@ -29,13 +33,13 @@ export class ContentService {
         // Use cached content when possible or fetch by HTTP
         if (this.contentCacheByLanguage[this.language]) {
 
-            console.log('using cached');
+            console.log('Using cached content');
 
             // Emit the cached prepared content to subscribers
             this.contentSource.next(this.contentCacheByLanguage[this.language]);
         } else {
 
-            console.log('using non-cached');
+            console.log('Using fresh content');
 
             var params = new URLSearchParams(`lang=${this.language}`);
             this.http.get(this.contentUrl, {search: params})
@@ -68,6 +72,7 @@ export class ContentService {
                         }
                     }
                     output.tags = _.keys(output.modulesByTag).sort();
+                    output.tagsBySlug = _.keyBy(output.tags, t => slugify(t));
                     // Prepare truncated version of potential-risks before rendering as markdown
                     output.config.markdown.push('potential-risks-short');
                     for (let module of output.modules) {
@@ -95,7 +100,6 @@ export class ContentService {
                     output.config.search.forEach(field => output.index.addField(field));
                     output.index.setRef('slug');
                     output.modules.forEach(module => output.index.addDoc(module)); 
-                    console.log(output.index);
                     // Cache the prepared content and emit it to subscribers
                     this.contentCacheByLanguage[this.language] = output;
                     this.contentSource.next(output);
@@ -103,8 +107,11 @@ export class ContentService {
         }
     }
     // For the simple case where you want to populate ~this~ with content variables
-    injectContent(target: Scope) {
-        this.getContent(content => _.merge(target, content));
+    injectContent(target: Scope, then) {
+        this.getContent(content => {
+            _.merge(target, content)
+            if (then /* har */) then(content);
+        });
     }
 
 }

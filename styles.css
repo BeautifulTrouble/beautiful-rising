@@ -1,21 +1,3 @@
-.tactic {
-  color: #ff9200; }
-
-.methodology {
-  color: #b700c2; }
-
-.principle {
-  color: #166ce3; }
-
-.theory {
-  color: #f93732; }
-
-.story {
-  color: #08eb8c; }
-
-.gray {
-  color: #b3b3b3; }
-
 .type-story a:link, .type-story a:visited, .type-story a:hover, .type-story a:active {
   color: #08eb8c; }
 
@@ -45,6 +27,48 @@
 
 .type-methodology svg * {
   fill: #b700c2; }
+
+a:link.tactic, a:visited.tactic, a:hover.tactic, a:active.tactic {
+  color: #ff9200; }
+
+a:link.methodology, a:visited.methodology, a:hover.methodology, a:active.methodology {
+  color: #b700c2; }
+
+a:link.principle, a:visited.principle, a:hover.principle, a:active.principle {
+  color: #166ce3; }
+
+a:link.theory, a:visited.theory, a:hover.theory, a:active.theory {
+  color: #f93732; }
+
+a:link.story, a:visited.story, a:hover.story, a:active.story {
+  color: #08eb8c; }
+
+a:link.black, a:visited.black, a:hover.black, a:active.black {
+  color: black; }
+
+a:link.gray, a:visited.gray, a:hover.gray, a:active.gray {
+  color: #b3b3b3; }
+
+.tactic {
+  color: #ff9200; }
+
+.methodology {
+  color: #b700c2; }
+
+.principle {
+  color: #166ce3; }
+
+.theory {
+  color: #f93732; }
+
+.story {
+  color: #08eb8c; }
+
+.black {
+  color: black; }
+
+.gray {
+  color: #b3b3b3; }
 
 @font-face {
   font-family: 'Avenir';
@@ -180,6 +204,8 @@ svg-inline.selected * {
   min-height: 100%;
   text-align: center;
   width: 66px; }
+  .tools a {
+    color: black; }
   .tools .tool-text {
     text-transform: uppercase;
     font-weight: bold;
@@ -463,7 +489,7 @@ detail .right-side .related {
     text-transform: uppercase; }
   detail .right-side .related li {
     font-weight: bold;
-    padding: 4px 0; }
+    padding: 2px 0; }
 
 detail .content {
   margin-top: 32px; }
