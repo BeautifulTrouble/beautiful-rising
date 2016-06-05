@@ -155,7 +155,7 @@ svg * {
     fill: $lightgray;
 }
 svg-inline.selected * {
-    fill: black;
+    fill: black !important;
 }
 .selected {
     font-weight: bold;
