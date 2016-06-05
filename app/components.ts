@@ -165,7 +165,7 @@ export class GalleryComponent implements OnInit {
     sortModules() {
         var modules = this.modulesFiltered;
         if (!this.query && this.sortTag) {
-            modules = this.modulesByTag[this.tagsBySlug[this.sortTag]];
+            modules = this.modulesByTag[this.sortTag];
         }
         modules = _.sortBy(modules, this.sortKey);
         if (this.sortKey == 'timestamp') modules = _.reverse(modules);

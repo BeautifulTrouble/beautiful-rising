@@ -72,7 +72,7 @@ export class ContentService {
                         }
                     }
                     output.tags = _.keys(output.modulesByTag).sort();
-                    output.tagsBySlug = _.keyBy(output.tags, t => slugify(t));
+                    output.modulesByTag = _.mapKeys(output.modulesByTag, (v,k) => slugify(k));
                     // Prepare truncated version of potential-risks before rendering as markdown
                     output.config.markdown.push('potential-risks-short');
                     for (let module of output.modules) {
