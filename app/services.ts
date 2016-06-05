@@ -96,6 +96,7 @@ export class ContentService {
                         }
                     }
                     // Prepare search index
+                    ElasticLunr.tokenizer.setSeperator(/\s+/);
                     output.index = ElasticLunr();
                     output.config.search.forEach(field => output.index.addField(field));
                     output.index.setRef('slug');
