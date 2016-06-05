@@ -13,7 +13,7 @@ import {ContentService, ClientStorageService, ModuleSavingService, LocalStorage}
     selector: 'search',
     template: `
         <div class="row">
-            <input [(ngModel)]="query" (ngModelChange)="search.next($event)" id="search-box" 
+            <input [(ngModel)]="query" (ngModelChange)="search.next($event)" class="search-box" 
                 placeholder="Search for keywords, ex: legislation, state repression, etc..." autofocus>
         </div>
     `
@@ -136,7 +136,7 @@ export class GalleryComponent implements OnInit {
         this.query = query;
         if (query) {
             history.replaceState(null, null, '/search/'+query);
-            // Allow queries like "authors: andrew boyd" which search a specific field
+            // Allow queries like "authors:andrew-boyd" which search a specific field
             var prefix = query.split(/\s*:\s*/)[0];
             query = query.replace(/[^:]+:\s*/, '');
             var config = {bool: /\s/.test(query) ? 'AND' : 'OR', expand: true};
@@ -344,7 +344,6 @@ export class DetailComponent implements OnInit {
         private savingService: ModuleSavingService) { 
     }
     ngOnInit() {
-        window.scrollTo(0,0);
         this.contentService.injectContent(this, () => {
             this.module = this.modulesBySlug[this.routeParams.params.slug];
 
@@ -368,6 +367,7 @@ export class DetailComponent implements OnInit {
                 this.module['full-write-up'] = splitParas.join('');
                 delete this.module['pull-quote'];
             }
+            window.scrollTo(0,0);
         });
     }
     getKeyModules(type) { // Returns [['title','text'], ['title','text'], ...] for the given 'key-whatever' type

@@ -96,10 +96,10 @@ export class ContentService {
                         }
                     }
                     // Prepare search index
-                    ElasticLunr.tokenizer.setSeperator(/\s+/);
+                    ElasticLunr.tokenizer.setSeperator(/[-\s]+/);
                     output.index = ElasticLunr();
-                    output.config.search.forEach(field => output.index.addField(field));
                     output.index.setRef('slug');
+                    output.config.search.forEach(field => output.index.addField(field));
                     output.modules.forEach(module => output.index.addDoc(module)); 
                     // Cache the prepared content and emit it to subscribers
                     this.contentCacheByLanguage[this.language] = output;

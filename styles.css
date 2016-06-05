@@ -303,19 +303,19 @@ menu {
   .footer img {
     padding: 12px; }
 
-#search-box {
+.search-box {
   padding: 12px;
   padding-top: 24px;
   width: 100%;
   border: 2px solid black;
   outline: none; }
-  #search-box::-webkit-input-placeholder {
+  .search-box::-webkit-input-placeholder {
     font-style: italic; }
-  #search-box::-moz-placeholder {
+  .search-box::-moz-placeholder {
     font-style: italic; }
-  #search-box:-moz-placeholder {
+  .search-box:-moz-placeholder {
     font-style: italic; }
-  #search-box:-ms-input-placeholder {
+  .search-box:-ms-input-placeholder {
     font-style: italic; }
 
 .gallery-sort {
