@@ -54,6 +54,9 @@ export class SearchComponent {
             <div class="gallery-list col-md-9">
                 <div *ngIf="!query && viewStyle == 'grid'" class="row">
                     <div *ngFor="let module of sortModules()" (click)="router.navigate(['/Detail', {slug: module.slug}])" class="col-md-4 gallery-module-grid">
+                        
+
+
                         <!-- Rethink the structure of this whole section -->
 
                         <div class="make-it-square"></div>
@@ -119,10 +122,10 @@ export class GalleryComponent implements OnInit {
         private contentService: ContentService,
         private savingService: ModuleSavingService) { 
         this.doSearch = _.throttle(this.doSearch, 100);
-        this.sortKey = this.sortKey || 'timestamp';
-        this.viewStyle = this.viewStyle || 'grid';
     }
     ngOnInit() {
+        this.sortKey = this.sortKey || 'timestamp';
+        this.viewStyle = this.viewStyle || 'grid';
         this.contentService.injectContent(this, () => {
             var params = this.routeParams.params;
             if (params.query) this.doSearch(decodeURIComponent(params.query));
@@ -133,16 +136,15 @@ export class GalleryComponent implements OnInit {
         this.query = query;
         if (query) {
             history.replaceState(null, null, '/search/'+query);
-            //history.replaceState(null, null, '/search/'+query.replace(/\s*:\s*/,'@'));
             // Allow queries like "authors: andrew boyd" which search a specific field
-            //var prefix = query.split(/\s*:\s*/)[0];
-            //var query = query.replace(/[^:]+:\s*/, '');
-            /* if (prefix != query && _.includes(this.config.search, prefix)) {
-                let fields = {}; fields[prefix] = {boost: 2};
-                var results = this.index.search(query, {fields: fields, expand: true});
-            } else { */
-                var results = this.index.search(query, {bool: /\s/.test(query) ? 'AND' : 'OR', expand: true});
-            //}
+            var prefix = query.split(/\s*:\s*/)[0];
+            query = query.replace(/[^:]+:\s*/, '');
+            var config = {bool: /\s/.test(query) ? 'AND' : 'OR', expand: true};
+            if (prefix != query && _.includes(this.config.search, prefix)) {
+                config.fields = {}; config.fields[prefix] = {boost: 2};
+            }
+            // Perform the actual search
+            var results = this.index.search(query, config);
             this.modulesFiltered = _.map(results, obj => this.modulesBySlug[obj.ref]);
         } else {
             history.replaceState(null, null, '/'); // Using navigate de-focuses the search bar
@@ -210,7 +212,7 @@ export class GalleryComponent implements OnInit {
                 <div class="col-xs-3 col-md-2 left-side">
                     <h3 class="border-bottom bigger">Contributed by</h3>
                     <div *ngFor="let author of authors" >
-                        <a [routerLink]="['/Search', {query: 'authors@' + author.slug}]" class="black">
+                        <a [routerLink]="['/Search', {query: 'authors:' + author.slug}]" class="black">
                             <img *ngIf="author.image" class="contributor-image" src="{{ config['asset-path'] }}/{{ author.image }}">
                             <h4>{{ author.title }}</h4>
                         </a>
@@ -552,13 +554,14 @@ export class AppComponent implements OnInit, OnActivate {
     constructor(
         private dom: BrowserDomAdapter,
         private router: Router,
+        private clientStorageService: ClientStorageService,
         private contentService: ContentService) {
         this.setToolsOffset = _.throttle(this.setToolsOffset, 100);
     }
     ngOnInit() {
         // Attempt to guess and the language
-        var userLanguage = this.language || (navigator.languages || ['en'])[0].slice(0,2);
-        this.contentService.language = _.includes(['ar', 'es', 'en'], userLanguage) ? userLanguage : 'en';
+        this.language = this.language || (navigator.languages || ['en'])[0].slice(0,2);
+        this.contentService.language = _.includes(['ar', 'es', 'en'], this.language) ? this.language : 'en';
         this.setToolsOffset();
     }
     setToolsOffset() {
