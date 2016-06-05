@@ -156,10 +156,12 @@ export class GalleryComponent implements OnInit {
     setTag(tag) { 
         if (this.query) this.clearSearch();
         if (this.sortTag == tag) {
+            this.sortTag = null;
             this.router.navigate(['/Home']);
         } else {
             this.sortTag = tag;
-            this.router.navigate(['/Tag', {tag: tag}]);
+            history.replaceState(null, null, '/tag/'+tag);
+            //this.router.navigate(['/Tag', {tag: tag}]); // TODO: implement routerCanReuse
         }
     }
     sortModules() {

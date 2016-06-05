@@ -5,7 +5,7 @@ import {Pipe, PipeTransform, Component, Input, OnInit} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 
 
-// Note that these are NOT the same slugs used by the A
+// Note that these are NOT the same slugs used by the API
 export var slugify = (s) => s.toLowerCase()
                              .replace(/[^\w\s-]/g, '')
                              .replace(/[\s_-]+/g, '-')
