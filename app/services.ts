@@ -4,21 +4,109 @@ import {Injectable, OnDestroy} from '@angular/core';
 import {Http, URLSearchParams} from '@angular/http';
 import {NgZone} from '@angular/core/src/zone';
 import {Observable} from 'rxjs/Observable';
+import {Subject} from 'rxjs/Subject';
+
+import ElasticLunr from 'elasticlunr';
+import MarkdownIt from 'markdown-it';
+import markdownitFootnote from 'markdown-it-footnote';
 
 
-// Content Service (for fetching API content)
+// Content Service (for fetching and transforming API content)
 @Injectable()
 export class ContentService {
-    private _contentUrl = 'https://api.beautifulrising.org/api/v1/all';
+    language = 'en';
+    contentUrl = 'https://api.beautifulrising.org/api/v1/all';
+    contentSource = new Subject();
+    contentStream = this.contentSource.asObservable();
+    contentCacheByLanguage = {};
 
     constructor(private http: Http) { }
-    getContent(language: string, callback: Function) { 
-        var params = new URLSearchParams(`lang=${language}`);
-        this.http.get(this._contentUrl, {search: params})
-            .map(result => result.json())
-            .catch(err => Observable.throw('Server error'))
-            .subscribe(callback);
+
+    // Returns an object containing several sorted and ordered forms of the API content
+    getContent(callback) {
+        // Subscribe the callback to a single message
+        this.contentStream.first().subscribe(callback);
+        // Use cached content when possible or fetch by HTTP
+        if (this.contentCacheByLanguage[this.language]) {
+
+            console.log('using cached');
+
+            // Emit the cached prepared content to subscribers
+            this.contentSource.next(this.contentCacheByLanguage[this.language]);
+        } else {
+
+            console.log('using non-cached');
+
+            var params = new URLSearchParams(`lang=${this.language}`);
+            this.http.get(this.contentUrl, {search: params})
+                .map(result => result.json())
+                .catch(err => Observable.throw('Something went wrong with the content API service!'))
+                .subscribe(content => {
+
+                    // Prepare the content for easy consumption by components
+                    let output = {}
+                    output.content = content;
+                    output.config = _.find(content, {'type': 'config', 'slug': 'api'});
+                    // Bundle content into types
+                    output.contentByType = _.groupBy(content, 'type');
+                    // Mappings by slug are useful for grabbing related content
+                    output.contentBySlug = _.keyBy(content, 'slug');
+                    output.textBySlug = _.keyBy(output.contentByType.text, 'slug');
+                    output.peopleBySlug = _.keyBy(output.contentByType.person, 'slug');
+                    // Prepare a few more useful representations
+                    output.moduleTypes = _.map(output.config['types-modules'], t => t.one);
+                    output.modulesByType = _.pick(output.contentByType, output.moduleTypes);
+                    output.modules = _.flatten(_.values(output.modulesByType));
+                    output.modulesFiltered = output.modules;
+                    output.modulesBySlug = _.keyBy(output.modules, 'slug');
+                    // Collect all tags
+                    output.modulesByTag = {};
+                    for (let module of output.modules) {
+                        for (let tag of module['tags'] || []) {
+                            output.modulesByTag[tag] = output.modulesByTag[tag] || [];
+                            output.modulesByTag[tag].push(module);
+                        }
+                    }
+                    output.tags = _.keys(output.modulesByTag).sort();
+                    // Prepare truncated version of potential-risks before rendering as markdown
+                    output.config.markdown.push('potential-risks-short');
+                    for (let module of output.modules) {
+                        if (module['potential-risks'] && module['potential-risks'].length > 470) {
+                            module['potential-risks-short'] = _.truncate(module['potential-risks'], {length: 470, separator: /\s+ /});
+                        }
+                    }
+                    // Render markdown
+                    var md = new MarkdownIt().use(markdownitFootnote);
+                    // Recursive markdown function handles most nested structures
+                    var markdown = (x) => ({
+                        'array': a => _.map(a, markdown),
+                        'object': o => _.mapValues(o, markdown),
+                        'string': s => md.render(s)
+                    })[x instanceof Array ? 'array' : typeof x](x);
+                    for (let collection of [output.contentByType.person, output.modules]) {
+                        for (let module of collection) {
+                            for (let field of output.config.markdown) {
+                                if (module[field]) module[field] = markdown(module[field]);
+                            }
+                        }
+                    }
+                    // Prepare search index
+                    output.index = ElasticLunr();
+                    output.config.search.forEach(field => output.index.addField(field));
+                    output.index.setRef('slug');
+                    output.modules.forEach(module => output.index.addDoc(module)); 
+                    console.log(output.index);
+                    // Cache the prepared content and emit it to subscribers
+                    this.contentCacheByLanguage[this.language] = output;
+                    this.contentSource.next(output);
+                });
+        }
     }
+    // For the simple case where you want to populate ~this~ with content variables
+    injectContent(target: Scope) {
+        this.getContent(content => _.merge(target, content));
+    }
+
 }
 
 
