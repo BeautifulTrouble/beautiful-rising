@@ -244,11 +244,9 @@ svg-inline.selected * {
     z-index: 50;
     background: white; }
   .sidebar .scrollable {
-    padding-top: 66px;
+    padding-top: 48px;
     overflow-y: scroll;
     height: 100%; }
-  .sidebar > div > div {
-    padding: 12px; }
   .sidebar .sidebar-icon {
     margin: 6px 0;
     width: 49%;
@@ -260,8 +258,9 @@ svg-inline.selected * {
       fill: white; }
   .sidebar .sidebar-icon:first-of-type {
     border-right: 2px solid black; }
-  .sidebar .downloaders, .sidebar .saved-module, .sidebar .news-feed, .sidebar .information {
-    margin: 12px; }
+  .sidebar .downloaders, .sidebar .saved-module, .sidebar .information, .sidebar .news-post {
+    margin: 12px;
+    padding: 12px; }
   .sidebar .information svg-inline {
     display: inline-block;
     position: relative;
@@ -319,6 +318,7 @@ menu {
   padding-top: 24px;
   width: 100%;
   border: 2px solid black;
+  border-bottom: 0;
   outline: none; }
   .search-box::-webkit-input-placeholder {
     font-style: italic; }

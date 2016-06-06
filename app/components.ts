@@ -495,8 +495,10 @@ export class MenuComponent {
                     <svg-inline (click)="newsTab = 'facebook'" [class.selected]="newsTab == 'facebook'" class="sidebar-icon clickable" src="/assets/icons/facebook.svg"></svg-inline>
                 </div>
                 <div class="scrollable">
-                    <div class="news-feed">
+                    <div class="information">
                         <h2>Coming soon: Trending posts from Twitter and Facebook</h2>
+                    </div>
+                    <div class="news-post">
                     </div>
                 </div>
             </div>
@@ -559,7 +561,7 @@ export class ToolsComponent {
         this.contentService.injectContent(this);
     }
     toggleOpened() {
-        (this.opened ? this.close : this.open).next()
+        (this.opened ? this.close : this.open).next();
         this.opened = !this.opened;
     }
     selectTool(tool) {

@@ -249,12 +249,12 @@ $sidebar: 265px;
         background: white;
     }
     .scrollable {
-        padding-top: 11 * $margin;
+        padding-top: 8 * $margin;
         overflow-y: scroll;
         height: 100%;
     }
     >div >div {
-        padding: 2 * $margin;
+        //padding: 2 * $margin;
     }
     .sidebar-icon {
         margin: $margin 0;
@@ -268,8 +268,9 @@ $sidebar: 265px;
     .sidebar-icon:first-of-type {
         border-right: 2px solid black;  // TODO: fix for arabic
     }
-    .downloaders, .saved-module, .news-feed, .information {
+    .downloaders, .saved-module, .information, .news-post {
         margin: 2 * $margin;
+        padding: 2 * $margin;
     }
     .information svg-inline {
         display: inline-block;
@@ -343,6 +344,7 @@ menu {
     padding-top: $margin * 4;
     width: 100%;
     border: 2px solid black;
+    border-bottom: 0;
     outline: none;
     @include placeholder {
         font-style: italic;
