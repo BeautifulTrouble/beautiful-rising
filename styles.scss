@@ -57,6 +57,16 @@ a:link, a:visited, a:hover, a:active {
 .story { color: $story; }
 .black { color: black; }
 .gray { color: $gray; }
+.pattern {
+    svg * { fill: none; } 
+    &.tactic svg { line, polyline, circle { stroke: $tactic; }} 
+    &.methodology svg { line, polyline, circle { stroke: $methodology; }} 
+    &.principle svg { line, polyline, circle { stroke: $principle; }} 
+    &.theory svg { line, polyline, circle { stroke: $theory; }} 
+    &.story svg { line, polyline, circle { stroke: $story; }} 
+    &.black svg { line, polyline, circle { stroke: black; }} 
+    &.gray svg { line, polyline, circle { stroke: $gray; }} 
+}
 
 
 // Typography
@@ -482,6 +492,15 @@ detail {
         padding-top: 34%;
         background-size: cover;
         position: relative;
+        .pattern {
+            position: relative;
+            svg-inline {
+                z-index: 100;
+                position: absolute;
+                left: -197px;
+                top: -300px;
+            }
+        }
         .overlay {
             position: absolute;
             top: 0; bottom: 0;
@@ -517,9 +536,7 @@ detail {
                 top: 8px;
                 width: 35px;
             }
-            svg * {
-                fill: white;
-            }
+            svg * { fill: white; }
         }
     }
     .left-side, .right-side {

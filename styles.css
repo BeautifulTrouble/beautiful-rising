@@ -70,6 +70,30 @@ a:link.gray, a:visited.gray, a:hover.gray, a:active.gray {
 .gray {
   color: #b3b3b3; }
 
+.pattern svg * {
+  fill: none; }
+
+.pattern.tactic svg line, .pattern.tactic svg polyline, .pattern.tactic svg circle {
+  stroke: #ff9200; }
+
+.pattern.methodology svg line, .pattern.methodology svg polyline, .pattern.methodology svg circle {
+  stroke: #b700c2; }
+
+.pattern.principle svg line, .pattern.principle svg polyline, .pattern.principle svg circle {
+  stroke: #166ce3; }
+
+.pattern.theory svg line, .pattern.theory svg polyline, .pattern.theory svg circle {
+  stroke: #f93732; }
+
+.pattern.story svg line, .pattern.story svg polyline, .pattern.story svg circle {
+  stroke: #08eb8c; }
+
+.pattern.black svg line, .pattern.black svg polyline, .pattern.black svg circle {
+  stroke: black; }
+
+.pattern.gray svg line, .pattern.gray svg polyline, .pattern.gray svg circle {
+  stroke: #b3b3b3; }
+
 @font-face {
   font-family: 'Avenir';
   src: url("/assets/fonts/Avenir-Book.ttf"); }
@@ -445,6 +469,13 @@ detail .module-image {
   padding-top: 34%;
   background-size: cover;
   position: relative; }
+  detail .module-image .pattern {
+    position: relative; }
+    detail .module-image .pattern svg-inline {
+      z-index: 100;
+      position: absolute;
+      left: -197px;
+      top: -300px; }
   detail .module-image .overlay {
     position: absolute;
     top: 0;

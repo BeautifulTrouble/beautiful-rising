@@ -327,6 +327,11 @@ export class GalleryComponent implements OnInit {
                 <div class="col-sm-12">
                     <div class="module-image" [ngStyle]="{'background-image': module.image ? 'url('+config['asset-path']+'/'+module.image+')' : ''}">
                         <div class="overlay"></div>
+                        <div [ngClass]="['pattern', module.type]">
+                            <svg-inline *ngIf="!patternTypes.length" src="/assets/patterns/3rows/{{ module.type }}.svg"></svg-inline>
+                            <svg-inline *ngIf="patternTypes.length" src="/assets/patterns/3rowsoverlay/{{ module.type }}.svg"></svg-inline>
+                            <svg-inline *ngFor="let type of patternTypes" src="/assets/patterns/3rowsoverlay/{{ type }}.svg"></svg-inline>
+                        </div>
                         <div class="module-header">
                             <div [ngClass]="['module-type', module.type]">{{ module.type }}</div>
                             <div class="module-title">{{ module.title }}</div>
@@ -398,7 +403,8 @@ export class GalleryComponent implements OnInit {
                         </div>
                         <div *ngFor="let type of [['key-tactics', 'tactic', 'tactics'], 
                                                   ['key-principles', 'principle', 'principles'], 
-                                                  ['key-theories', 'theory', 'theories']]">
+                                                  ['key-theories', 'theory', 'theories'],
+                                                  ['key-methodologies', 'methodology', 'methodologies']]">
                             <div *ngIf="module[type[0]]">
                                 <div *ngFor="let each of getKeyModules(type[0]); let first=first; let last=last;">
                                     <div *ngIf="first && last" [ngClass]="['module-type', type[1]]">key {{ type[1] }}</div><!-- first && last meaning length == 1 -->
@@ -429,7 +435,7 @@ export class GalleryComponent implements OnInit {
                         <div *ngIf="riskCollapsed && !module['potential-risks-short']" [innerHTML]="module['potential-risks']"></div>
                         <div *ngIf="!riskCollapsed" [innerHTML]="module['potential-risks']"></div>
                     </div>
-                    <div *ngIf="tactics.length || principles.length || theories.length" class="related">
+                    <div *ngIf="tactics.length || principles.length || theories.length || methodologies.length" class="related">
                         <h3 class="bigger">Related Modules</h3>
                         <div *ngIf="tactics.length">
                             <h3 class="indent">Tactics</h3>
@@ -449,6 +455,12 @@ export class GalleryComponent implements OnInit {
                                 <a [routerLink]="['Detail', {slug: m.slug}]" class="theory">{{ m.title }}</a>
                             </li></ul>
                         </div>
+                        <div *ngIf="methodologies.length">
+                            <h3 class="indent">Methodologies</h3>
+                            <ul><li *ngFor="let m of methodologies">
+                                <a [routerLink]="['Detail', {slug: m.slug}]" class="methodology">{{ m.title }}</a>
+                            </li></ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -466,6 +478,7 @@ export class GalleryComponent implements OnInit {
 })
 export class DetailComponent implements OnInit {
     module;
+    patternTypes = [];
     _ = _;
     slugify = slugify;
 
@@ -491,6 +504,7 @@ export class DetailComponent implements OnInit {
             this.tactics = this.getRelatedModules('tactics');
             this.principles = this.getRelatedModules('principles');
             this.theories = this.getRelatedModules('theories');
+            this.methodologies = this.getRelatedModules('methodologies');
             // Insert the pull-quote into the full-write-up, then delete it.
             if (this.module['full-write-up'] && this.module['pull-quote']) {
                 let blockquote = '<blockquote class="pull-quote">' + this.module['pull-quote'] + '</blockquote>';
@@ -499,8 +513,14 @@ export class DetailComponent implements OnInit {
                 this.module['full-write-up'] = splitParas.join('');
                 delete this.module['pull-quote'];
             }
+            // Compose the module's pattern
+            var types = {'tactics':'tactic', 'principles':'principle', 'theories':'theory', 'methodologies':'methodology'};
+            var otherTypes = _.pull(_.keys(types), this.module.type);
+            this.patternTypes = _.filter(_.map(otherTypes, each => this.module[`key-${each}`] ? types[each] : null));
             window.scrollTo(0,0);
         });
+    }
+    composePattern() {
     }
     getKeyModules(type) { // Returns [['title','text'], ['title','text'], ...] for the given 'key-whatever' type
         return _.map(this.module[type], (text) => [text.split(/\s+[-]\s+/, 1)[0], text.replace(/^.+\s+[-]\s+/, '')]);
