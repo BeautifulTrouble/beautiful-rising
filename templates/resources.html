@@ -1,10 +1,8 @@
 <div *ngIf="text">
     <h1>{{ text.title }}</h1>
-    <div *ngIf="text['activism-and-organizing']">
-        <h2>Activism & Organizing</h2>
-        <div *ngFor="let each of text['activism-and-organizing']">
-            <h3>{{ each.title }}</h3>
-            <a href="{{ each.link }}">{{ each.description }}</a>
-        </div>
+    <h2 *ngIf="text['activism-and-organizing']">Activism & Organizing</h2>
+    <div *ngFor="let each of text['activism-and-organizing']">
+        <h3>{{ each.title }}</h3>
+        <a href="{{ each.link }}">{{ each.description }}</a>
     </div>
 </div>

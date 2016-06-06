@@ -642,7 +642,7 @@ export class ToolsComponent implements OnInit {
     visible = 'my-tools';
     newsTab = 'twitter';
     toolTab = 'pdf';
-    modulesBySlug;
+    modulesBySlug = [];
 
     constructor(
         private router: Router,
