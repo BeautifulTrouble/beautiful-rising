@@ -269,7 +269,7 @@ export class GalleryComponent implements OnInit {
             query = query.replace(/[^:]+:\s*/, '');
             var config = {bool: /\s/.test(query) ? 'AND' : 'OR', expand: true};
             if (prefix != query && _.includes(this.config.search, prefix)) {
-                config.fields = {}; config.fields[prefix] = {boost: 2};
+                config.fields = {}; config.fields[prefix] = {boost: 5};
             }
             // Perform the actual search
             var results = this.index.search(query, config);
@@ -517,10 +517,9 @@ export class DetailComponent implements OnInit {
             var types = {'tactics':'tactic', 'principles':'principle', 'theories':'theory', 'methodologies':'methodology'};
             var otherTypes = _.pull(_.keys(types), this.module.type);
             this.patternTypes = _.filter(_.map(otherTypes, each => this.module[`key-${each}`] ? types[each] : null));
+
             window.scrollTo(0,0);
         });
-    }
-    composePattern() {
     }
     getKeyModules(type) { // Returns [['title','text'], ['title','text'], ...] for the given 'key-whatever' type
         return _.map(this.module[type], (text) => [text.split(/\s+[-]\s+/, 1)[0], text.replace(/^.+\s+[-]\s+/, '')]);

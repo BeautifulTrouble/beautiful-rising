@@ -475,7 +475,7 @@ detail .module-image {
       z-index: 100;
       position: absolute;
       left: -197px;
-      top: -300px; }
+      margin: -25% 0 0 0; }
   detail .module-image .overlay {
     position: absolute;
     top: 0;
