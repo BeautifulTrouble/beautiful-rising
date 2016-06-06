@@ -34,7 +34,7 @@
     "markdown-it-footnote": "^2.0.0",
     "node-sass": "^3.4.2",
     "serve": "^1.4.0",
-    "elasticlunr": "0.8.8"
+    "elasticlunr": "git+https://github.com/weixsong/elasticlunr.js#v0.8.9"
   },
   "devDependencies": {
     "concurrently": "^2.0.0",
