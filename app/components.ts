@@ -1,12 +1,76 @@
 // Define all site components here.
 
-import {Component, Input, Output, OnInit, EventEmitter, ApplicationRef} from '@angular/core';
+import {Component, Input, Output, OnInit, EventEmitter} from '@angular/core';
 import {RouteConfig, Router, RouteParams, ROUTER_DIRECTIVES, ROUTER_PROVIDERS} from '@angular/router-deprecated';
 import {BrowserDomAdapter} from '@angular/platform-browser/src/browser_common';
 import {HTTP_PROVIDERS} from '@angular/http';
 
 import {CapitalizePipe, NotagsPipe, TrimPipe, SVGComponent, slugify} from './utilities';
 import {ContentService, ClientStorageService, ModuleSavingService, LocalStorage} from './services';
+
+
+@Component({
+    selector: 'about',
+    template: `
+        <div class="row">
+            <h1>About</h1>
+        </div>
+    `,
+    directives: [
+        ROUTER_DIRECTIVES
+    ]
+})
+export class AboutComponent {
+    constructor(private router: Router) { }
+}
+
+
+@Component({
+    selector: 'platforms',
+    template: `
+        <div class="row">
+            <h1>Platforms</h1>
+        </div>
+    `,
+    directives: [
+        ROUTER_DIRECTIVES
+    ]
+})
+export class PlatformsComponent {
+    constructor(private router: Router) { }
+}
+
+
+@Component({
+    selector: 'resources',
+    template: `
+        <div class="row">
+            <h1>Resources</h1>
+        </div>
+    `,
+    directives: [
+        ROUTER_DIRECTIVES
+    ]
+})
+export class ResourcesComponent {
+    constructor(private router: Router) { }
+}
+
+
+@Component({
+    selector: 'contribute',
+    template: `
+        <div class="row">
+            <h1>Contribute</h1>
+        </div>
+    `,
+    directives: [
+        ROUTER_DIRECTIVES
+    ]
+})
+export class ContributeComponent {
+    constructor(private router: Router) { }
+}
 
 
 @Component({
@@ -54,9 +118,6 @@ export class SearchComponent {
             <div class="gallery-list col-md-9">
                 <div *ngIf="!query && viewStyle == 'grid'" class="row">
                     <div *ngFor="let module of sortModules()" (click)="router.navigate(['/Detail', {slug: module.slug}])" class="col-md-4 gallery-module-grid">
-                        
-
-
                         <!-- Rethink the structure of this whole section -->
 
                         <div class="make-it-square"></div>
@@ -147,7 +208,8 @@ export class GalleryComponent implements OnInit {
             var results = this.index.search(query, config);
             this.modulesFiltered = _.map(results, obj => this.modulesBySlug[obj.ref]);
         } else {
-            history.replaceState(null, null, '/'); // Using navigate de-focuses the search bar
+            //this.router.navigate(['/Home']); // Using navigate de-focuses the search bar
+            history.replaceState(null, null, '/'); 
             this.modulesFiltered = this.modules;
         }
     }
@@ -408,6 +470,10 @@ export class ModalComponent {
         <div *ngIf="visible" class="hamburger-menu">
             <div class="overlay"></div>
             <h1 (click)="visible = !visible">x</h1>
+            <button (click)="router.navigate(['/About'])">About</button><br>
+            <button (click)="router.navigate(['/Platforms'])">Platforms</button><br>
+            <button (click)="router.navigate(['/Resources'])">Resources</button><br>
+            <button (click)="router.navigate(['/Contribute'])">Contribute</button><br>
         </div>
     `,
     directives: [
@@ -415,6 +481,7 @@ export class ModalComponent {
     ]
 })
 export class MenuComponent {
+    @Input() router;
 }
 
 
@@ -513,7 +580,7 @@ export class ToolsComponent {
                 <span *ngFor="let lang of languages" (click)="language=lang" [class.selected]="language===lang">{{ lang|uppercase }}</span>
             </div>
             <!-- <modal></modal> -->
-            <menu></menu>
+            <menu [router]="router"></menu>
             <a [routerLink]="['/Home']"><img class="logo" src="/assets/icons/logo.png"></a>
             <div class="contentarea" (window:resize)="setToolsOffset()" [ngStyle]="{'right': opened ? toolsOffset : '0'}">
                 <tools (open)="opened = true" (close)="opened = false"></tools>
@@ -547,7 +614,12 @@ export class ToolsComponent {
 @RouteConfig([
     {path: '/module/:slug',         component: DetailComponent,     name: 'Detail'},
     {path: '/search/:query',        component: GalleryComponent,    name: 'Search'},
+    {path: '/type/:type',           component: GalleryComponent,    name: 'Type'},
     {path: '/tag/:tag',             component: GalleryComponent,    name: 'Tag'},
+    {path: '/about',                component: AboutComponent,      name: 'About'},
+    {path: '/platform',             component: PlatformsComponent,  name: 'Platforms'},
+    {path: '/resources',            component: ResourcesComponent,  name: 'Resources'},
+    {path: '/contribute',           component: ContributeComponent, name: 'Contribute'},
     {path: '',                      component: GalleryComponent,    name: 'Home'},
     {path: '*',                     component: GalleryComponent,    name: '404'},
 ])
