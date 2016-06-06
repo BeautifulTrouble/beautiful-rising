@@ -329,6 +329,35 @@ menu {
   .search-box:-ms-input-placeholder {
     font-style: italic; }
 
+.module-types {
+  border: 2px solid black;
+  text-align: center;
+  width: 100%;
+  padding: 12px 0; }
+  .module-types a:hover {
+    text-decoration: none; }
+  .module-types .type-representation {
+    display: inline-block;
+    vertical-align: top;
+    width: 20%;
+    color: black; }
+    .module-types .type-representation .inner {
+      padding: 0 12px;
+      display: inline-block;
+      text-align: left; }
+      .module-types .type-representation .inner svg * {
+        fill: none; }
+      .module-types .type-representation .inner h3, .module-types .type-representation .inner p {
+        margin: 6px 0; }
+  .module-types .type-representation:nth-child(1) {
+    width: 80%; }
+    .module-types .type-representation:nth-child(1) .inner {
+      max-width: 50%;
+      margin: 0 auto; }
+      .module-types .type-representation:nth-child(1) .inner > div, .module-types .type-representation:nth-child(1) .inner > p {
+        display: inline-block;
+        width: 49%; }
+
 .gallery-sort {
   text-align: center; }
   .gallery-sort .sort-by {

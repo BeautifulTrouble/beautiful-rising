@@ -89,9 +89,75 @@ export class SearchComponent {
 
 
 @Component({
+    selector: 'module-types',
+    template: `
+        <div class="row">
+            <div class="module-types">
+                <div *ngIf="!type">
+                    <div class="type-representation story">
+                        <div (click)="setType.next('story')" class="inner">
+                            <div>
+                                <h3>Stories</h3>
+                                <svg-inline class="2rows pattern" src="/assets/patterns/2rows/story.svg"></svg-inline>
+                            </div>
+                            <p class="description">Accounts of memorable creative actions and campaigns, analyzing what worked (or didn't) and why.</p>
+                        </div>
+                    </div>
+                    <div class="type-representation tactic">
+                        <div (click)="setType.next('tactic')" class="inner">
+                            <h3>Tactics</h3>
+                            <svg-inline class="2rows pattern" src="/assets/patterns/2rows/tactic.svg"></svg-inline>
+                            <p class="description">Specific forms of creative action, such as a flash mob or a blockade.</p>
+                        </div>
+                    </div>
+                    <div class="type-representation principle">
+                        <div (click)="setType.next('principle')" class="inner">
+                            <h3>Principles</h3>
+                            <svg-inline class="2rows pattern" src="/assets/patterns/2rows/principle.svg"></svg-inline>
+                            <p class="description">Time-tested insights into successful action design and campaign strategy.</p>
+                        </div>
+                    </div>
+                    <div class="type-representation theory">
+                        <div (click)="setType.next('theory')" class="inner">
+                            <h3>Theories</h3>
+                            <svg-inline class="2rows pattern" src="/assets/patterns/2rows/theory.svg"></svg-inline>
+                            <p class="description">Big-picture ideas that help us understand how the world works and how we might change it.</p>
+                        </div>
+                    </div>
+                    <div class="type-representation methodology">
+                        <div (click)="setType.next('methodology')" class="inner">
+                            <h3>Methodologies</h3>
+                            <svg-inline class="2rows pattern" src="/assets/patterns/2rows/methodology.svg"></svg-inline>
+                            <p class="description">An exercise or framework to help you think strategically about your action or campaign.</p>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="type">
+                    <h1>{{ type }}</h1>
+                    <button (click)="setType.next(null)">Reset</button>
+                </div>
+            </div>
+        </div>
+    `,
+    directives: [
+        ROUTER_DIRECTIVES,
+        SVGComponent
+    ],
+})
+export class ModuleTypeComponent {
+    @Input() type;
+    @Output() setType = new EventEmitter();
+    constructor(
+        private router: Router) {
+    }
+}
+
+
+@Component({
     selector: 'gallery',
     template: `
         <search [query]="query" (search)="doSearch($event)"></search>
+        <module-types (setType)="type = $event" [type]="type"></module-types>
         <div class="row">
             <div class="gallery-sort col-md-3">
                 <h3>View As</h3>
@@ -164,6 +230,7 @@ export class SearchComponent {
     `,
     directives: [
         ROUTER_DIRECTIVES,
+        ModuleTypeComponent,
         SearchComponent,
         SVGComponent
     ],
@@ -173,11 +240,11 @@ export class GalleryComponent implements OnInit {
     @LocalStorage() sortKey;
     @LocalStorage() viewStyle;
     _ = _;
+    type;
     query = '';
     slugify = slugify;
 
     constructor(
-        private dom: BrowserDomAdapter,
         private router: Router,
         private routeParams: RouteParams,
         private contentService: ContentService,
@@ -232,6 +299,9 @@ export class GalleryComponent implements OnInit {
         var modules = this.modulesFiltered;
         if (!this.query && this.sortTag) {
             modules = this.modulesByTag[this.sortTag];
+        }
+        if (this.type) {
+            modules = _.filter(modules, m => m.type == this.type);
         }
         modules = _.sortBy(modules, this.sortKey);
         if (this.sortKey == 'timestamp') modules = _.reverse(modules);

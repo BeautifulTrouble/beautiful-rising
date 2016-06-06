@@ -352,6 +352,41 @@ menu {
 }
 
 // Types
+.module-types {
+    border: 2px solid black;
+    text-align: center;
+    width: 100%;
+    padding: 2*$margin 0;
+    a:hover {
+        text-decoration: none;
+    }
+    .type-representation {
+        display: inline-block;
+        vertical-align: top;
+        width: 20%;
+        color: black;
+        .inner {
+            padding: 0 $margin*2;
+            display: inline-block;
+            text-align: left;
+            svg * { fill: none; }
+            h3, p {
+                margin: $margin 0;
+            }
+        }
+    }
+    .type-representation:nth-child(1) {
+        width: 80%;
+        .inner {
+            max-width: 50%;
+            margin: 0 auto;
+            >div, >p {
+                display: inline-block;
+                width: 49%;
+            }
+        }
+    }
+}
 
 // Gallery
 .gallery-sort {
