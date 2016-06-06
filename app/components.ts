@@ -11,65 +11,66 @@ import {ContentService, ClientStorageService, ModuleSavingService, LocalStorage}
 
 @Component({
     selector: 'about',
-    template: `
-        <div class="row">
-            <h1>About</h1>
-        </div>
-    `,
-    directives: [
-        ROUTER_DIRECTIVES
-    ]
+    templateUrl: 'templates/about.html'
+    directives: [ROUTER_DIRECTIVES]
 })
-export class AboutComponent {
-    constructor(private router: Router) { }
+export class AboutComponent implements OnInit {
+    constructor(
+        private router: Router,
+        private contentService: ContentService) {
+    }
+    ngOnInit() {
+        this.contentService.injectContent(this);
+    }
 }
 
 
 @Component({
     selector: 'platforms',
-    template: `
-        <div class="row">
-            <h1>Platforms</h1>
-        </div>
-    `,
-    directives: [
-        ROUTER_DIRECTIVES
-    ]
+    templateUrl: 'templates/platforms.html'
+    directives: [ROUTER_DIRECTIVES]
 })
-export class PlatformsComponent {
-    constructor(private router: Router) { }
+export class PlatformsComponent implements OnInit {
+    constructor(
+        private router: Router,
+        private contentService: ContentService) {
+    }
+    ngOnInit() {
+        this.contentService.injectContent(this);
+    }
 }
 
 
 @Component({
     selector: 'resources',
-    template: `
-        <div class="row">
-            <h1>Resources</h1>
-        </div>
-    `,
-    directives: [
-        ROUTER_DIRECTIVES
-    ]
+    templateUrl: 'templates/resources.html'
+    directives: [ROUTER_DIRECTIVES]
 })
-export class ResourcesComponent {
-    constructor(private router: Router) { }
+export class ResourcesComponent implements OnInit {
+    text;
+    constructor(
+        private router: Router,
+        private contentService: ContentService) {
+    }
+    ngOnInit() {
+        this.contentService.injectContent(this, content => this.text = content.textBySlug['other-resources']);
+    }
 }
 
 
 @Component({
     selector: 'contribute',
-    template: `
-        <div class="row">
-            <h1>Contribute</h1>
-        </div>
-    `,
-    directives: [
-        ROUTER_DIRECTIVES
-    ]
+    templateUrl: 'templates/contribute.html'
+    directives: [ROUTER_DIRECTIVES]
 })
-export class ContributeComponent {
-    constructor(private router: Router) { }
+export class ContributeComponent implements OnInit {
+    constructor(
+        private router: Router,
+        private contentService: ContentService) {
+    }
+    ngOnInit() {
+        this.contentService.injectContent(this);
+    }
 }
 
 
@@ -633,7 +634,7 @@ export class MenuComponent {
         SVGComponent
     ]
 })
-export class ToolsComponent {
+export class ToolsComponent implements OnInit {
     @Output() open = new EventEmitter();
     @Output() close = new EventEmitter();
     _ = _;
@@ -647,6 +648,8 @@ export class ToolsComponent {
         private router: Router,
         private contentService: ContentService,
         private savingService: ModuleSavingService) { 
+    }
+    ngOnInit () {
         this.contentService.injectContent(this);
     }
     toggleOpened() {
