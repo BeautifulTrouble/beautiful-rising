@@ -329,8 +329,8 @@ export class GalleryComponent implements OnInit {
                     <div class="module-image" [ngStyle]="{'background-image': module.image ? 'url('+config['asset-path']+'/'+module.image+')' : ''}">
                         <div class="overlay"></div>
                         <div [ngClass]="['pattern', module.type]">
-                            <svg-inline *ngIf="!patternTypes.length" src="/assets/patterns/3rows/{{ module.type }}.svg"></svg-inline>
-                            <svg-inline *ngIf="patternTypes.length" src="/assets/patterns/3rowsoverlay/{{ module.type }}.svg"></svg-inline>
+                            <svg-inline *ngIf="module.type != 'story' && !patternTypes.length" src="/assets/patterns/3rows/{{ module.type }}.svg"></svg-inline>
+                            <svg-inline *ngIf="module.type != 'story' && patternTypes.length" src="/assets/patterns/3rowsoverlay/{{ module.type }}.svg"></svg-inline>
                             <svg-inline *ngFor="let type of patternTypes" src="/assets/patterns/3rowsoverlay/{{ type }}.svg"></svg-inline>
                         </div>
                         <div class="module-header">
