@@ -53,7 +53,7 @@ export class SVGComponent implements OnInit {
         }
         observable.subscribe(
             data => { this.svgData = data; },
-            err => { console.error(err); }
+            err => { console.error(`Unable to load inline svg ${this.src}`); }
         );
     }
 }

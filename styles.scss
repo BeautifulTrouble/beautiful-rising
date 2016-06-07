@@ -495,12 +495,19 @@ detail {
         .pattern {
             position: relative;
             svg-inline {
-                z-index: 100;
                 position: absolute;
-                left: -197px;
-                //top: -300px;
+                z-index: 100;
                 margin: -25% 0 0 0;
+                left: -197px;
             }
+        }
+        .pattern-snapshot {
+            background-repeat: no-repeat;
+            background-size: contain;
+            position: absolute;
+            top: 0;
+            left: 0; right: 0;
+            padding-top: 100%;
         }
         .overlay {
             position: absolute;
@@ -508,7 +515,7 @@ detail {
             left: 0; right: 0;
             z-index: 50;
             background: black;
-            opacity: .25;
+            opacity: .375;
         }
         .module-header, .module-image-caption {
             position: absolute;

@@ -472,10 +472,18 @@ detail .module-image {
   detail .module-image .pattern {
     position: relative; }
     detail .module-image .pattern svg-inline {
-      z-index: 100;
       position: absolute;
-      left: -197px;
-      margin: -25% 0 0 0; }
+      z-index: 100;
+      margin: -25% 0 0 0;
+      left: -197px; }
+  detail .module-image .pattern-snapshot {
+    background-repeat: no-repeat;
+    background-size: contain;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding-top: 100%; }
   detail .module-image .overlay {
     position: absolute;
     top: 0;
@@ -484,7 +492,7 @@ detail .module-image {
     right: 0;
     z-index: 50;
     background: black;
-    opacity: .25; }
+    opacity: .375; }
   detail .module-image .module-header, detail .module-image .module-image-caption {
     position: absolute;
     top: 18%;

@@ -11,7 +11,7 @@ import {ContentService, ClientStorageService, ModuleSavingService, LocalStorage}
 
 @Component({
     selector: 'about',
-    templateUrl: 'templates/about.html'
+    templateUrl: 'templates/about.html',
     directives: [ROUTER_DIRECTIVES]
 })
 export class AboutComponent implements OnInit {
@@ -27,7 +27,7 @@ export class AboutComponent implements OnInit {
 
 @Component({
     selector: 'platforms',
-    templateUrl: 'templates/platforms.html'
+    templateUrl: 'templates/platforms.html',
     directives: [ROUTER_DIRECTIVES]
 })
 export class PlatformsComponent implements OnInit {
@@ -43,7 +43,7 @@ export class PlatformsComponent implements OnInit {
 
 @Component({
     selector: 'resources',
-    templateUrl: 'templates/resources.html'
+    templateUrl: 'templates/resources.html',
     directives: [ROUTER_DIRECTIVES]
 })
 export class ResourcesComponent implements OnInit {
@@ -60,7 +60,7 @@ export class ResourcesComponent implements OnInit {
 
 @Component({
     selector: 'contribute',
-    templateUrl: 'templates/contribute.html'
+    templateUrl: 'templates/contribute.html',
     directives: [ROUTER_DIRECTIVES]
 })
 export class ContributeComponent implements OnInit {
@@ -328,11 +328,15 @@ export class GalleryComponent implements OnInit {
                 <div class="col-sm-12">
                     <div class="module-image" [ngStyle]="{'background-image': module.image ? 'url('+config['asset-path']+'/'+module.image+')' : ''}">
                         <div class="overlay"></div>
-                        <div [ngClass]="['pattern', module.type]">
-                            <svg-inline *ngIf="module.type != 'story' && !patternTypes.length" src="/assets/patterns/3rows/{{ module.type }}.svg"></svg-inline>
-                            <svg-inline *ngIf="module.type != 'story' && patternTypes.length" src="/assets/patterns/3rowsoverlay/{{ module.type }}.svg"></svg-inline>
+                        <div *ngIf="!snapshot" [ngClass]="['pattern', module.type]">
+                            <div *ngIf="module.type != 'story'">
+                                <svg-inline *ngIf="!patternTypes.length" src="/assets/patterns/3rows/{{ module.type }}.svg"></svg-inline>
+                                <svg-inline *ngIf="patternTypes.length" src="/assets/patterns/3rowsoverlay/{{ module.type }}.svg"></svg-inline>
+                            </div>
                             <svg-inline *ngFor="let type of patternTypes" src="/assets/patterns/3rowsoverlay/{{ type }}.svg"></svg-inline>
                         </div>
+                        <div *ngIf="snapshot" [ngClass]="['pattern', 'pattern-snapshot', module.type]" 
+                            [ngStyle]="{'background-image': 'url(/assets/patterns/snapshotoverlay/'+module.type+'.svg)'}"></div>
                         <div class="module-header">
                             <div [ngClass]="['module-type', module.type]">{{ module.type }}</div>
                             <div class="module-title">{{ module.title }}</div>
