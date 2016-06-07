@@ -57,7 +57,7 @@ export class ContentService {
                     output.contentBySlug = _.keyBy(content, 'slug');
                     output.textBySlug = _.keyBy(output.contentByType.text, 'slug');
                     output.peopleBySlug = _.keyBy(output.contentByType.person, 'slug');
-                    // Prepare a few more useful representations
+                    // Prepare a few more useful representations of modules
                     output.moduleTypes = _.map(output.config['types-modules'], t => t.one);
                     output.modulesByType = _.pick(output.contentByType, output.moduleTypes);
                     output.modules = _.flatten(_.values(output.modulesByType));
