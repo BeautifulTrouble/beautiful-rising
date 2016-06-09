@@ -1,6 +1,6 @@
 // Define all site components here.
 
-import {Component, Input, Output, OnInit, EventEmitter} from '@angular/core';
+import {Component, Input, Output, OnInit, EventEmitter, ElementRef} from '@angular/core';
 import {RouteConfig, Router, RouteParams, ROUTER_DIRECTIVES, ROUTER_PROVIDERS} from '@angular/router-deprecated';
 import {BrowserDomAdapter} from '@angular/platform-browser/src/browser_common';
 import {HTTP_PROVIDERS} from '@angular/http';
@@ -488,6 +488,8 @@ export class DetailComponent implements OnInit {
     slugify = slugify;
 
     constructor(
+        private dom: BrowserDomAdapter,
+        private el: ElementRef,
         private router: Router,
         private routeParams: RouteParams,
         private contentService: ContentService,
@@ -525,6 +527,20 @@ export class DetailComponent implements OnInit {
 
             window.scrollTo(0,0);
         });
+    }
+    ngAfterViewChecked() {
+        // HACK: Prevent module links rendered from markdown from reloading the page
+        var links = this.dom.querySelectorAll(this.el.nativeElement, 'a[href^="/module"]');
+        if (links.length) {
+            _.map(links, el => {
+                var elClone = el.cloneNode(true);
+                el.parentNode.replaceChild(elClone, el);
+                elClone.addEventListener('click', e => {
+                    e.preventDefault();
+                    this.router.navigateByUrl(el.getAttribute('href'));
+                });
+            });
+        }
     }
     getKeyModules(type) { // Returns [['title','text'], ['title','text'], ...] for the given 'key-whatever' type
         return _.map(this.module[type], (text) => [text.split(/\s+[-]\s+/, 1)[0], text.replace(/^.+\s+[-]\s+/, '')]);
