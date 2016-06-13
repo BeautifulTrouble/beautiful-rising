@@ -22,9 +22,7 @@ export class ContentService {
     contentStream = this.contentSource.asObservable();
     contentCacheByLanguage = {};
 
-    constructor(private http: Http) { 
-        this.getContent = _.throttle(this.getContent, 500);
-    }
+    constructor(private http: Http) { }
 
     // Returns an object containing several sorted and ordered forms of the API content
     getContent(callback) {
