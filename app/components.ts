@@ -250,9 +250,9 @@ export class GalleryComponent implements OnInit {
         private routeParams: RouteParams,
         private contentService: ContentService,
         private savingService: ModuleSavingService) { 
-        this.doSearch = _.throttle(this.doSearch, 100);
     }
     ngOnInit() {
+        this.doSearch = _.throttle(this.doSearch, 100);
         this.sortKey = this.sortKey || 'timestamp';
         this.viewStyle = this.viewStyle || 'grid';
         this.contentService.injectContent(this, () => {
@@ -747,12 +747,12 @@ export class AppComponent implements OnInit, OnActivate {
         private router: Router,
         private clientStorageService: ClientStorageService,
         private contentService: ContentService) {
-        this.setToolsOffset = _.throttle(this.setToolsOffset, 100);
     }
     ngOnInit() {
         // Attempt to guess and the language
         this.language = this.language || (navigator.languages || ['en'])[0].slice(0,2);
         this.contentService.language = _.includes(['ar', 'es', 'en'], this.language) ? this.language : 'en';
+        this.setToolsOffset = _.throttle(this.setToolsOffset, 100);
         this.setToolsOffset();
     }
     setToolsOffset() {

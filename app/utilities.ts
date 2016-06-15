@@ -17,6 +17,7 @@ export class CapitalizePipe implements PipeTransform {
     // TODO: Arabic equivalent
     transform = v => _.capitalize(v);
 }
+
 @Pipe({'name': 'notags'})
 export class NotagsPipe implements PipeTransform {
     transform = v => {
@@ -26,6 +27,7 @@ export class NotagsPipe implements PipeTransform {
         return el.textContent;
     };
 }
+
 @Pipe({'name': 'trim'})
 export class TrimPipe implements PipeTransform {
     transform = v => v.trim();
@@ -41,7 +43,8 @@ export class SVGComponent implements OnInit {
 	@Input() src;
 	svgData = '';
 
-    constructor(private http: Http) {
+    constructor(
+        private http: Http) { 
     }
     ngOnInit() {
         var observable = SVGCache.cache[this.src];
