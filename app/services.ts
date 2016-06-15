@@ -84,7 +84,8 @@ export class ContentService {
                     var markdown = (x) => ({
                         'array': a => _.map(a, markdown),
                         'object': o => _.mapValues(o, markdown),
-                        'string': s => md.render(s)
+                        'string': s => md.render(s),
+                        'number': n => n
                     })[x instanceof Array ? 'array' : typeof x](x);
                     for (let collection of [output.contentByType.person, output.modules]) {
                         for (let module of collection) {
@@ -93,6 +94,7 @@ export class ContentService {
                             }
                         }
                     }
+
                     // Prepare search index
                     ElasticLunr.tokenizer.setSeperator(/[-\s]+/);
                     output.index = ElasticLunr();
