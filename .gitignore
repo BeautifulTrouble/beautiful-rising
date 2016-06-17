@@ -2,6 +2,6 @@ typings
 node_modules
 app/**/*.js
 app/**/*.map
-app/old
 assets/content
+dist/
 *.swp

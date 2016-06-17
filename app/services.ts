@@ -6,9 +6,10 @@ import {NgZone} from '@angular/core/src/zone';
 import {Observable} from 'rxjs/Observable';
 import {Subject} from 'rxjs/Subject';
 
-import ElasticLunr from 'elasticlunr';
-import MarkdownIt from 'markdown-it';
-import markdownitFootnote from 'markdown-it-footnote';
+import _ = require('lodash');
+import ElasticLunr = require('elasticlunr');
+import MarkdownIt = require('markdown-it');
+import markdownitFootnote = require('markdown-it-footnote');
 
 import {slugify} from './utilities';
 

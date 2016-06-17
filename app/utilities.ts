@@ -4,6 +4,8 @@ import {Http, Response} from '@angular/http';
 import {Pipe, PipeTransform, Component, Input, OnInit} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 
+import _ = require('lodash');
+
 
 // Note that these are NOT the same slugs used by the API
 export var slugify = (s) => s.toLowerCase()

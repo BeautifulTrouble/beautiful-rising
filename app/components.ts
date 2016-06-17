@@ -8,10 +8,13 @@ import {HTTP_PROVIDERS} from '@angular/http';
 import {CapitalizePipe, NotagsPipe, TrimPipe, SVGComponent, slugify} from './utilities';
 import {ContentService, ClientStorageService, ModuleSavingService, LocalStorage} from './services';
 
+import '../styles.scss';
+import _ = require('lodash');
+
 
 @Component({
     selector: 'about',
-    templateUrl: 'templates/about.html',
+    template: require('../templates/about.html'),
     directives: [ROUTER_DIRECTIVES]
 })
 export class AboutComponent implements OnInit {
@@ -27,7 +30,7 @@ export class AboutComponent implements OnInit {
 
 @Component({
     selector: 'platforms',
-    templateUrl: 'templates/platforms.html',
+    template: require('../templates/platforms.html'),
     directives: [ROUTER_DIRECTIVES]
 })
 export class PlatformsComponent implements OnInit {
@@ -43,7 +46,7 @@ export class PlatformsComponent implements OnInit {
 
 @Component({
     selector: 'resources',
-    templateUrl: 'templates/resources.html',
+    template: require('../templates/resources.html'),
     directives: [ROUTER_DIRECTIVES]
 })
 export class ResourcesComponent implements OnInit {
@@ -60,7 +63,7 @@ export class ResourcesComponent implements OnInit {
 
 @Component({
     selector: 'contribute',
-    templateUrl: 'templates/contribute.html',
+    template: require('../templates/contribute.html'),
     directives: [ROUTER_DIRECTIVES]
 })
 export class ContributeComponent implements OnInit {
