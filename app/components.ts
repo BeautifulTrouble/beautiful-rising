@@ -581,17 +581,40 @@ export class ModalComponent {
 @Component({
     selector: 'menu',
     template: `
-        <div (click)="visible = !visible" class="hamburger-menu-icon clickable">
+        <div (click)="toggle()" class="hamburger-menu-icon clickable">
             <svg-inline src="/assets/icons/hamburger.svg"></svg-inline>
+            <svg-inline style="display: none" src="/assets/icons/close.svg"></svg-inline>
             <h4>Menu</h4>
         </div>
-        <div *ngIf="visible" class="hamburger-menu">
-            <div class="overlay"></div>
-            <h1 (click)="visible = !visible">x</h1>
-            <button (click)="router.navigate(['/About'])">About</button><br>
-            <button (click)="router.navigate(['/Platforms'])">Platforms</button><br>
-            <button (click)="router.navigate(['/Resources'])">Resources</button><br>
-            <button (click)="router.navigate(['/Contribute'])">Contribute</button><br>
+        <div *ngIf="visible">
+            <div (click)="close()" class="overlay"></div>
+            <div class="menu-wrapper">
+                <div class="menu">
+                    <div class="menu-close">
+                        <svg-inline (click)="close()" src="/assets/icons/close.svg"></svg-inline>
+                    </div>
+                    <div class="menu-section">
+                        <h3>About</h3>
+                        <button (click)="router.navigate(['/About'])">About</button><br>
+                    </div>
+                    <div class="menu-section">
+                        <h3>Platforms</h3>
+                        <em>Explore other ways to access the toolbox</em>
+                        <button (click)="router.navigate(['/Platforms'])">Platforms</button><br>
+                    </div>
+                    <div class="menu-section">
+                        <h3>Contribute</h3>
+                        <button (click)="router.navigate(['/Contribute'])">Contribute</button><br>
+                    </div>
+                    <div class="menu-section">
+                        <h3>Training + Resources</h3>
+                        <button (click)="router.navigate(['/Resources'])">Resources</button><br>
+                    </div>
+                    <div class="menu-section">
+                        <h3>Contact Us</h3>
+                    </div>
+                </div>
+            </div>
         </div>
     `,
     directives: [
@@ -600,6 +623,17 @@ export class ModalComponent {
 })
 export class MenuComponent {
     @Input() router;
+    visible = false;
+
+    toggle() { this.visible ? this.close() : this.open(); }
+    close() { this.visible = false; }
+    open() {
+        this.visible = true;
+        var subscription = this.router.subscribe(url => {
+            subscription.unsubscribe();
+            this.close()
+        });
+    }
 }
 
 

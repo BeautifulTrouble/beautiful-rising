@@ -203,7 +203,7 @@ svg-inline.selected * {
     left: 20px;
     top: 20px;
     width: 35%;
-    z-index: 100;
+    z-index: 1000;
     display: inline-block;
 }
 
@@ -314,23 +314,49 @@ $sidebar: 265px;
 
 
 // Menu
-menu {
-    display: inline-block;
-    padding: 0;
-}
 .hamburger-menu-icon svg-inline {
     display: inline-block;
     position: relative;
     left: 6px;
 }
-.hamburger-menu {
-    z-index: 1000;
+menu {
+    display: inline-block;
+    padding: 0;
+    .menu {
+        background: white;
+        position: absolute;
+        z-index: 1000;
+        top: 0;
+        width: 40 * $margin;
+        border: 2px solid black;
+        margin-left: -21 * $margin;
+    }
+    .menu-section {
+        h3 {
+            margin-top: 0;
+        }
+        em {
+            color: $gray;
+            font-size: 13px;
+            display: inline-block;
+        }
+        padding: 3 * $margin;
+        border-top: 2px solid black;
+    }
     .overlay {
         left: 0; right: 0;
         top: 0; bottom: 0;
-        opacity: .25;
+        opacity: .5;
         background: $gray;
         z-index: 950;
+        position: fixed;
+    }
+    .menu-close {
+        padding: 10px;
+        svg-inline { 
+            left: 114px; 
+            position: relative;
+        }
     }
 }
 
@@ -341,7 +367,7 @@ menu {
     text-align: center;
     color: $gray;
     font-style: italic;
-    font-size: 11px;
+    font-size: 13px;
     img {
         padding: 2 * $margin;
     }
@@ -367,6 +393,15 @@ menu {
     text-align: center;
     width: 100%;
     padding: 2*$margin 0;
+    position: relative;
+    &::after {
+        content: '';
+        position: absolute;
+        border: 1px solid black;
+        width: 0;
+        height: 40px;
+        left: 51%;
+    }
     a:hover {
         text-decoration: none;
     }
@@ -411,7 +446,7 @@ menu {
         text-decoration: underline;
     }
 }
-.gallery-search-info {
+.gallery-sort, .gallery-list, .gallery-search-info {
     padding-top: 2 * $margin;
 }
 .gallery-search-clear {
@@ -614,15 +649,18 @@ detail {
             margin-top: 0;
             margin-bottom: 2 * $margin;
         }
+        img {
+            max-width: 100%;
+        }
+        hr.footnotes-sep {
+            display: none;
+        }
         .module-type {
             margin-top: 3 * $margin;
         }
         .epigraphs {
             margin: 0 2*$margin 2*$margin 2*$margin;
             .attribution { color: $gray; }
-        }
-        hr.footnotes-sep {
-            display: none;
         }
         .learn-more {
             h4 {
