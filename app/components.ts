@@ -2,7 +2,7 @@
 
 import {Component, Input, Output, OnInit, EventEmitter, ElementRef} from '@angular/core';
 import {RouteConfig, Router, RouteParams, ROUTER_DIRECTIVES, ROUTER_PROVIDERS} from '@angular/router-deprecated';
-import {BrowserDomAdapter} from '@angular/platform-browser/src/browser_common';
+import {BrowserDomAdapter, Title} from '@angular/platform-browser/src/browser_common';
 import {HTTP_PROVIDERS} from '@angular/http';
 
 import {CapitalizePipe, NotagsPipe, TrimPipe, SVGComponent, slugify} from './utilities';
@@ -249,6 +249,7 @@ export class GalleryComponent implements OnInit {
     slugify = slugify;
 
     constructor(
+        private title: Title,
         private router: Router,
         private routeParams: RouteParams,
         private contentService: ContentService,
@@ -258,10 +259,11 @@ export class GalleryComponent implements OnInit {
         this.doSearch = _.throttle(this.doSearch, 100);
         this.sortKey = this.sortKey || 'timestamp';
         this.viewStyle = this.viewStyle || 'grid';
-        this.contentService.injectContent(this, () => {
+        this.contentService.injectContent(this, (content) => {
             var params = this.routeParams.params;
             if (params.query) this.doSearch(decodeURIComponent(params.query));
             if (params.tag) this.setTag(params.tag);
+            this.title.setTitle(content.textBySlug.home['site-title']);
         });
     }
     doSearch(query) {
@@ -493,6 +495,7 @@ export class DetailComponent implements OnInit {
     constructor(
         private dom: BrowserDomAdapter,
         private el: ElementRef,
+        private title: Title,
         private router: Router,
         private routeParams: RouteParams,
         private contentService: ContentService,
@@ -528,6 +531,8 @@ export class DetailComponent implements OnInit {
             var otherTypes = _.pull(_.keys(types), this.module.type);
             this.patternTypes = _.filter(_.map(otherTypes, each => this.module[`key-${each}`] ? types[each] : null));
 
+            // Adjust the UI
+            this.title.setTitle(this.module['title']);
             window.scrollTo(0,0);
         });
     }
@@ -722,6 +727,7 @@ export class ToolsComponent implements OnInit {
     providers: [
         ROUTER_PROVIDERS,
         HTTP_PROVIDERS,
+        Title,
         BrowserDomAdapter,
         ContentService,
         ClientStorageService,
@@ -738,7 +744,7 @@ export class ToolsComponent implements OnInit {
     {path: '/resources',            component: ResourcesComponent,  name: 'Resources'},
     {path: '/contribute',           component: ContributeComponent, name: 'Contribute'},
     {path: '',                      component: GalleryComponent,    name: 'Home'},
-    {path: '*',                     component: GalleryComponent,    name: '404'},
+    {path: '*',                     component: GalleryComponent,    name: 'NotFound'},
 ])
 export class AppComponent implements OnInit, OnActivate {
     @LocalStorage() language;
