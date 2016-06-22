@@ -537,10 +537,14 @@ export class DetailComponent implements OnInit {
         });
     }
     ngAfterViewChecked() {
+        // HACK: Ensure fragment links don't reload the page
+        var links = this.dom.querySelectorAll(this.el.nativeElement, 'a[href^="#"]');
+        if (links.length) _.map(links, el => el.setAttribute('href', location.pathname + el.hash));
         // HACK: Prevent module links rendered from markdown from reloading the page
         var links = this.dom.querySelectorAll(this.el.nativeElement, 'a[href^="/module"]');
         if (links.length) {
             _.map(links, el => {
+                if (el.hash) return; // Don't rewrite links with fragment ids
                 var elClone = el.cloneNode(true);
                 el.parentNode.replaceChild(elClone, el);
                 elClone.addEventListener('click', e => {
