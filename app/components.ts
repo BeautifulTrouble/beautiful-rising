@@ -419,7 +419,7 @@ export class GalleryComponent implements OnInit {
                                 <div *ngFor="let each of getKeyModules(type[0]); let first=first; let last=last;">
                                     <div *ngIf="first && last" [ngClass]="['module-type', type[1]]">key {{ type[1] }}</div><!-- first && last meaning length == 1 -->
                                     <div *ngIf="first && !last" [ngClass]="['module-type', type[1]]">key {{ type[2] }}</div><!-- first && !last meaning length > 1 -->
-                                    <h3>{{ each[0] }}</h3><p [innerHTML]="each[1]"></p>
+                                    <h3>{{ each[0] | notags }}</h3><p [innerHTML]="each[1]"></p>
                                 </div>
                             </div>
                         </div>
@@ -591,7 +591,7 @@ export class ModalComponent {
             <div class="menu-wrapper">
                 <div class="menu">
                     <div class="menu-close">
-                        <svg-inline (click)="close()" src="/assets/icons/close.svg"></svg-inline>
+                        <svg-inline (click)="close()" class="clickable" src="/assets/icons/close.svg"></svg-inline>
                     </div>
                     <div class="menu-section">
                         <h3>About</h3>
@@ -715,7 +715,7 @@ export class ToolsComponent implements OnInit {
         this.contentService.injectContent(this);
     }
     toggleOpened() {
-        (this.opened ? this.close : this.open).next();
+        this.opened ? this.close.next() : this.open.next();
         this.opened = !this.opened;
     }
     selectTool(tool) {
@@ -780,7 +780,7 @@ export class ToolsComponent implements OnInit {
     {path: '',                      component: GalleryComponent,    name: 'Home'},
     {path: '*',                     component: GalleryComponent,    name: 'NotFound'},
 ])
-export class AppComponent implements OnInit, OnActivate {
+export class AppComponent implements OnInit {
     @LocalStorage() language;
     _ = _;
     opened = false;
@@ -794,14 +794,14 @@ export class AppComponent implements OnInit, OnActivate {
     ngOnInit() {
         // Attempt to guess and the language
         this.language = this.language || (navigator.languages || ['en'])[0].slice(0,2);
-        this.contentService.language = _.includes(['ar', 'es', 'en'], this.language) ? this.language : 'en';
+        this.contentService.language = this.language;
         this.setToolsOffset = _.throttle(this.setToolsOffset, 100);
         this.setToolsOffset();
     }
     setToolsOffset() {
         // Calculate how much to shift the contentarea when the tools panel is expanded
         var toolsRect = this.dom.query('.tools').getBoundingClientRect();
-        var currentOffset = getComputedStyle(this.dom.query('.contentarea')).right.slice(0,-2);
+        var currentOffset = parseInt(getComputedStyle(this.dom.query('.contentarea')).right);
         var spaceToRight = document.documentElement.clientWidth - (toolsRect.left + toolsRect.width) - currentOffset;
         this.toolsOffset = Math.max(265 - spaceToRight, 0);
     }

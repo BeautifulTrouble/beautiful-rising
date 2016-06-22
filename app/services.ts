@@ -115,7 +115,6 @@ export class ContentService {
             if (then /* har */) then(content);
         });
     }
-
 }
 
 
