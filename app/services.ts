@@ -76,6 +76,7 @@ export class ContentService {
                     output.config.markdown.push('potential-risks-short');
                     for (let module of output.modules) {
                         if (module['potential-risks'] && module['potential-risks'].length > 470) {
+                            // Most of this is now done in the callback initiated by the onInit call to inject variables
                             module['potential-risks-short'] = _.truncate(module['potential-risks'], {length: 470, separator: /\s+ /});
                         }
                     }
@@ -130,8 +131,8 @@ export class ClientStorageService implements OnDestroy {
 }
 
 // These automagic decorators are to be used like: @LocalStorage() variableNameHere;
-export var LocalStorage = (key) => StorageDecoratorFactory(key, localStorage || {});
-export var SessionStorage = (key) => StorageDecoratorFactory(key, sessionStorage || {});
+export var LocalStorage = (key) => StorageDecoratorFactory(key, localStorage);
+export var SessionStorage = (key) => StorageDecoratorFactory(key, sessionStorage);
 
 function StorageDecoratorFactory(key, store) {
     return (obj, propertyName) => {
