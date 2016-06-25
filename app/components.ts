@@ -1,12 +1,13 @@
 // Define all site components here.
 
-import {Component, Input, Output, OnInit, EventEmitter, ElementRef} from '@angular/core';
-import {RouteConfig, Router, RouteParams, ROUTER_DIRECTIVES, ROUTER_PROVIDERS} from '@angular/router-deprecated';
-import {BrowserDomAdapter, Title} from '@angular/platform-browser/src/browser_common';
-import {HTTP_PROVIDERS} from '@angular/http';
+import { Component, Input, Output, OnInit, EventEmitter, ElementRef } from '@angular/core';
+import { RouteConfig, Router, RouteParams, ROUTER_DIRECTIVES, ROUTER_PROVIDERS } from '@angular/router-deprecated';
+import { BrowserDomAdapter } from '@angular/platform-browser/src/browser/browser_adapter';
+import { Title } from '@angular/platform-browser/src/browser/title';
+import { HTTP_PROVIDERS } from '@angular/http';
 
-import {CapitalizePipe, NotagsPipe, TrimPipe, SVGComponent, slugify} from './utilities';
-import {ContentService, ClientStorageService, ModuleSavingService, LocalStorage} from './services';
+import { CapitalizePipe, NotagsPipe, TrimPipe, SVGComponent, slugify } from './utilities';
+import { ContentService, ClientStorageService, ModuleSavingService, LocalStorage } from './services';
 
 import '../styles.scss';
 import _ = require('lodash');
@@ -200,8 +201,8 @@ export class ModuleTypeComponent {
                                     <div class="module-title">{{ module.title }}</div>
                                 </div>
                                 <div (click)="savingService.toggleSaved(module)" [ngSwitch]="savingService.isSaved(module)" class="module-save">
-                                    <svg-inline *ngSwitchWhen="true" src="/assets/icons/-_tileandmodule.svg"></svg-inline>
-                                    <svg-inline *ngSwitchWhen="false" src="/assets/icons/+_tileandmodule.svg"></svg-inline>
+                                    <svg-inline *ngSwitchCase="true" src="/assets/icons/-_tileandmodule.svg"></svg-inline>
+                                    <svg-inline *ngSwitchCase="false" src="/assets/icons/+_tileandmodule.svg"></svg-inline>
                                 </div>
                             </div>
                             <div [ngClass]="['module-snapshot', module.type]" [innerHTML]="module.snapshot"></div>
@@ -346,8 +347,8 @@ export class GalleryComponent implements OnInit {
                             <div [ngClass]="['module-type', module.type]">{{ module.type }}</div>
                             <div class="module-title">{{ module.title }}</div>
                             <div (click)="savingService.toggleSaved(module)" [ngSwitch]="savingService.isSaved(module)" class="module-save clickable">
-                                <div *ngSwitchWhen="true"><svg-inline src="/assets/icons/-_tileandmodule.svg"></svg-inline>Remove this module from your tools</div>
-                                <div *ngSwitchWhen="false"><svg-inline src="/assets/icons/+_tileandmodule.svg"></svg-inline>Save this module</div>
+                                <div *ngSwitchCase="true"><svg-inline src="/assets/icons/-_tileandmodule.svg"></svg-inline>Remove this module from your tools</div>
+                                <div *ngSwitchCase="false"><svg-inline src="/assets/icons/+_tileandmodule.svg"></svg-inline>Save this module</div>
                             </div><br>
                             <div class="module-share clickable"><svg-inline src="/assets/icons/share_in_module.svg"></svg-inline>Share this module</div>
                         </div>

@@ -1,8 +1,9 @@
 // General purpose stuff goes in here.
 
-import {Http, Response} from '@angular/http';
-import {Pipe, PipeTransform, Component, Input, OnInit} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
+import { Http, Response } from '@angular/http';
+import { Pipe, PipeTransform, Component, Input, OnInit } from '@angular/core';
+import { DomSanitizationService } from '@angular/platform-browser/src/security/dom_sanitization_service';
+import { Observable } from 'rxjs/Observable';
 
 import _ = require('lodash');
 
@@ -46,7 +47,8 @@ export class SVGComponent implements OnInit {
 	svgData = '';
 
     constructor(
-        private http: Http) { 
+        private http: Http,
+        private sanitizer: DomSanitizationService) { 
     }
     ngOnInit() {
         var observable = SVGCache.cache[this.src];
@@ -57,7 +59,7 @@ export class SVGComponent implements OnInit {
                 .refCount(); // Don't execute multiple HTTP requests
         }
         observable.subscribe(
-            data => { this.svgData = data; },
+            data => { this.svgData = this.sanitizer.bypassSecurityTrustHtml(data); },
             err => { console.error(`Unable to load inline svg ${this.src}`); }
         );
     }

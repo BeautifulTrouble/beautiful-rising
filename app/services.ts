@@ -1,17 +1,17 @@
 // Any task which interacts with a data store should be abstracted to a service here.
 
-import {Injectable, OnDestroy} from '@angular/core';
-import {Http, URLSearchParams} from '@angular/http';
-import {NgZone} from '@angular/core/src/zone';
-import {Observable} from 'rxjs/Observable';
-import {Subject} from 'rxjs/Subject';
+import { Injectable, OnDestroy } from '@angular/core';
+import { Http, URLSearchParams } from '@angular/http';
+import { NgZone } from '@angular/core/src/zone';
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 
 import _ = require('lodash');
 import ElasticLunr = require('elasticlunr');
 import MarkdownIt = require('markdown-it');
 import markdownitFootnote = require('markdown-it-footnote');
 
-import {slugify} from './utilities';
+import { slugify } from './utilities';
 
 
 // Content Service (for fetching and transforming API content)
