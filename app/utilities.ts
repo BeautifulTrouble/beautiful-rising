@@ -3,8 +3,8 @@
 import { Http, Response } from '@angular/http';
 import { Pipe, PipeTransform, Component, Input, OnInit } from '@angular/core';
 import { DomSanitizationService } from '@angular/platform-browser/src/security/dom_sanitization_service';
-import { Observable } from 'rxjs/Observable';
 
+import { Observable } from 'rxjs/Observable';
 import _ = require('lodash');
 
 
@@ -18,22 +18,27 @@ export var slugify = (s) => s.toLowerCase()
 @Pipe({'name': 'capitalize'})
 export class CapitalizePipe implements PipeTransform {
     // TODO: Arabic equivalent
-    transform = v => _.capitalize(v);
+    transform = v => _.capitalize(v || '');
 }
 
+export var untrustedString = v => {
+    if (v && 'changingThisBreaksApplicationSecurity' in v) return v.changingThisBreaksApplicationSecurity;
+    return (v || '').toString();
+}
+export var noTags = v => {
+    v = untrustedString(v);
+    let el = document.createElement('div');
+    el.innerHTML = v;
+    return el.textContent;
+};
 @Pipe({'name': 'notags'})
 export class NotagsPipe implements PipeTransform {
-    transform = v => {
-        // XXX: Do something different for server-side rendering
-        let el = document.createElement('div');
-        el.innerHTML = v;
-        return el.textContent;
-    };
+    transform = noTags;
 }
 
 @Pipe({'name': 'trim'})
 export class TrimPipe implements PipeTransform {
-    transform = v => v.trim();
+    transform = v => (v || '').trim();
 }
 
 

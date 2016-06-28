@@ -3,9 +3,10 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Http, URLSearchParams } from '@angular/http';
 import { NgZone } from '@angular/core/src/zone';
+import { DomSanitizationService } from '@angular/platform-browser/src/security/dom_sanitization_service';
+
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
-
 import _ = require('lodash');
 import ElasticLunr = require('elasticlunr');
 import MarkdownIt = require('markdown-it');
@@ -23,7 +24,10 @@ export class ContentService {
     contentStream = this.contentSource.asObservable();
     contentCacheByLanguage = {};
 
-    constructor(private http: Http) { }
+    constructor(
+        private http: Http,
+        private sanitizer: DomSanitizationService) { 
+    }
 
     // Returns an object containing several sorted and ordered forms of the API content
     getContent(callback) {
@@ -45,9 +49,8 @@ export class ContentService {
                 .map(result => result.json())
                 .catch(err => Observable.throw('Something went wrong with the content API service!'))
                 .subscribe(content => {
-
                     // Prepare the content for easy consumption by components
-                    let output = {}
+                    let output:any = {}
                     output.content = content;
                     output.config = _.find(content, {'type': 'config', 'slug': 'api'});
                     // Bundle content into types
@@ -72,21 +75,45 @@ export class ContentService {
                     }
                     output.tags = _.keys(output.modulesByTag).sort();
                     output.modulesByTag = _.mapKeys(output.modulesByTag, (v,k) => slugify(k));
-                    // Prepare truncated version of potential-risks before rendering as markdown
+
+
+                    // Preprocess content before passing to markdown processor (90% of these tasks belong in the contentloader)
                     output.config.markdown.push('potential-risks-short');
+                    output.config.markdown.push('key-modules');
                     for (let module of output.modules) {
+                        // Prepare -short version of potential risks
                         if (module['potential-risks'] && module['potential-risks'].length > 470) {
-                            // Most of this is now done in the callback initiated by the onInit call to inject variables
                             module['potential-risks-short'] = _.truncate(module['potential-risks'], {length: 470, separator: /\s+ /});
                         }
+                        // Split epigraphs from attributions
+                        module.epigraphs = _.map(module.epigraphs || [], (text) => text.split(/\s+[—–―]([^\s].+)/, 2));
+                        // Split key-module names from descriptions
+                        for (let type of ['key-tactics', 'key-principles', 'key-theories', 'key-methodologies']) {
+                            if (module[type]) module[type] = _.map(module[type], text => [text.split(/\s+[-]\s+/, 1)[0], text.replace(/^.+\s+[-]\s+/, '')]);
+                        }
+                        // Embed blockquotes into full-write-up
+                        if (module['full-write-up'] && module['pull-quote']) {
+                            let blockquote = `<blockquote class="pull-quote"><p>${module['pull-quote']}</p></blockquote>`;
+                            let paragraphs = module['full-write-up'].split(/\n\n\n*/);
+                            if (paragraphs.length > 1) {
+                                paragraphs.splice(Math.floor(paragraphs.length/2) - Math.floor(paragraphs.length/2)%2, 0, blockquote);
+                                module['full-write-up'] = paragraphs.join('\n\n');
+                            }
+                        }
                     }
+
+
                     // Render markdown
-                    var md = new MarkdownIt().use(markdownitFootnote);
+                    var md = new MarkdownIt({
+                        'html': true,
+                        'linkify': true,
+                        'typographer': true
+                    }).use(markdownitFootnote);
                     // Recursive markdown function handles most nested structures
                     var markdown = (x) => ({
                         'array': a => _.map(a, markdown),
                         'object': o => _.mapValues(o, markdown),
-                        'string': s => md.render(s),
+                        'string': s => this.sanitizer.bypassSecurityTrustHtml(md.render(s)),
                         'number': n => n
                     })[x instanceof Array ? 'array' : typeof x](x);
                     for (let collection of [output.contentByType.person, output.modules]) {

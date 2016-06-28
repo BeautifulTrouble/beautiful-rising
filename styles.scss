@@ -201,8 +201,7 @@ svg-inline.selected * {
 .logo {
     position: relative;
     left: 20px;
-    top: 20px;
-    width: 35%;
+    top: 8px;
     z-index: 1000;
     display: inline-block;
 }
@@ -661,7 +660,14 @@ detail {
         }
         .epigraphs {
             margin: 0 2*$margin 2*$margin 2*$margin;
-            .attribution { color: $gray; }
+            .attribution * { 
+                display: inline;
+                color: $gray; 
+            }
+            .attribution::before { 
+                content: "—"; 
+                color: $gray; 
+            }
         }
         .learn-more {
             h4 {

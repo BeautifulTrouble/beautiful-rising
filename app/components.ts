@@ -6,7 +6,7 @@ import { BrowserDomAdapter } from '@angular/platform-browser/src/browser/browser
 import { Title } from '@angular/platform-browser/src/browser/title';
 import { HTTP_PROVIDERS } from '@angular/http';
 
-import { CapitalizePipe, NotagsPipe, TrimPipe, SVGComponent, slugify } from './utilities';
+import { CapitalizePipe, NotagsPipe, TrimPipe, SVGComponent, untrustedString, noTags, slugify } from './utilities';
 import { ContentService, ClientStorageService, ModuleSavingService, LocalStorage } from './services';
 
 import '../styles.scss';
@@ -393,14 +393,11 @@ export class GalleryComponent implements OnInit {
                             <h5 *ngIf="!gallery" (click)="collapsed = false">Read more</h5>
                         </div>
                         <div *ngIf="!collapsed">
-                            <div *ngFor="let epigraph of epigraphs" class="epigraphs">
-                                <div class="epigraph">{{ epigraph[0] }}</div>
-                                <div class="attribution">&mdash;{{ epigraph[1] }}</div>
+                            <div *ngFor="let epigraph of module.epigraphs" class="epigraphs">
+                                <div class="epigraph" [innerHTML]="epigraph[0]"></div>
+                                <div class="attribution" [innerHTML]="epigraph[1]"></div>
                             </div>
                             <div *ngIf="!gallery" [innerHTML]="module['full-write-up']">
-                            </div>
-                            <div *ngIf="gallery">
-                                gallery
                             </div>
                             <h5 (click)="collapsed = true">Read less</h5>
                         </div>
@@ -412,16 +409,16 @@ export class GalleryComponent implements OnInit {
                             <h4>Why it failed</h4>
                             <p [innerHTML]="module['why-it-failed']"></p>
                         </div>
-                        <div *ngFor="let type of [['key-tactics', 'tactic', 'tactics'], 
-                                                  ['key-principles', 'principle', 'principles'], 
-                                                  ['key-theories', 'theory', 'theories'],
-                                                  ['key-methodologies', 'methodology', 'methodologies']]">
-                            <div *ngIf="module[type[0]]">
-                                <div *ngFor="let each of getKeyModules(type[0]); let first=first; let last=last;">
-                                    <div *ngIf="first && last" [ngClass]="['module-type', type[1]]">key {{ type[1] }}</div><!-- first && last meaning length == 1 -->
-                                    <div *ngIf="first && !last" [ngClass]="['module-type', type[1]]">key {{ type[2] }}</div><!-- first && !last meaning length > 1 -->
-                                    <h3>{{ each[0] | notags }}</h3><p [innerHTML]="each[1]"></p>
-                                </div>
+                    </div>
+                    <div *ngFor="let type of [['key-tactics', 'tactic', 'tactics'],
+                                              ['key-principles', 'principle', 'principles'],
+                                              ['key-theories', 'theory', 'theories'],
+                                              ['key-methodologies', 'methodology', 'methodologies']]">
+                        <div *ngIf="module[type[0]]">
+                            <div *ngFor="let each of module[type[0]]; let first=first; let last=last;">
+                                <div *ngIf="first && last" [ngClass]="['module-type', type[1]]">key {{ type[1] }}</div><!-- singular -->
+                                <div *ngIf="first && !last" [ngClass]="['module-type', type[1]]">key {{ type[2] }}</div><!-- plural -->
+                                <h3 [innerHTML]="each[0]"></h3><div [innerHTML]="each[1]"></div>
                             </div>
                         </div>
                     </div>
@@ -429,8 +426,8 @@ export class GalleryComponent implements OnInit {
                         <div *ngFor="let learn of module['learn-more']; let first=first;">
                             <h4 *ngIf="first">Learn more</h4>
                             <p>
-                                <a target="_blank" href="{{ learn.link | notags | trim }}">{{ learn.title | notags | trim }}</a><span *ngIf="learn.source"> / {{ learn.source | notags }}</span>
-                                <span *ngIf="learn.year">, {{ learn.year | notags }}</span>
+                                <a target="_blank" href="{{ learn.link | notags | trim }}">{{ learn.title | notags | trim }}</a>
+                                <span *ngIf="untrustedString(learn.source)"> / {{ learn.source | notags }}</span><span *ngIf="untrustedString(learn.year)">, {{ learn.year | notags }}</span>
                             </p>
                         </div>
                     </div>
@@ -488,10 +485,14 @@ export class GalleryComponent implements OnInit {
     styles: []
 })
 export class DetailComponent implements OnInit {
-    module;
-    patternTypes = [];
     _ = _;
     slugify = slugify;
+    untrustedString = untrustedString;
+
+    module;
+    patternTypes = [];
+    collapsed = true;
+    riskCollapsed = true;
 
     constructor(
         private dom: BrowserDomAdapter,
@@ -505,28 +506,24 @@ export class DetailComponent implements OnInit {
     ngOnInit() {
         this.contentService.injectContent(this, () => {
             this.module = this.modulesBySlug[this.routeParams.params.slug];
+            if (!this.module) {
+                this.router.navigate(['Search', {'query': 'slug:' + this.routeParams.params.slug}]);
+                return;
+            }
 
             // HACK: Fix a few accidental snapshots
             if (/In a page .500 words. or less/.test(this.module['full-write-up'])) delete this.module['full-write-up'];
 
-            this.collapsed = true;
-            this.riskCollapsed = true;
-            this.authors = _.filter(_.map((this.module.authors || []).sort(), (author) => this.peopleBySlug[author]));
-            this.snapshot = this.authors.length == 0 || (!this.module['full-write-up'] && !this.module['short-write-up'])
-            this.gallery = !this.module['full-write-up'] && this.module['short-write-up']
-            this.epigraphs = _.map(this.module.epigraphs || [], (text) => text.split(/\s+[—]([^\s].+)/, 2));
-            this.tactics = this.getRelatedModules('tactics');
-            this.principles = this.getRelatedModules('principles');
-            this.theories = this.getRelatedModules('theories');
-            this.methodologies = this.getRelatedModules('methodologies');
-            // Insert the pull-quote into the full-write-up, then delete it.
-            if (this.module['full-write-up'] && this.module['pull-quote']) {
-                let blockquote = '<blockquote class="pull-quote">' + this.module['pull-quote'] + '</blockquote>';
-                let splitParas = this.module['full-write-up'].split(/(<\/p>)/);
-                splitParas.splice(Math.floor(splitParas.length/2) - Math.floor(splitParas.length/2)%2, 0, blockquote);
-                this.module['full-write-up'] = splitParas.join('');
-                delete this.module['pull-quote'];
-            }
+            this.authors = this.getRelated('authors', this.peopleBySlug);
+            this.stories = this.getRelated('stories', this.modulesBySlug);
+            this.tactics = this.getRelated('tactics', this.modulesBySlug);
+            this.theories = this.getRelated('theories', this.modulesBySlug);
+            this.principles = this.getRelated('principles', this.modulesBySlug);
+            this.methodologies = this.getRelated('methodologies', this.modulesBySlug);
+
+            this.snapshot = !!(this.authors.length == 0 || (!this.module['full-write-up'] && !this.module['short-write-up']))
+            this.gallery = !!(!this.module['full-write-up'] && this.module['short-write-up'])
+
             // Compose the module's pattern
             var types = {'tactics':'tactic', 'principles':'principle', 'theories':'theory', 'methodologies':'methodology'};
             var otherTypes = _.pull(_.keys(types), this.module.type);
@@ -535,12 +532,15 @@ export class DetailComponent implements OnInit {
             // Adjust the UI
             this.title.setTitle(this.module['title']);
             window.scrollTo(0,0);
+
+            console.log(this.module);
         });
     }
     ngAfterViewChecked() {
         // HACK: Ensure fragment links don't reload the page
         var links = this.dom.querySelectorAll(this.el.nativeElement, 'a[href^="#"]');
         if (links.length) _.map(links, el => el.setAttribute('href', location.pathname + el.hash));
+
         // HACK: Prevent module links rendered from markdown from reloading the page
         var links = this.dom.querySelectorAll(this.el.nativeElement, 'a[href^="/module"]');
         if (links.length) {
@@ -555,11 +555,8 @@ export class DetailComponent implements OnInit {
             });
         }
     }
-    getKeyModules(type) { // Returns [['title','text'], ['title','text'], ...] for the given 'key-whatever' type
-        return _.map(this.module[type], (text) => [text.split(/\s+[-]\s+/, 1)[0], text.replace(/^.+\s+[-]\s+/, '')]);
-    }
-    getRelatedModules(type) {
-        return _.filter(_.map(this.module[type] || [], (slug) => this.modulesBySlug[slug]));
+    getRelated(type, fromCollection) {
+        return _.filter(_.map((this.module[type] || []).sort(), (slug) => fromCollection[slug]));
     }
 }
 
