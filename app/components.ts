@@ -97,49 +97,29 @@ export class SearchComponent {
     selector: 'module-types',
     template: `
         <div class="row">
-            <div *ngIf="textBySlug" class="module-types">
-                <div *ngIf="!type">
-                    <div class="type-representation story">
-                        <div (click)="setType.next('story')" class="inner">
-                            <div>
-                                <h3>Stories</h3>
-                                <svg-inline class="2rows pattern" src="/assets/patterns/2rows/story.svg"></svg-inline>
+            <div [style.height.px]="height" [ngClass]="['module-types', expanded ? 'expanded' : 'collapsed']">
+                <div *ngIf="!textBySlug" class="loader-wrapper"><div class="loader"></div></div>
+                <div *ngIf="textBySlug">
+                    <div *ngIf="!type">
+                        <div [ngClass]="['type-representation', 'clickable', type[0]]"
+                         *ngFor="let type of [['story', 'stories'],
+                                              ['tactic', 'tactics'],
+                                              ['principle', 'principles'],
+                                              ['theory', 'theories'],
+                                              ['methodology', 'methodologies']]">
+                            <div (click)="setType.next(type[0])" class="inner">
+                                <div>
+                                    <h3>{{ type[1] }}</h3>
+                                    <svg-inline class="2rows pattern" src="/assets/patterns/2rows/{{ type[0] }}.svg"></svg-inline>
+                                </div>
+                                <p class="description">{{ textBySlug.home.definitions[type[0] + '-short'] }}</p>
                             </div>
-                            <p class="description">Accounts of memorable creative actions and campaigns, analyzing what worked (or didn't) and why.</p>
                         </div>
                     </div>
-                    <div class="type-representation tactic">
-                        <div (click)="setType.next('tactic')" class="inner">
-                            <h3>Tactics</h3>
-                            <svg-inline class="2rows pattern" src="/assets/patterns/2rows/tactic.svg"></svg-inline>
-                            <p class="description">Specific forms of creative action, such as a flash mob or a blockade.</p>
-                        </div>
+                    <div *ngIf="type">
+                        <h1>{{ type }}</h1>
+                        <button (click)="setType.next(null)">Reset</button>
                     </div>
-                    <div class="type-representation principle">
-                        <div (click)="setType.next('principle')" class="inner">
-                            <h3>Principles</h3>
-                            <svg-inline class="2rows pattern" src="/assets/patterns/2rows/principle.svg"></svg-inline>
-                            <p class="description">Time-tested insights into successful action design and campaign strategy.</p>
-                        </div>
-                    </div>
-                    <div class="type-representation theory">
-                        <div (click)="setType.next('theory')" class="inner">
-                            <h3>Theories</h3>
-                            <svg-inline class="2rows pattern" src="/assets/patterns/2rows/theory.svg"></svg-inline>
-                            <p class="description">Big-picture ideas that help us understand how the world works and how we might change it.</p>
-                        </div>
-                    </div>
-                    <div class="type-representation methodology">
-                        <div (click)="setType.next('methodology')" class="inner">
-                            <h3>Methodologies</h3>
-                            <svg-inline class="2rows pattern" src="/assets/patterns/2rows/methodology.svg"></svg-inline>
-                            <p class="description">An exercise or framework to help you think strategically about your action or campaign.</p>
-                        </div>
-                    </div>
-                </div>
-                <div *ngIf="type">
-                    <h1>{{ type }}</h1>
-                    <button (click)="setType.next(null)">Reset</button>
                 </div>
             </div>
         </div>
@@ -150,6 +130,8 @@ export class SearchComponent {
     ],
 })
 export class ModuleTypeComponent {
+    @Input() expanded;
+    @Input() height;
     @Input() type;
     @Input() textBySlug;
     @Output() setType = new EventEmitter();
@@ -165,12 +147,13 @@ export class ModuleTypeComponent {
         <div class="fixed-container-wrapper">
             <div class="container">
                 <search [query]="query" (search)="doSearch($event)"></search>
+                <module-types (setType)="type = $event"
+                 [type]="type" [height]="headerHeight" [expanded]="headerExpanded" [textBySlug]="textBySlug"></module-types>
             </div>
         </div>
         <div class="container">
-            <module-types (setType)="type = $event" [type]="type" [textBySlug]="textBySlug"></module-types>
-            <div class="row">
-                <div class="gallery-sort col-md-3">
+            <div class="row gallery" (window:scroll)="setHeaderOffset()" [style.margin-top.px]="headerHeight + headerMargin">
+                <div [style.position]="sortPosition" class="gallery-sort col-md-3">
                     <h3>View As</h3>
                     <div class="row border-top border-bottom view-as">
                         <div class="col-xs-6">
@@ -264,6 +247,7 @@ export class GalleryComponent implements OnInit {
         private savingService: ModuleSavingService) { 
     }
     ngOnInit() {
+        this.setHeaderOffset();
         this.doSearch = _.throttle(this.doSearch, 100);
         this.sortKey = this.sortKey || 'timestamp';
         this.viewStyle = this.viewStyle || 'grid';
@@ -273,6 +257,17 @@ export class GalleryComponent implements OnInit {
             if (params.tag) this.setTag(params.tag);
             this.title.setTitle(content.textBySlug.home['site-title']);
         });
+    }
+    setHeaderOffset() {
+        if (document.body.scrollTop > 0) {
+            this.headerExpanded = false;
+            this.headerHeight = 138;
+            this.headerMargin = 96;
+        } else {
+            this.headerExpanded = true;
+            this.headerHeight = 400;
+            this.headerMargin = 50;
+        }
     }
     doSearch(query) {
         this.query = query;

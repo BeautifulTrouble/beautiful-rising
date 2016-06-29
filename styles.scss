@@ -231,9 +231,12 @@ svg-inline.selected * {
 
 
 // Tools
-.tools {
+.tools, .sidebar {
     position: absolute;
+    z-index: 1100;
     border: 2px solid black;
+}
+.tools {
     padding: $margin;
     //right: -18 * $margin;
     right: 0; top: 0;
@@ -270,10 +273,9 @@ svg-inline.selected * {
 }
 $sidebar: 265px;
 .sidebar {
-    position: absolute;
     width: $sidebar;
-    right: 2 -$sidebar - $margin * 18;
-    border: 2px solid black;
+    right: 2 - $sidebar; top: 0;
+    //right: 2 -$sidebar - $margin * 18;
     height: 100%;
     .top-buttons {
         position: absolute;
@@ -398,7 +400,7 @@ menu {
 
 
 // Search
-$search-height: 60px;
+$search-height: 50px;
 .search-box {
     padding: $margin * 2;
     padding-top: $margin * 4;
@@ -413,53 +415,73 @@ $search-height: 60px;
 
 // Types
 .module-types {
+    @include prefix(transition, height $transition linear, webkit moz);
     border: 2px solid black;
     border-top: 0;
     text-align: center;
-    width: 100%;
-    padding: 2*$margin 0;
-    margin-top: $search-height;
+    background: white;
     position: relative;
-    &::after {
-        content: '';
-        position: absolute;
-        border: 1px solid black;
-        width: 0;
-        height: 40px;
-        left: 51%;
-    }
-    a:hover {
-        text-decoration: none;
+    padding: 2*$margin 0;
+    > div {
+        overflow: hidden;
+        height: 100%;
     }
     .type-representation {
         display: inline-block;
         vertical-align: top;
-        width: 20%;
         color: black;
+        width: 18%;
         .inner {
-            padding: 0 $margin*2;
-            display: inline-block;
             text-align: left;
             svg * { fill: none; }
-            h3, p {
-                margin: $margin 0;
+            h3 { margin: 0 0 $margin 0 ; }
+            p { 
+                margin: $margin 0; 
+                display: none; 
             }
         }
     }
-    .type-representation:nth-child(1) {
-        width: 80%;
-        .inner {
-            max-width: 50%;
-            margin: 0 auto;
-            >div, >p {
-                display: inline-block;
-                width: 49%;
+    &.expanded {
+        .type-representation:nth-child(1) {
+            width: 80.5%;
+            position: relative;
+            left: 2px;
+            .inner {
+                max-width: 50%;
+                margin: 0 auto;
+                p, div { width: 49%; }
+
             }
         }
+        .type-representation {
+            width: 20%;
+            padding-top: $margin*2;
+            .inner {
+                padding: $margin $margin*2;
+                p, div { display: inline-block; }
+            }
+        }
+    }
+    &.expanded::before {
+        content: '';
+        position: absolute;
+        border: 1px solid black;
+        height: 40px; width: 0;
+        left: 51%; top: 95%;
     }
 }
 
 // Gallery
+.gallery {
+    margin-top: 0px;
+    @include prefix(transition, margin-top $transition linear, webkit moz);
+    &.header-small {
+        height: 200px;
+    }
+    &.header-large {
+        height: 400px;
+    }
+}
 .gallery-sort {
     text-align: center;
     .sort-by {
