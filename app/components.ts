@@ -97,7 +97,7 @@ export class SearchComponent {
     selector: 'module-types',
     template: `
         <div class="row">
-            <div class="module-types">
+            <div *ngIf="textBySlug" class="module-types">
                 <div *ngIf="!type">
                     <div class="type-representation story">
                         <div (click)="setType.next('story')" class="inner">
@@ -151,6 +151,7 @@ export class SearchComponent {
 })
 export class ModuleTypeComponent {
     @Input() type;
+    @Input() textBySlug;
     @Output() setType = new EventEmitter();
     constructor(
         private router: Router) {
@@ -162,7 +163,7 @@ export class ModuleTypeComponent {
     selector: 'gallery',
     template: `
         <search [query]="query" (search)="doSearch($event)"></search>
-        <module-types (setType)="type = $event" [type]="type"></module-types>
+        <module-types (setType)="type = $event" [type]="type" [textBySlug]="textBySlug"></module-types>
         <div class="row">
             <div class="gallery-sort col-md-3">
                 <h3>View As</h3>
@@ -244,8 +245,8 @@ export class ModuleTypeComponent {
 export class GalleryComponent implements OnInit {
     @LocalStorage() sortKey;
     @LocalStorage() viewStyle;
-    _ = _;
     type;
+    textBySlug;
     query = '';
     slugify = slugify;
 
@@ -737,9 +738,7 @@ export class ToolsComponent {
                 </div>
                 <!-- <modal></modal> -->
                 <menu [router]="router"></menu>
-                <a [routerLink]="['/Home']">
-                    <img class="logo" src="/assets/icons/logo.png">
-                </a>
+                <a [routerLink]="['/Home']"><img class="logo" src="/assets/icons/logo.png"></a>
                 <div class="contentarea" (window:resize)="setToolsOffset()" [ngStyle]="{'right': toolsOpened ? toolsOffset : '0'}">
                     <tools (open)="toolsOpened = true" (close)="toolsOpened = false" [opened]="toolsOpened" [modulesBySlug]="modulesBySlug"></tools>
                     <router-outlet></router-outlet>
@@ -788,7 +787,6 @@ export class ToolsComponent {
 ])
 export class AppComponent implements OnInit {
     @LocalStorage() language;
-    _ = _;
     toolsOpened = false;
 
     constructor(
@@ -801,6 +799,7 @@ export class AppComponent implements OnInit {
         // Attempt to guess and the language
         this.language = this.language || (navigator.languages || ['en'])[0].slice(0,2);
         this.contentService.language = this.language;
+        // Get the content
         this.contentService.injectContent(this);
         this.setToolsOffset = _.throttle(this.setToolsOffset, 100);
         this.setToolsOffset();

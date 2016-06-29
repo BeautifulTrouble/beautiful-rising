@@ -199,10 +199,11 @@ svg-inline.selected * {
     left: 0; right: 0;
 }
 
+
 // Content area
 .contentarea {
     position: relative;
-    @include prefix(transition, right $transition ease-in-out, webkit moz);
+    @include prefix(transition, right $transition linear, webkit moz);
     right: 0;
 }
 .logo {
@@ -211,7 +212,9 @@ svg-inline.selected * {
     top: 8px;
     z-index: 1000;
     display: inline-block;
+    //transition: top .75s ease-in-out;
 }
+//.logo:hover { top: 1px; }
 
 
 // Tools
@@ -386,7 +389,6 @@ menu {
     padding-top: $margin * 4;
     width: 100%;
     border: 2px solid black;
-    border-bottom: 0;
     outline: none;
     @include placeholder {
         font-style: italic;
@@ -396,6 +398,7 @@ menu {
 // Types
 .module-types {
     border: 2px solid black;
+    border-top: 0;
     text-align: center;
     width: 100%;
     padding: 2*$margin 0;
