@@ -5,3 +5,4 @@ app/**/*.map
 assets/content
 dist/
 *.swp
+*.log
