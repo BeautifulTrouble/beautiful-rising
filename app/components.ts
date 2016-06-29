@@ -698,23 +698,19 @@ export class MenuComponent {
         SVGComponent
     ]
 })
-export class ToolsComponent implements OnInit {
+export class ToolsComponent {
+    @Input() modulesBySlug;
+    @Input() opened;
     @Output() open = new EventEmitter();
     @Output() close = new EventEmitter();
     _ = _;
-    opened = false;
     visible = 'my-tools';
     newsTab = 'twitter';
     toolTab = 'pdf';
-    modulesBySlug = [];
 
     constructor(
         private router: Router,
-        private contentService: ContentService,
         private savingService: ModuleSavingService) { 
-    }
-    ngOnInit () {
-        this.contentService.injectContent(this);
     }
     toggleOpened() {
         this.opened ? this.close.next() : this.open.next();
@@ -733,26 +729,34 @@ export class ToolsComponent implements OnInit {
 @Component({
     selector: 'beautiful-rising',
     template: `
-        <div [ngStyle]="{'direction': contentService.language==='ar' ? 'rtl' : 'ltr'}">
-            <div class="language-selection">
-                <span *ngFor="let lang of languages" (click)="language=lang" [class.selected]="language===lang">{{ lang|uppercase }}</span>
-            </div>
-            <!-- <modal></modal> -->
-            <menu [router]="router"></menu>
-            <a [routerLink]="['/Home']"><img class="logo" src="/assets/icons/logo.png"></a>
-            <div class="contentarea" (window:resize)="setToolsOffset()" [ngStyle]="{'right': opened ? toolsOffset : '0'}">
-                <tools (open)="opened = true" (close)="opened = false"></tools>
-                <router-outlet></router-outlet>
-                <div class="footer row">
-                    <div class="col-md-2"></div>
-                    <div class="col-md-8">
-                        <img src="/assets/icons/Creative_Commons.svg">
-                        <p>Beautiful Rising by Beautiful Rising, various authors is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License. Permissions beyond the scope of this license may be available at beautifulrising.org.</p>
-                    </div>
-                    <div class="col-md-2"></div>
+        <div (click)="closeToolsOnBackgroundClick($event)" class="background" data-background="true">
+            <div [ngStyle]="{'direction': contentService.language==='ar' ? 'rtl' : 'ltr'}" class="container" data-background="true">
+
+                <div class="language-selection">
+                    <span *ngFor="let lang of languages" (click)="language=lang" [class.selected]="language===lang">{{ lang|uppercase }}</span>
                 </div>
-            </div>
-        </div>
+                <!-- <modal></modal> -->
+                <menu [router]="router"></menu>
+                <a [routerLink]="['/Home']">
+                    <img class="logo" src="/assets/icons/logo.png">
+                </a>
+                <div class="contentarea" (window:resize)="setToolsOffset()" [ngStyle]="{'right': toolsOpened ? toolsOffset : '0'}">
+                    <tools (open)="toolsOpened = true" (close)="toolsOpened = false" [opened]="toolsOpened" [modulesBySlug]="modulesBySlug"></tools>
+                    <router-outlet></router-outlet>
+                    <div class="footer row">
+                        <div class="col-md-2"></div>
+                        <div class="col-md-8">
+                            <img src="/assets/icons/Creative_Commons.svg">
+                            <p>Beautiful Rising by Beautiful Rising, various authors is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License. Permissions beyond the scope of this license may be available at beautifulrising.org.</p>
+                        </div>
+                        <div class="col-md-2"></div>
+                    </div>
+                </div>
+                <button (click)="contentService.language = 'es'">Español</button>
+                <button (click)="contentService.language = 'ar'">Arabic</button>
+
+            </div><!-- .container -->
+        </div><!-- .background -->
     `,
     directives: [
         ROUTER_DIRECTIVES,
@@ -785,7 +789,7 @@ export class ToolsComponent implements OnInit {
 export class AppComponent implements OnInit {
     @LocalStorage() language;
     _ = _;
-    opened = false;
+    toolsOpened = false;
 
     constructor(
         private dom: BrowserDomAdapter,
@@ -797,6 +801,7 @@ export class AppComponent implements OnInit {
         // Attempt to guess and the language
         this.language = this.language || (navigator.languages || ['en'])[0].slice(0,2);
         this.contentService.language = this.language;
+        this.contentService.injectContent(this);
         this.setToolsOffset = _.throttle(this.setToolsOffset, 100);
         this.setToolsOffset();
     }
@@ -806,6 +811,9 @@ export class AppComponent implements OnInit {
         var currentOffset = parseInt(getComputedStyle(this.dom.query('.contentarea')).right);
         var spaceToRight = document.documentElement.clientWidth - (toolsRect.left + toolsRect.width) - currentOffset;
         this.toolsOffset = Math.max(265 - spaceToRight, 0);
+    }
+    closeToolsOnBackgroundClick(event) {
+        if (event.target.dataset && event.target.dataset.background) this.toolsOpened = false;
     }
 }
 
