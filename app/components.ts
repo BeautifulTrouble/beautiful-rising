@@ -162,70 +162,76 @@ export class ModuleTypeComponent {
 @Component({
     selector: 'gallery',
     template: `
-        <search [query]="query" (search)="doSearch($event)"></search>
-        <module-types (setType)="type = $event" [type]="type" [textBySlug]="textBySlug"></module-types>
-        <div class="row">
-            <div class="gallery-sort col-md-3">
-                <h3>View As</h3>
-                <div class="row border-top border-bottom view-as">
-                    <div class="col-xs-6">
-                        <svg-inline (click)="viewStyle='grid'" [class.selected]="!query && viewStyle == 'grid'" class="clickable" src="/assets/icons/grid.svg"></svg-inline>
-                    </div>
-                    <div class="col-xs-6">
-                        <svg-inline (click)="viewStyle='list'" [class.selected]="query || viewStyle == 'list'" class="clickable" src="/assets/icons/list.svg"></svg-inline>
-                    </div>
-                </div>
-                <h3>Sort By</h3>
-                <div class="row border-top border-bottom sort-by">
-                    <div (click)="sortKey='title'" [class.selected]="sortKey == 'title'" class="col-xs-6 clickable">Alphabetical</div>
-                    <div (click)="sortKey='timestamp'" [class.selected]="sortKey == 'timestamp'" class="col-xs-6 clickable">Newest</div>
-                </div>
-                <h3>Tags</h3>
-                <div class="row border-top tag-list">
-                    <span *ngFor="let tag of tags; let last=last">
-                        <span (click)="setTag(slugify(tag))" [class.selected]="!query && sortTag == slugify(tag)" class="clickable">{{ tag }}</span><span *ngIf="!last"> / </span>
-                    </span>
-                </div>
+        <div class="fixed-container-wrapper">
+            <div class="container">
+                <search [query]="query" (search)="doSearch($event)"></search>
             </div>
-            <div class="gallery-list col-md-9">
-                <div *ngIf="!query && viewStyle == 'grid'" class="row">
-                    <div *ngFor="let module of sortModules()" (click)="router.navigate(['/Detail', {slug: module.slug}])" class="col-md-4 gallery-module-grid">
-                        <!-- Rethink the structure of this whole section -->
-
-                        <div class="make-it-square"></div>
-                        <div class="module-image" [ngStyle]="{'background-image': module.image ? 'url('+config['asset-path']+'/'+module.image+')' : ''}"></div>
-                        <div class="module-overlay"></div>
-                        <div class="module-content">
-                            <div class="module-hide-on-hover">
-                                <div (mouseenter)="crazyHover($event,0,1,0.75)" (mouseleave)="crazyHover($event,1,0,0.5)">
-                                    <div [ngClass]="['module-type', module.type]">{{ module.type }}</div>
-                                    <div class="module-title">{{ module.title }}</div>
-                                </div>
-                                <div (click)="savingService.toggleSaved(module)" [ngSwitch]="savingService.isSaved(module)" class="module-save">
-                                    <svg-inline *ngSwitchCase="true" src="/assets/icons/-_tileandmodule.svg"></svg-inline>
-                                    <svg-inline *ngSwitchCase="false" src="/assets/icons/+_tileandmodule.svg"></svg-inline>
-                                </div>
-                            </div>
-                            <div [ngClass]="['module-snapshot', module.type]" [innerHTML]="module.snapshot"></div>
+        </div>
+        <div class="container">
+            <module-types (setType)="type = $event" [type]="type" [textBySlug]="textBySlug"></module-types>
+            <div class="row">
+                <div class="gallery-sort col-md-3">
+                    <h3>View As</h3>
+                    <div class="row border-top border-bottom view-as">
+                        <div class="col-xs-6">
+                            <svg-inline (click)="viewStyle='grid'" [class.selected]="!query && viewStyle == 'grid'" class="clickable" src="/assets/icons/grid.svg"></svg-inline>
                         </div>
-                        
-                        <!-- ... -->
+                        <div class="col-xs-6">
+                            <svg-inline (click)="viewStyle='list'" [class.selected]="query || viewStyle == 'list'" class="clickable" src="/assets/icons/list.svg"></svg-inline>
+                        </div>
+                    </div>
+                    <h3>Sort By</h3>
+                    <div class="row border-top border-bottom sort-by">
+                        <div (click)="sortKey='title'" [class.selected]="sortKey == 'title'" class="col-xs-6 clickable">Alphabetical</div>
+                        <div (click)="sortKey='timestamp'" [class.selected]="sortKey == 'timestamp'" class="col-xs-6 clickable">Newest</div>
+                    </div>
+                    <h3>Tags</h3>
+                    <div class="row border-top tag-list">
+                        <span *ngFor="let tag of tags; let last=last">
+                            <span (click)="setTag(slugify(tag))" [class.selected]="!query && sortTag == slugify(tag)" class="clickable">{{ tag }}</span><span *ngIf="!last"> / </span>
+                        </span>
                     </div>
                 </div>
-                <div *ngIf="query || viewStyle == 'list'">
-                    <div class="col-md-1"></div>
-                    <div class="col-md-11">
-                        <div class="row">
-                            <div *ngIf="query" class="gallery-search-info gray col-sm-12">
-                                <span (click)="clearSearch()" class="gallery-search-clear clickable"><span class="gallery-search-icon">&#9746;</span> Clear</span>
-                                <span>Search Results for "{{ query }}" ({{ modulesFiltered.length }} results found)</span>
+                <div class="gallery-list col-md-9">
+                    <div *ngIf="!query && viewStyle == 'grid'" class="row">
+                        <div *ngFor="let module of sortModules()" (click)="router.navigate(['/Detail', {slug: module.slug}])" class="col-md-4 gallery-module-grid">
+                            <!-- Rethink the structure of this whole section -->
+
+                            <div class="make-it-square"></div>
+                            <div class="module-image" [ngStyle]="{'background-image': module.image ? 'url('+config['asset-path']+'/'+module.image+')' : ''}"></div>
+                            <div class="module-overlay"></div>
+                            <div class="module-content">
+                                <div class="module-hide-on-hover">
+                                    <div (mouseenter)="crazyHover($event,0,1,0.75)" (mouseleave)="crazyHover($event,1,0,0.5)">
+                                        <div [ngClass]="['module-type', module.type]">{{ module.type }}</div>
+                                        <div class="module-title">{{ module.title }}</div>
+                                    </div>
+                                    <div (click)="savingService.toggleSaved(module)" [ngSwitch]="savingService.isSaved(module)" class="module-save">
+                                        <svg-inline *ngSwitchCase="true" src="/assets/icons/-_tileandmodule.svg"></svg-inline>
+                                        <svg-inline *ngSwitchCase="false" src="/assets/icons/+_tileandmodule.svg"></svg-inline>
+                                    </div>
+                                </div>
+                                <div [ngClass]="['module-snapshot', module.type]" [innerHTML]="module.snapshot"></div>
                             </div>
-                            <div *ngFor="let module of sortModules()" (click)="router.navigate(['/Detail', {slug: module.slug}])" class="gallery-module-list col-sm-6">
-                                <div class="module-content clickable">
-                                    <div class="module-type-accent"></div>
-                                    <div [ngClass]="['module-type', module.type]">{{ module.type }}</div>
-                                    <div class="module-title">{{ module.title }}</div>
-                                    <div [innerHTML]="module.snapshot" class="module-snapshot"></div>
+                            
+                            <!-- ... -->
+                        </div>
+                    </div>
+                    <div *ngIf="query || viewStyle == 'list'">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-11">
+                            <div class="row">
+                                <div *ngIf="query" class="gallery-search-info gray col-sm-12">
+                                    <span (click)="clearSearch()" class="gallery-search-clear clickable"><span class="gallery-search-icon">&#9746;</span> Clear</span>
+                                    <span>Search Results for "{{ query }}" ({{ modulesFiltered.length }} results found)</span>
+                                </div>
+                                <div *ngFor="let module of sortModules()" (click)="router.navigate(['/Detail', {slug: module.slug}])" class="gallery-module-list col-sm-6">
+                                    <div class="module-content clickable">
+                                        <div class="module-type-accent"></div>
+                                        <div [ngClass]="['module-type', module.type]">{{ module.type }}</div>
+                                        <div class="module-title">{{ module.title }}</div>
+                                        <div [innerHTML]="module.snapshot" class="module-snapshot"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -329,150 +335,156 @@ export class GalleryComponent implements OnInit {
 @Component({
     selector: 'detail',
     template: `
-        <div *ngIf="!module"></div>
         <div *ngIf="module">
-            <div [ngClass]="['row', 'type-' + module.type]">
-                <div class="col-sm-12">
-                    <div class="module-image" [ngStyle]="{'background-image': module.image ? 'url('+config['asset-path']+'/'+module.image+')' : ''}">
-                        <div class="overlay"></div>
-                        <div *ngIf="!snapshot" [ngClass]="['pattern', module.type]">
-                            <div *ngIf="module.type != 'story'">
-                                <svg-inline *ngIf="!patternTypes.length" src="/assets/patterns/3rows/{{ module.type }}.svg"></svg-inline>
-                                <svg-inline *ngIf="patternTypes.length" src="/assets/patterns/3rowsoverlay/{{ module.type }}.svg"></svg-inline>
+
+            <div class="container">
+                <div [ngClass]="['row', 'type-' + module.type]">
+                    <div class="col-sm-12">
+                        <div class="module-image" [ngStyle]="{'background-image': module.image ? 'url('+config['asset-path']+'/'+module.image+')' : ''}">
+                            <div class="overlay"></div>
+                            <div *ngIf="!snapshot" [ngClass]="['pattern', module.type]">
+                                <div *ngIf="module.type != 'story'">
+                                    <svg-inline *ngIf="!patternTypes.length" src="/assets/patterns/3rows/{{ module.type }}.svg"></svg-inline>
+                                    <svg-inline *ngIf="patternTypes.length" src="/assets/patterns/3rowsoverlay/{{ module.type }}.svg"></svg-inline>
+                                </div>
+                                <svg-inline *ngFor="let type of patternTypes" src="/assets/patterns/3rowsoverlay/{{ type }}.svg"></svg-inline>
                             </div>
-                            <svg-inline *ngFor="let type of patternTypes" src="/assets/patterns/3rowsoverlay/{{ type }}.svg"></svg-inline>
-                        </div>
-                        <div *ngIf="snapshot" [ngClass]="['pattern', 'pattern-snapshot', module.type]" 
-                            [ngStyle]="{'background-image': 'url(/assets/patterns/snapshotoverlay/'+module.type+'.svg)'}"></div>
-                        <div class="module-header">
-                            <div [ngClass]="['module-type', module.type]">{{ module.type }}</div>
-                            <div class="module-title">{{ module.title }}</div>
-                            <div (click)="savingService.toggleSaved(module)" [ngSwitch]="savingService.isSaved(module)" class="module-save clickable">
-                                <div *ngSwitchCase="true"><svg-inline src="/assets/icons/-_tileandmodule.svg"></svg-inline>Remove this module from your tools</div>
-                                <div *ngSwitchCase="false"><svg-inline src="/assets/icons/+_tileandmodule.svg"></svg-inline>Save this module</div>
-                            </div><br>
-                            <div class="module-share clickable"><svg-inline src="/assets/icons/share_in_module.svg"></svg-inline>Share this module</div>
-                        </div>
-                        <div class="module-image-caption" [innerHTML]="module['image-caption']"></div>
-                    </div>
-                </div>
-            </div>
-            <div [ngClass]="['row', 'type-' + module.type]">
-                <div class="col-xs-3 col-md-2 left-side">
-                    <h3 class="border-bottom bigger">Contributed by</h3>
-                    <div *ngFor="let author of authors" >
-                        <a [routerLink]="['/Search', {query: 'authors:' + author.slug}]" class="black">
-                            <img *ngIf="author.image" class="contributor-image" src="{{ config['asset-path'] }}/{{ author.image }}">
-                            <h4>{{ author.title }}</h4>
-                        </a>
-                        <p *ngIf="author.bio" [innerHTML]="author.bio"></p>
-                        <p *ngIf="!author.bio && author['team-bio']" [innerHTML]="author['team-bio']"></p>
-                    </div>
-                    <div *ngIf="!authors.length">
-                        <img class="contributor-image" src="/assets/icons/anon.png">
-                        <h4>It could be you</h4>
-                    </div>
-                    <div *ngIf="module.tags">
-                        <h3 class="border-bottom">Tags</h3>
-                        <span *ngFor="let tag of module.tags; let last=last">
-                            <a [routerLink]="['/Tag', {tag: slugify(tag)}]" class="black">{{ tag }}</a><span *ngIf="!last"> / </span>
-                        </span>
-                    </div>
-                </div>
-                <div class="hidden-xs hidden-sm col-md-1 spacer">&nbsp;</div>
-                <div class="col-xs-9 col-md-5 content">
-                    <div *ngIf="snapshot">
-                        <p [innerHTML]="module.snapshot"></p>
-                        <p><strong>Hey, this isn't written yet but people like you are likely using it in all kinds of ways. Do you have insights to share on how to use this theory? Go ahead and share them through the form below...</strong></p>
-                        <div class="row">
-                            <div *ngIf="module['bt-link']" class="col-sm-6"><a href="{{ module['bt-link'] }}" target="_blank"><h4>See &rdquo;{{ module.title }}&ldquo; in <em>Beautiful Trouble</em></h4></a></div>
-                        </div>
-                    </div>
-                    <div *ngIf="!snapshot">
-                        <div *ngIf="collapsed">
-                            <div class="short-write-up" [innerHTML]="module['short-write-up']"></div>
-                            <h5 *ngIf="!gallery" (click)="collapsed = false">Read more</h5>
-                        </div>
-                        <div *ngIf="!collapsed">
-                            <div *ngFor="let epigraph of module.epigraphs" class="epigraphs">
-                                <div class="epigraph" [innerHTML]="epigraph[0]"></div>
-                                <div class="attribution" [innerHTML]="epigraph[1]"></div>
+                            <div *ngIf="snapshot" [ngClass]="['pattern', 'pattern-snapshot', module.type]" 
+                                [ngStyle]="{'background-image': 'url(/assets/patterns/snapshotoverlay/'+module.type+'.svg)'}"></div>
+                            <div class="module-header">
+                                <div [ngClass]="['module-type', module.type]">{{ module.type }}</div>
+                                <div class="module-title">{{ module.title }}</div>
+                                <div (click)="savingService.toggleSaved(module)" [ngSwitch]="savingService.isSaved(module)" class="module-save clickable">
+                                    <div *ngSwitchCase="true"><svg-inline src="/assets/icons/-_tileandmodule.svg"></svg-inline>Remove this module from your tools</div>
+                                    <div *ngSwitchCase="false"><svg-inline src="/assets/icons/+_tileandmodule.svg"></svg-inline>Save this module</div>
+                                </div><br>
+                                <div class="module-share clickable"><svg-inline src="/assets/icons/share_in_module.svg"></svg-inline>Share this module</div>
                             </div>
-                            <div *ngIf="!gallery" [innerHTML]="module['full-write-up']">
-                            </div>
-                            <h5 (click)="collapsed = true">Read less</h5>
-                        </div>
-                        <div *ngIf="module['why-it-worked']" class="why">
-                            <h4>Why it worked</h4>
-                            <p [innerHTML]="module['why-it-worked']"></p>
-                        </div>
-                        <div *ngIf="module['why-it-failed']" class="why">
-                            <h4>Why it failed</h4>
-                            <p [innerHTML]="module['why-it-failed']"></p>
-                        </div>
-                    </div>
-                    <div *ngFor="let type of [['key-tactics', 'tactic', 'tactics'],
-                                              ['key-principles', 'principle', 'principles'],
-                                              ['key-theories', 'theory', 'theories'],
-                                              ['key-methodologies', 'methodology', 'methodologies']]">
-                        <div *ngIf="module[type[0]]">
-                            <div *ngFor="let each of module[type[0]]; let first=first; let last=last;">
-                                <div *ngIf="first && last" [ngClass]="['module-type', type[1]]">key {{ type[1] }}</div><!-- singular -->
-                                <div *ngIf="first && !last" [ngClass]="['module-type', type[1]]">key {{ type[2] }}</div><!-- plural -->
-                                <h3 [innerHTML]="each[0]"></h3><div [innerHTML]="each[1]"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div *ngIf="module['learn-more']" class="learn-more">
-                        <div *ngFor="let learn of module['learn-more']; let first=first;">
-                            <h4 *ngIf="first">Learn more</h4>
-                            <p>
-                                <a target="_blank" href="{{ learn.link | notags | trim }}">{{ learn.title | notags | trim }}</a>
-                                <span *ngIf="untrustedString(learn.source)"> / {{ learn.source | notags }}</span><span *ngIf="untrustedString(learn.year)">, {{ learn.year | notags }}</span>
-                            </p>
+                            <div class="module-image-caption" [innerHTML]="module['image-caption']"></div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 right-side">
-                    <div *ngIf="module['potential-risks']" (click)="riskCollapsed = !riskCollapsed" [ngClass]="{'risks':true, 'clickable': module['potential-risks-short']}">
-                        <div class="heading">
-                            <svg-inline src="/assets/icons/pr.svg" [ngClass]="'type-' + module.type"></svg-inline>
-                            <h3 class="bigger">Potential risks</h3>
-                            <svg-inline *ngIf="module['potential-risks-short']" [ngClass]="{'arrow':true, 'selected':!riskCollapsed}" src="/assets/icons/arrow.svg"></svg-inline>
+            </div><!-- .container -->
+
+            <div class="container">
+                <div [ngClass]="['row', 'type-' + module.type]">
+                    <div class="col-xs-3 col-md-2 left-side">
+                        <h3 class="border-bottom bigger">Contributed by</h3>
+                        <div *ngFor="let author of authors" >
+                            <a [routerLink]="['/Search', {query: 'authors:' + author.slug}]" class="black">
+                                <img *ngIf="author.image" class="contributor-image" src="{{ config['asset-path'] }}/{{ author.image }}">
+                                <h4>{{ author.title }}</h4>
+                            </a>
+                            <p *ngIf="author.bio" [innerHTML]="author.bio"></p>
+                            <p *ngIf="!author.bio && author['team-bio']" [innerHTML]="author['team-bio']"></p>
                         </div>
-                        <div *ngIf="riskCollapsed && module['potential-risks-short']" [innerHTML]="module['potential-risks-short']"></div>
-                        <div *ngIf="riskCollapsed && !module['potential-risks-short']" [innerHTML]="module['potential-risks']"></div>
-                        <div *ngIf="!riskCollapsed" [innerHTML]="module['potential-risks']"></div>
+                        <div *ngIf="!authors.length">
+                            <img class="contributor-image" src="/assets/icons/anon.png">
+                            <h4>It could be you</h4>
+                        </div>
+                        <div *ngIf="module.tags">
+                            <h3 class="border-bottom">Tags</h3>
+                            <span *ngFor="let tag of module.tags; let last=last">
+                                <a [routerLink]="['/Tag', {tag: slugify(tag)}]" class="black">{{ tag }}</a><span *ngIf="!last"> / </span>
+                            </span>
+                        </div>
                     </div>
-                    <div *ngIf="tactics.length || principles.length || theories.length || methodologies.length" class="related">
-                        <h3 class="bigger">Related Modules</h3>
-                        <div *ngIf="tactics.length">
-                            <h3 class="indent">Tactics</h3>
-                            <ul><li *ngFor="let m of tactics">
-                                <a [routerLink]="['Detail', {slug: m.slug}]" class="tactic">{{ m.title }}</a>
-                            </li></ul>
+                    <div class="hidden-xs hidden-sm col-md-1 spacer">&nbsp;</div>
+                    <div class="col-xs-9 col-md-5 content">
+                        <div *ngIf="snapshot">
+                            <p [innerHTML]="module.snapshot"></p>
+                            <p><strong>Hey, this isn't written yet but people like you are likely using it in all kinds of ways. Do you have insights to share on how to use this theory? Go ahead and share them through the form below...</strong></p>
+                            <div class="row">
+                                <div *ngIf="module['bt-link']" class="col-sm-6"><a href="{{ module['bt-link'] }}" target="_blank"><h4>See &rdquo;{{ module.title }}&ldquo; in <em>Beautiful Trouble</em></h4></a></div>
+                            </div>
                         </div>
-                        <div *ngIf="principles.length">
-                            <h3 class="indent">Principles</h3>
-                            <ul><li *ngFor="let m of principles">
-                                <a [routerLink]="['Detail', {slug: m.slug}]" class="principle">{{ m.title }}</a>
-                            </li></ul>
+                        <div *ngIf="!snapshot">
+                            <div *ngIf="collapsed">
+                                <div class="short-write-up" [innerHTML]="module['short-write-up']"></div>
+                                <h5 *ngIf="!gallery" (click)="collapsed = false">Read more</h5>
+                            </div>
+                            <div *ngIf="!collapsed">
+                                <div *ngFor="let epigraph of module.epigraphs" class="epigraphs">
+                                    <div class="epigraph" [innerHTML]="epigraph[0]"></div>
+                                    <div class="attribution" [innerHTML]="epigraph[1]"></div>
+                                </div>
+                                <div *ngIf="!gallery" [innerHTML]="module['full-write-up']">
+                                </div>
+                                <h5 (click)="collapsed = true">Read less</h5>
+                            </div>
+                            <div *ngIf="module['why-it-worked']" class="why">
+                                <h4>Why it worked</h4>
+                                <p [innerHTML]="module['why-it-worked']"></p>
+                            </div>
+                            <div *ngIf="module['why-it-failed']" class="why">
+                                <h4>Why it failed</h4>
+                                <p [innerHTML]="module['why-it-failed']"></p>
+                            </div>
                         </div>
-                        <div *ngIf="theories.length">
-                            <h3 class="indent">Theories</h3>
-                            <ul><li *ngFor="let m of theories">
-                                <a [routerLink]="['Detail', {slug: m.slug}]" class="theory">{{ m.title }}</a>
-                            </li></ul>
+                        <div *ngFor="let type of [['key-tactics', 'tactic', 'tactics'],
+                                                  ['key-principles', 'principle', 'principles'],
+                                                  ['key-theories', 'theory', 'theories'],
+                                                  ['key-methodologies', 'methodology', 'methodologies']]">
+                            <div *ngIf="module[type[0]]">
+                                <div *ngFor="let each of module[type[0]]; let first=first; let last=last;">
+                                    <div *ngIf="first && last" [ngClass]="['module-type', type[1]]">key {{ type[1] }}</div><!-- singular -->
+                                    <div *ngIf="first && !last" [ngClass]="['module-type', type[1]]">key {{ type[2] }}</div><!-- plural -->
+                                    <h3 [innerHTML]="each[0]"></h3><div [innerHTML]="each[1]"></div>
+                                </div>
+                            </div>
                         </div>
-                        <div *ngIf="methodologies.length">
-                            <h3 class="indent">Methodologies</h3>
-                            <ul><li *ngFor="let m of methodologies">
-                                <a [routerLink]="['Detail', {slug: m.slug}]" class="methodology">{{ m.title }}</a>
-                            </li></ul>
+                        <div *ngIf="module['learn-more']" class="learn-more">
+                            <div *ngFor="let learn of module['learn-more']; let first=first;">
+                                <h4 *ngIf="first">Learn more</h4>
+                                <p>
+                                    <a target="_blank" href="{{ learn.link | notags | trim }}">{{ learn.title | notags | trim }}</a>
+                                    <span *ngIf="untrustedString(learn.source)"> / {{ learn.source | notags }}</span><span *ngIf="untrustedString(learn.year)">, {{ learn.year | notags }}</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 right-side">
+                        <div *ngIf="module['potential-risks']" (click)="riskCollapsed = !riskCollapsed" [ngClass]="{'risks':true, 'clickable': module['potential-risks-short']}">
+                            <div class="heading">
+                                <svg-inline src="/assets/icons/pr.svg" [ngClass]="'type-' + module.type"></svg-inline>
+                                <h3 class="bigger">Potential risks</h3>
+                                <svg-inline *ngIf="module['potential-risks-short']" [ngClass]="{'arrow':true, 'selected':!riskCollapsed}" src="/assets/icons/arrow.svg"></svg-inline>
+                            </div>
+                            <div *ngIf="riskCollapsed && module['potential-risks-short']" [innerHTML]="module['potential-risks-short']"></div>
+                            <div *ngIf="riskCollapsed && !module['potential-risks-short']" [innerHTML]="module['potential-risks']"></div>
+                            <div *ngIf="!riskCollapsed" [innerHTML]="module['potential-risks']"></div>
+                        </div>
+                        <div *ngIf="tactics.length || principles.length || theories.length || methodologies.length" class="related">
+                            <h3 class="bigger">Related Modules</h3>
+                            <div *ngIf="tactics.length">
+                                <h3 class="indent">Tactics</h3>
+                                <ul><li *ngFor="let m of tactics">
+                                    <a [routerLink]="['Detail', {slug: m.slug}]" class="tactic">{{ m.title }}</a>
+                                </li></ul>
+                            </div>
+                            <div *ngIf="principles.length">
+                                <h3 class="indent">Principles</h3>
+                                <ul><li *ngFor="let m of principles">
+                                    <a [routerLink]="['Detail', {slug: m.slug}]" class="principle">{{ m.title }}</a>
+                                </li></ul>
+                            </div>
+                            <div *ngIf="theories.length">
+                                <h3 class="indent">Theories</h3>
+                                <ul><li *ngFor="let m of theories">
+                                    <a [routerLink]="['Detail', {slug: m.slug}]" class="theory">{{ m.title }}</a>
+                                </li></ul>
+                            </div>
+                            <div *ngIf="methodologies.length">
+                                <h3 class="indent">Methodologies</h3>
+                                <ul><li *ngFor="let m of methodologies">
+                                    <a [routerLink]="['Detail', {slug: m.slug}]" class="methodology">{{ m.title }}</a>
+                                </li></ul>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </div><!-- .container -->
+
         </div>
     `,
     directives: [
@@ -625,8 +637,11 @@ export class ModalComponent {
     ]
 })
 export class MenuComponent {
-    @Input() router;
     visible = false;
+
+    constructor(
+        private router: Router) {
+    }
 
     toggle() { this.visible ? this.close() : this.open(); }
     close() { this.visible = false; }
@@ -730,32 +745,39 @@ export class ToolsComponent {
 @Component({
     selector: 'beautiful-rising',
     template: `
-        <div (click)="closeToolsOnBackgroundClick($event)" class="background" data-background="true">
-            <div [ngStyle]="{'direction': contentService.language==='ar' ? 'rtl' : 'ltr'}" class="container" data-background="true">
+            <div class="background" data-background="true" (click)="closeToolsOnBackgroundClick($event)" 
+             [ngStyle]="{'direction': contentService.language==='ar' ? 'rtl' : 'ltr'}">
+                <div id="fixed-nav" class="fixed-container-wrapper" [style.height.px]="96">
 
-                <div class="language-selection">
-                    <span *ngFor="let lang of languages" (click)="language=lang" [class.selected]="language===lang">{{ lang|uppercase }}</span>
-                </div>
-                <!-- <modal></modal> -->
-                <menu [router]="router"></menu>
-                <a [routerLink]="['/Home']"><img class="logo" src="/assets/icons/logo.png"></a>
-                <div class="contentarea" (window:resize)="setToolsOffset()" [ngStyle]="{'right': toolsOpened ? toolsOffset : '0'}">
-                    <tools (open)="toolsOpened = true" (close)="toolsOpened = false" [opened]="toolsOpened" [modulesBySlug]="modulesBySlug"></tools>
-                    <router-outlet></router-outlet>
-                    <div class="footer row">
-                        <div class="col-md-2"></div>
-                        <div class="col-md-8">
-                            <img src="/assets/icons/Creative_Commons.svg">
-                            <p>Beautiful Rising by Beautiful Rising, various authors is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License. Permissions beyond the scope of this license may be available at beautifulrising.org.</p>
+                    <div class="container" data-background="true">
+                        <div class="language-selection">
+                            <span *ngFor="let lang of languages" (click)="language=lang" [class.selected]="language===lang">{{ lang|uppercase }}</span>
                         </div>
-                        <div class="col-md-2"></div>
-                    </div>
-                </div>
-                <button (click)="contentService.language = 'es'">Español</button>
-                <button (click)="contentService.language = 'ar'">Arabic</button>
+                        <menu></menu>
+                        <a [routerLink]="['/Home']"><img class="logo" src="/assets/icons/logo.png"></a>
+                    </div><!-- .container -->
 
-            </div><!-- .container -->
-        </div><!-- .background -->
+                </div>
+                <div class="content-area" (window:resize)="setToolsOffset()" 
+                 [style.margin-top.px]="96" [ngStyle]="{'right': toolsOpened ? toolsOffset : '0'}">
+
+                    <!-- <modal></modal> -->
+                    <router-outlet></router-outlet>
+
+                    <div class="container">
+                        <tools (open)="toolsOpened = true" (close)="toolsOpened = false" [opened]="toolsOpened" [modulesBySlug]="modulesBySlug"></tools>
+                        <div class="footer row">
+                            <div class="col-md-2"></div>
+                            <div class="col-md-8">
+                                <img src="/assets/icons/Creative_Commons.svg">
+                                <p>Beautiful Rising by Beautiful Rising, various authors is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License. Permissions beyond the scope of this license may be available at beautifulrising.org.</p>
+                            </div>
+                            <div class="col-md-2"></div>
+                        </div>
+                    </div><!-- .container -->
+
+                </div>
+            </div>
     `,
     directives: [
         ROUTER_DIRECTIVES,
@@ -788,6 +810,7 @@ export class ToolsComponent {
 export class AppComponent implements OnInit {
     @LocalStorage() language;
     toolsOpened = false;
+    headerHeight = 96;
 
     constructor(
         private dom: BrowserDomAdapter,
@@ -805,9 +828,9 @@ export class AppComponent implements OnInit {
         this.setToolsOffset();
     }
     setToolsOffset() {
-        // Calculate how much to shift the contentarea when the tools panel is expanded
+        // Calculate how much to shift the content-area when the tools panel is expanded
         var toolsRect = this.dom.query('.tools').getBoundingClientRect();
-        var currentOffset = parseInt(getComputedStyle(this.dom.query('.contentarea')).right);
+        var currentOffset = parseInt(getComputedStyle(this.dom.query('.content-area')).right);
         var spaceToRight = document.documentElement.clientWidth - (toolsRect.left + toolsRect.width) - currentOffset;
         this.toolsOffset = Math.max(265 - spaceToRight, 0);
     }
