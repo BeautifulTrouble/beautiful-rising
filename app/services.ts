@@ -1,8 +1,7 @@
 // Any task which interacts with a data store should be abstracted to a service here.
 
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy, NgZone } from '@angular/core';
 import { Http, URLSearchParams } from '@angular/http';
-import { NgZone } from '@angular/core/src/zone';
 import { DomSanitizationService } from '@angular/platform-browser/src/security/dom_sanitization_service';
 
 import { Observable } from 'rxjs/Observable';
@@ -193,8 +192,7 @@ class StorageEmitter {
     }
     static addZone(zone) {
         var zoneSub = _.remove(StorageEmitter.zoneSubscribers, (zs) => zs[0] === zone)[0];
-        if (!zoneSub) zoneSub = [zone, 
-            zone.onMicrotaskEmpty.subscribe(() => _.invokeMap(StorageEmitter.callbacks, _.call)) ];
+        if (!zoneSub) zoneSub = [zone, zone.onMicrotaskEmpty.subscribe(() => _.invokeMap(StorageEmitter.callbacks, _.call))];
         StorageEmitter.zoneSubscribers.push(zoneSub);
     }
     static removeZone(zone) {
@@ -216,7 +214,7 @@ export class ModuleSavingService {
         return _.includes(this.savedModules, module.slug);
     }
     toggleSaved(module) {
-        // TODO: implement backend API saving, auto-sort, return actual modules?
+        // TODO: implement backend API saving, auto-sort...
         if (!module.slug) return;
         this.isSaved(module) ? _.pull(this.savedModules, module.slug) : this.savedModules.push(module.slug);
     }
