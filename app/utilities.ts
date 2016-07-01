@@ -104,7 +104,7 @@ export class SizePollingDirective {
                 if (hNew != this.hLast) {
                     this.heightchanged.emit(hNew);
                     this.hLast = hNew;
-                    this.zone.run();    // Force change detection
+                    this.zone.run(() => null);  // Force change detection
                 }
             }, hInterval);
             if (wInterval) this.wIntervalId = setInterval(() => {
@@ -112,7 +112,7 @@ export class SizePollingDirective {
                 if (wNew != this.wLast) {
                     this.widthchanged.emit(wNew);
                     this.wLast = wNew;
-                    this.zone.run();    // Force change detection
+                    this.zone.run(() => null);  // Force change detection
                 }
             }, wInterval);
         });

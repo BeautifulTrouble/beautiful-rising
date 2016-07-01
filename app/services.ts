@@ -62,8 +62,9 @@ export class ContentService {
                     output.moduleTypes = _.map(output.config['types-modules'], t => t.one);
                     output.modulesByType = _.pick(output.contentByType, output.moduleTypes);
                     output.modules = _.flatten(_.values(output.modulesByType));
-                    output.modulesFiltered = output.modules;
+                    output.modulesFiltered = output.modules; // TODO: remove this
                     output.modulesBySlug = _.keyBy(output.modules, 'slug');
+                    //output.modulesByRegion = _.mapKeys(_.groupBy(output.modules, 'region'), (v,k) => slugify(k || 'all'));
                     // Collect all tags
                     output.modulesByTag = {};
                     for (let module of output.modules) {
@@ -115,7 +116,8 @@ export class ContentService {
                         'string': s => this.sanitizer.bypassSecurityTrustHtml(md.render(s)),
                         'number': n => n
                     })[x instanceof Array ? 'array' : typeof x](x);
-                    for (let collection of [output.contentByType.person, output.modules]) {
+                    // TODO: special-case the text type for easier markdown stuff
+                    for (let collection of [output.contentByType.person, output.contentByType.text, output.modules]) {
                         for (let module of collection) {
                             for (let field of output.config.markdown) {
                                 if (module[field]) module[field] = markdown(module[field]);
