@@ -153,7 +153,7 @@ export class SearchComponent {
                                     <p [innerHtml]="textBySlug.home.definitions[type]"></p>
                                     <div *ngIf="type == 'story'" class="regions">
                                         <h3>Region</h3>
-                                        <span *ngFor="let each of ['africa','latin-america','north-america','asia','europe','middle-east','oceania']">
+                                        <span *ngFor="let each of ['africa','latin-america-and-the-caribbean','north-america','asia','europe','middle-east','oceania']">
                                             <svg-inline (click)="setRegion.next(each)" [ngClass]="{clickable:true, selected:region==each}" src="/assets/icons/{{ each }}.svg"></svg-inline>
                                         </span>
                                     </div>
@@ -170,7 +170,7 @@ export class SearchComponent {
                                         <svg-inline *ngIf="each[0] == type" class="pattern" src="/assets/patterns/1row/{{ each[0] }}.svg"></svg-inline>
                                     </span>
                                     <div *ngIf="type == 'story'" class="regions">
-                                        <span *ngFor="let each of ['africa','latin-america','north-america','asia','europe','middle-east','oceania']">
+                                        <span *ngFor="let each of ['africa','latin-america-and-the-caribbean','north-america','asia','europe','middle-east','oceania']">
                                             <svg-inline (click)="setRegion.next(each)" [ngClass]="{clickable:true, selected:region==each}" src="/assets/icons/{{ each }}.svg"></svg-inline>
                                         </span>
                                     </div>
@@ -178,7 +178,8 @@ export class SearchComponent {
                             </div>
                         </div>
                     </div>
-                    <svg-inline *ngIf="!expanded || overrideExpanded" (click)="expanded = overrideExpanded = !expanded" [ngClass]="{arrow:true, selected:expanded}" src="/assets/icons/arrow.svg"></svg-inline>
+                    <svg-inline *ngIf="!expanded || overrideExpanded" (click)="expanded = overrideExpanded = !expanded" 
+                     [ngClass]="{arrow:true, clickable:true, selected:expanded}" src="/assets/icons/arrow.svg"></svg-inline>
                 </div>
             </div>
         </div>
