@@ -254,6 +254,7 @@ $nav-height: 96px;
         color: black;
     }
     .tool-text {
+        padding-top: $margin;
         text-transform: uppercase;
         font-weight: bold;
         color: $lightgray;
@@ -262,11 +263,11 @@ $nav-height: 96px;
     .selected .tool-text {
         color: black;
     }
-    svg-inline div {
-        padding: 4 * $margin 0 $margin 0;
+    .icon {
+        padding: 4 * $margin 0 0 0;
     }
-    svg-inline.tools-toggle div {
-        padding: 2 * $margin 0;
+    .icon.tools-toggle {
+        padding: 2 * $margin 0 2 * $margin 0;
     }
     .tools-toggle svg {
         margin: $margin;

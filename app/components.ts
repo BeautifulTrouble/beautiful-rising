@@ -6,7 +6,8 @@ import { BrowserDomAdapter } from '@angular/platform-browser/src/browser/browser
 import { Title } from '@angular/platform-browser/src/browser/title';
 import { HTTP_PROVIDERS } from '@angular/http';
 
-import { CapitalizePipe, NotagsPipe, TrimPipe, SVGComponent, SizePollingDirective, untrustedString, noTags, slugify } from './utilities';
+import { InlineSVGDirective, SizePollingDirective } from './directives';
+import { CapitalizePipe, NotagsPipe, TrimPipe, untrustedString, noTags, slugify } from './utilities';
 import { ContentService, ClientStorageService, ModuleSavingService, LocalStorage, SessionStorage } from './services';
 
 import '../styles.scss';
@@ -187,7 +188,7 @@ export class SearchComponent {
     directives: [
         ROUTER_DIRECTIVES,
         SizePollingDirective,
-        SVGComponent
+        InlineSVGDirective
     ],
 })
 export class ModuleTypeComponent {
@@ -306,7 +307,7 @@ export class ModuleTypeComponent {
         ROUTER_DIRECTIVES,
         ModuleTypeComponent,
         SearchComponent,
-        SVGComponent
+        InlineSVGDirective
     ],
     styles: []
 })
@@ -575,7 +576,7 @@ export class GalleryComponent implements OnInit {
     `,
     directives: [
         ROUTER_DIRECTIVES,
-        SVGComponent
+        InlineSVGDirective
     ],
     pipes: [
         NotagsPipe, 
@@ -719,7 +720,7 @@ export class ModalComponent {
         </div>
     `,
     directives: [
-        SVGComponent
+        InlineSVGDirective
     ]
 })
 export class MenuComponent {
@@ -784,12 +785,14 @@ export class MenuComponent {
             </div>
         </div>
         <div class="tools" [class.opened]="opened">
-            <svg-inline class="clickable tools-toggle" (click)="toggleOpened()" src="/assets/icons/arrow.svg"></svg-inline>
-            <div class="clickable news-feed-icon" [class.selected]="opened && visible == 'news-feed'" (click)="selectTool('news-feed')">
+            <div (click)="toggleOpened()" class="clickable icon tools-toggle">
+                <svg-inline src="/assets/icons/arrow.svg"></svg-inline>
+            </div>
+            <div class="clickable icon" [class.selected]="opened && visible == 'news-feed'" (click)="selectTool('news-feed')">
                 <svg-inline src="/assets/icons/News_Feed.svg"></svg-inline>
                 <div class="tool-text">News feed</div>
             </div>
-            <div class="clickable my-tools-icon" [class.selected]="opened && visible == 'my-tools'" (click)="selectTool('my-tools')">
+            <div class="clickable icon" [class.selected]="opened && visible == 'my-tools'" (click)="selectTool('my-tools')">
                 <svg-inline src="/assets/icons/My_tools.svg"></svg-inline>
                 <div class="tool-text">My tools</div>
             </div>
@@ -797,7 +800,7 @@ export class MenuComponent {
     `,
     directives: [
         ROUTER_DIRECTIVES,
-        SVGComponent
+        InlineSVGDirective
     ]
 })
 export class ToolsComponent {
