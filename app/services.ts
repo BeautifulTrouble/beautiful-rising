@@ -147,6 +147,34 @@ export class ContentService {
 }
 
 
+// Run timed functions outside angular, only triggering change detection when those functions return true
+@Injectable()
+export class OutsideAngularService {
+    intervalIds = [];
+    timeoutIds = [];
+
+    constructor(private zone: NgZone) { }
+    ngOnDestroy() {
+        for (let each of this.intervalIds) { clearInterval(intervalId); }
+        for (let each of this.timeoutIds) { clearTimeout(intervalId); }
+    }
+    setInterval(callback, interval /* TODO: allow callers to subscribe to return values */) {
+        return this.zone.runOutsideAngular(() => {
+            var intervalId = setInterval(() => { callback() && this.zone.run(() => null); }, interval);
+            this.intervalIds.push(intervalId);
+            return intervalId;
+        });
+    }
+    setTimeout(callback, interval /* TODO: allow callers to subscribe to return values */) {
+        return this.zone.runOutsideAngular(() => {
+            var timeoutId = setTimeout(() => { callback() && this.zone.run(() => null); }, interval);
+            this.timeoutIds.push(timeoutIds);
+            return timeoutId;
+        });
+    }
+}
+
+
 // Client Storage Service (auto-persist decorated values to session/localStorage)
 @Injectable()
 export class ClientStorageService implements OnDestroy {
