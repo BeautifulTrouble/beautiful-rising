@@ -14,6 +14,27 @@ import markdownitFootnote = require('markdown-it-footnote');
 import { slugify } from './utilities';
 
 
+// Cache and share the results of Http requests to the same url
+@Injectable()
+export class CachedHttpService {
+    static cache = {};
+
+    constructor(private http: Http) { }
+    get(url, options) {
+        var observable;
+        if (!options) { options = {}; }
+        if (options.reload) { delete options.reload; }
+        else { observable = CachedHttpService.cache[url]; }
+        if (!observable) {
+            observable = CachedHttpService.cache[url] = this.http.get(url, options)
+                .publishLast()
+                .refCount();
+        }
+        return observable;
+    }
+}
+
+
 // Content Service (for fetching and transforming API content)
 @Injectable()
 export class ContentService {
