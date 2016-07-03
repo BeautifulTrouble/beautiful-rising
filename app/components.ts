@@ -4,7 +4,6 @@ import { Component, Input, Output, OnInit, EventEmitter, ElementRef, ViewChild, 
 import { RouteConfig, Router, RouteParams, ROUTER_DIRECTIVES, ROUTER_PROVIDERS } from '@angular/router-deprecated';
 import { BrowserDomAdapter } from '@angular/platform-browser/src/browser/browser_adapter';
 import { Title } from '@angular/platform-browser/src/browser/title';
-import { HTTP_PROVIDERS } from '@angular/http';
 
 import { InlineSVGDirective, SizePollingDirective } from './directives';
 import { CapitalizePipe, NotagsPipe, TrimPipe, plainString, noTags, slugify } from './utilities';
@@ -875,15 +874,6 @@ export class ToolsComponent {
         ModalComponent,
         MenuComponent,
         ToolsComponent,
-    ],
-    providers: [
-        ROUTER_PROVIDERS,
-        HTTP_PROVIDERS,
-        Title,
-        BrowserDomAdapter,
-        ContentService,
-        ClientStorageService,
-        ModuleSavingService,
     ]
 })
 @RouteConfig([
