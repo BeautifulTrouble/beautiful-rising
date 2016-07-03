@@ -7,7 +7,7 @@ import { Title } from '@angular/platform-browser/src/browser/title';
 import { HTTP_PROVIDERS } from '@angular/http';
 
 import { InlineSVGDirective, SizePollingDirective } from './directives';
-import { CapitalizePipe, NotagsPipe, TrimPipe, untrustedString, noTags, slugify } from './utilities';
+import { CapitalizePipe, NotagsPipe, TrimPipe, plainString, noTags, slugify } from './utilities';
 import { ContentService, ClientStorageService, ModuleSavingService, LocalStorage, SessionStorage } from './services';
 
 import '../styles.scss';
@@ -525,7 +525,7 @@ export class GalleryComponent implements OnInit {
                                 <h4 *ngIf="first">Learn more</h4>
                                 <p>
                                     <a target="_blank" href="{{ learn.link | notags | trim }}">{{ learn.title | notags | trim }}</a>
-                                    <span *ngIf="untrustedString(learn.source)"> / {{ learn.source | notags }}</span><span *ngIf="untrustedString(learn.year)">, {{ learn.year | notags }}</span>
+                                    <span *ngIf="plainString(learn.source)"> / {{ learn.source | notags }}</span><span *ngIf="plainString(learn.year)">, {{ learn.year | notags }}</span>
                                 </p>
                             </div>
                         </div>
@@ -587,7 +587,7 @@ export class GalleryComponent implements OnInit {
 export class DetailComponent implements OnInit {
     _ = _;
     slugify = slugify;
-    untrustedString = untrustedString;
+    plainString = plainString;
 
     module;
     patternTypes = [];

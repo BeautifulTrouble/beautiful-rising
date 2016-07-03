@@ -19,12 +19,12 @@ export class CapitalizePipe implements PipeTransform {
     transform = v => _.capitalize(v || '');
 }
 
-export var untrustedString = v => {
+export var plainString = v => {
     if (v && 'changingThisBreaksApplicationSecurity' in v) return v.changingThisBreaksApplicationSecurity;
     return (v || '').toString();
 }
 export var noTags = v => {
-    v = untrustedString(v);
+    v = plainString(v);
     let el = document.createElement('div');
     el.innerHTML = v;
     return el.textContent;
