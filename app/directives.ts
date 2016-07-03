@@ -2,7 +2,7 @@
 import { Http } from '@angular/http';
 import { Directive, OnInit, Input, Output, EventEmitter, ElementRef } from '@angular/core';
 
-import { OutsideAngularService } from './services';
+import { CachedHttpService, OutsideAngularService } from './services';
 
 
 // Inline an svg file with <svg-inline src="url"></svg-inline> tags
@@ -12,23 +12,15 @@ import { OutsideAngularService } from './services';
 export class InlineSVGDirective {
 	@Input() src;
 
-    constructor(private http: Http, private el: ElementRef) { }
-    ngOnInit() {
-        var observable = SVGCache.cache[this.src];
-        if (!observable) {
-            observable = SVGCache.cache[this.src] = this.http.get(this.src)
-                .map(res => res.text())
-                .publishLast()
-                .refCount(); // Don't execute multiple HTTP requests
-        }
-        observable.subscribe(
-            data => { this.el.nativeElement.innerHTML = data; },
-            err => console.error(`Can't load inline svg ${this.src}`)
-        );
+    constructor(
+        private el: ElementRef,
+        private cachedHttp: CachedHttpService) { 
     }
-}
-class SVGCache {
-    static cache = {};
+    ngOnInit() {
+        this.cachedHttp.get(this.src)
+            .map(res => res.text())
+            .subscribe(data => { this.el.nativeElement.innerHTML = data; });
+    }
 }
 
 
@@ -42,7 +34,6 @@ class SVGCache {
      *  <div height-polling width-polling="100" (heightchanged)="action($event)" (widthchanged)="action()">
      */
     selector: '[height-polling], [width-polling]',
-    providers: [OutsideAngularService]
 })
 export class SizePollingDirective {
     @Output() heightchanged = new EventEmitter();

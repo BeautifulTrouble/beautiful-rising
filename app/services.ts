@@ -45,7 +45,7 @@ export class ContentService {
     contentCacheByLanguage = {};
 
     constructor(
-        private http: Http,
+        private cachedHttp: CachedHttpService,
         private sanitizer: DomSanitizationService) { 
     }
 
@@ -53,21 +53,15 @@ export class ContentService {
     getContent(callback) {
         // Subscribe the callback to a single message
         this.contentStream.first().subscribe(callback);
-        // Use cached content when possible or fetch by HTTP
+        
+        // Use cached content when possible
         if (this.contentCacheByLanguage[this.language]) {
-
-            console.log('Using cached content');
-
-            // Emit the cached prepared content to subscribers
             this.contentSource.next(this.contentCacheByLanguage[this.language]);
         } else {
-
-            console.log('Using fresh content');
-
             var params = new URLSearchParams(`lang=${this.language}`);
-            this.http.get(this.contentUrl, {search: params})
-                .map(result => result.json())
-                .catch(err => Observable.throw('Something went wrong with the content API service!'))
+            this.cachedHttp.get(this.contentUrl, {search: params})
+                .map(res => res.json())
+                .catch(err => Observable.throw("Couldn't fetch API content!"))
                 .subscribe(content => {
                     // Prepare the content for easy consumption by components
                     let output:any = {}
