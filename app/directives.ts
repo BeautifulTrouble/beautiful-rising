@@ -1,6 +1,6 @@
 
 import { Http } from '@angular/http';
-import { Directive, OnInit, Input, Output, EventEmitter, NgZone, ElementRef } from '@angular/core';
+import { Directive, OnInit, Input, Output, EventEmitter, ElementRef } from '@angular/core';
 
 import { OutsideAngularService } from './services';
 
@@ -42,14 +42,16 @@ class SVGCache {
      *  <div height-polling width-polling="100" (heightchanged)="action($event)" (widthchanged)="action()">
      */
     selector: '[height-polling], [width-polling]',
-    //providers: [OutsideAngularService]
+    providers: [OutsideAngularService]
 })
 export class SizePollingDirective {
     @Output() heightchanged = new EventEmitter();
     @Output() widthchanged = new EventEmitter();
     defaultInterval = 100;
 
-    constructor(private zone: NgZone, private el: ElementRef) {
+    constructor(
+        private outside: OutsideAngularService,
+        private el: ElementRef) {
         var hInterval = el.nativeElement.getAttribute('height-polling');
         var wInterval = el.nativeElement.getAttribute('width-polling');
         hInterval = hInterval ? parseInt(hInterval) : hInterval === '' ? this.defaultInterval : null;
@@ -57,24 +59,21 @@ export class SizePollingDirective {
 
         // Angular has wrapped every call to setInterval with change detection logic using
         // zone.js, so we run this polling outside of Angular's zone for better performance
-        this.zone.runOutsideAngular(() => {
-            if (hInterval) this.hIntervalId = setInterval(() => {
-                var hNew = el.nativeElement.clientHeight;
-                if (hNew != this.hLast) {
-                    this.heightchanged.emit(hNew);
-                    this.hLast = hNew;
-                    this.zone.run(() => null);  // Force change detection
-                }
+        if (hInterval) this.hIntervalId = this.outside.setInterval(() => {
+            var hNew = el.nativeElement.clientHeight;
+            if (hNew != this.hLast) {
+                this.heightchanged.emit(hNew);
+                this.hLast = hNew;
+                return true; // Force change detection
             }, hInterval);
-            if (wInterval) this.wIntervalId = setInterval(() => {
-                var wNew = el.nativeElement.clientWidth;
-                if (wNew != this.wLast) {
-                    this.widthchanged.emit(wNew);
-                    this.wLast = wNew;
-                    this.zone.run(() => null);  // Force change detection
-                }
+
+        if (wInterval) this.wIntervalId = this.outside.setInterval(() => {
+            var wNew = el.nativeElement.clientWidth;
+            if (wNew != this.wLast) {
+                this.widthchanged.emit(wNew);
+                this.wLast = wNew;
+                return true; // Force change detection
             }, wInterval);
-        });
     }
     ngOnDestroy() {
         this.hIntervalId && clearInterval(this.hIntervalId);
