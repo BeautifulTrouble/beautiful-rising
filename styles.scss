@@ -396,7 +396,6 @@ menu {
         div:first-of-type { border-top: none; }
     }
     .menu-section {
-        width: $menu-width;
         h3 {
             margin-top: 0;
         }
@@ -405,6 +404,44 @@ menu {
             font-size: 13px;
             display: inline-block;
         }
+        p {
+            font-size: 12px;
+        }
+        p:first-of-type {
+            margin-top: 20px;
+        }
+        p:last-of-type {
+            margin-top: 20px;
+            margin-bottom: 6px;
+        }
+        p.clickable {
+            font-weight: bold;
+            text-transform: uppercase;
+            text-decoration: underline;
+            color: gray;
+            margin-bottom: 18px;
+        }
+        svg-inline {
+            margin-right: 20px;
+        }
+        .wrapper { 
+            position: relative;
+            input {
+                padding: 5px 70px 5px 10px;
+                margin-bottom: 20px;
+                width: 100%;
+                border: 2px solid black;
+            }
+            .submit {
+                color: gray;
+                position: absolute;
+                font-weight: bold;
+                text-transform: uppercase;
+                text-decoration: underline;
+                right: 8px; top: 8px;
+            }
+        }
+        width: $menu-width;
         padding: 3 * $margin;
         border-top: 2px solid black;
     }

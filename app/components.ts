@@ -5,7 +5,7 @@ import { Router, ActivatedRoute, provideRouter, ROUTER_DIRECTIVES } from '@angul
 import { Title } from '@angular/platform-browser/src/browser/title';
 import { BrowserDomAdapter } from '@angular/platform-browser/src/browser/browser_adapter';
 
-import { InlineSVGDirective, SizePollingDirective } from './directives';
+import { InlineSVGDirective, SizePollingDirective, SectionRouteDirective } from './directives';
 import { CapitalizePipe, NotagsPipe, TrimPipe, plainString, noTags, slugify } from './utilities';
 import { ContentService, ClientStorageService, ModuleSavingService, LocalStorage, SessionStorage } from './services';
 
@@ -16,7 +16,10 @@ import _ = require('lodash');
 @Component({
     selector: 'about',
     template: require('../templates/about.html'),
-    directives: [ROUTER_DIRECTIVES]
+    directives: [
+        SectionRouteDirective,
+        ROUTER_DIRECTIVES
+    ]
 })
 export class AboutComponent implements OnInit {
     constructor(
@@ -32,7 +35,10 @@ export class AboutComponent implements OnInit {
 @Component({
     selector: 'platforms',
     template: require('../templates/platforms.html'),
-    directives: [ROUTER_DIRECTIVES]
+    directives: [
+        SectionRouteDirective,
+        ROUTER_DIRECTIVES
+    ]
 })
 export class PlatformsComponent implements OnInit {
     constructor(
@@ -48,7 +54,10 @@ export class PlatformsComponent implements OnInit {
 @Component({
     selector: 'resources',
     template: require('../templates/resources.html'),
-    directives: [ROUTER_DIRECTIVES]
+    directives: [
+        SectionRouteDirective,
+        ROUTER_DIRECTIVES
+    ]
 })
 export class ResourcesComponent implements OnInit {
     text;
@@ -65,7 +74,10 @@ export class ResourcesComponent implements OnInit {
 @Component({
     selector: 'contribute',
     template: require('../templates/contribute.html'),
-    directives: [ROUTER_DIRECTIVES]
+    directives: [
+        SectionRouteDirective,
+        ROUTER_DIRECTIVES
+    ]
 })
 export class ContributeComponent implements OnInit {
     constructor(
@@ -698,28 +710,47 @@ export class ModalComponent {
             <div (click)="close()" class="overlay" [class.visible]="visible"></div>
             <div class="menu-outer">
                 <div class="menu">
-                    <div class="menu-inner">
+                    <div #menu class="menu-inner">
                         <div class="menu-top"></div>
-                        <div class="menu-scroll">
+                        <div (window:scroll)="onScroll()" class="menu-scroll">
                             <div class="menu-section">
-                                <h3>About</h3>
-                                <button (click)="router.navigate(['/about'])">About</button><br>
+                                <!-- wait for https://github.com/angular/angular/pull/9792 to add routerLinkActive -->
+                                <h3 class="clickable" (click)="close()" [routerLink]="['/about', 'beautiful-rising']">About</h3>
+                                <p class="clickable" (click)="close()" [routerLink]="['/about', 'process']">Our Process</p>
+                                <p class="clickable" (click)="close()" [routerLink]="['/about', 'values']">Our Values</p>
+                                <p class="clickable" (click)="close()" [routerLink]="['/about', 'advisory-network']">Our Advisory Network</p>
+                                <p class="clickable" (click)="close()" [routerLink]="['/about', 'team']">Our Team</p>
+                                <p class="clickable" (click)="close()" [routerLink]="['/about', 'beautiful-trouble-and-action-aid']">Beautiful Trouble + AA</p>
+                                <p class="clickable" (click)="close()" [routerLink]="['/about', 'partners']">Partners</p>
+                                <p class="clickable" (click)="close()" [routerLink]="['/about', 'faq']">FAQ</p>
                             </div>
                             <div class="menu-section">
-                                <h3>Platforms</h3>
+                                <h3 class="clickable" (click)="close()" [routerLink]="['/platforms']">Platforms</h3>
                                 <em>Explore other ways to access the toolbox</em>
-                                <button (click)="router.navigate(['/platforms'])">Platforms</button><br>
+                                <p class="clickable" (click)="close()" [routerLink]="['/platforms', 'chatbot']">Chat Bot</p>
+                                <p class="clickable" (click)="close()" [routerLink]="['/platforms', 'game']">Game</p>
+                                <p class="clickable" (click)="close()" [routerLink]="['/platforms', 'pdf']">PDF</p>
                             </div>
                             <div class="menu-section">
-                                <h3>Contribute</h3>
-                                <button (click)="router.navigate(['/contribute'])">Contribute</button><br>
+                                <h3 class="clickable" (click)="close()" [routerLink]="['/contribute']">Contribute</h3>
+                                <p class="clickable" (click)="close()" [routerLink]="['/contribute', 'how-it-works']">How does it work?</p>
+                                <p class="clickable" (click)="close()" [routerLink]="['/contribute', 'write-a-module']">Write up a module</p>
                             </div>
                             <div class="menu-section">
-                                <h3>Training + Resources</h3>
-                                <button (click)="router.navigate(['/resources'])">Resources</button><br>
+                                <h3 class="clickable" (click)="close()" [routerLink]="['/resources']">Training + Resources</h3>
+                                <p class="clickable" (click)="close()" [routerLink]="['/resources', 'training']">Request a Training</p>
+                                <p class="clickable" (click)="close()" [routerLink]="['/resources', 'other']">Other Resources</p>
                             </div>
                             <div class="menu-section">
                                 <h3>Contact Us</h3>
+                                <p></p>
+                                <svg-inline class="clickable" (click)="close()" src="/assets/icons/Twitter.svg"></svg-inline>
+                                <svg-inline class="clickable" (click)="close()" src="/assets/icons/facebook.svg"></svg-inline>
+                                <p class="subscribe-note">Subscribe to our newsletter</p>
+                                <div class="wrapper">
+                                    <input placeholder="name@example.com">
+                                    <span class="submit clickable">Submit</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -728,28 +759,26 @@ export class ModalComponent {
         </div>
     `,
     directives: [
+        ROUTER_DIRECTIVES,
         InlineSVGDirective
     ]
 })
 export class MenuComponent {
+    @ViewChild('menu') menu;
     @Input() textBySlug;
     visible = false;
+    lastScrollTop = 0;
 
-    constructor(
-        private router: Router) {
-            console.log(router);
-    }
-
+    constructor(private router: Router) { }
     toggle() { this.visible ? this.close() : this.open(); }
     close() { this.visible = false; }
-    open() {
-        this.visible = true;
-        /*
-        var subscription = this.router.subscribe(url => {
-            subscription.unsubscribe();
-            this.close()
-        });
-        */
+    open() { this.visible = true; }
+    onScroll() {
+        var scrollTop = document.body.scrollTop;
+        if (scrollTop != this.lastScrollTop) {
+            this.menu.nativeElement.scrollTop = this.menu.nativeElement.scrollTop + (scrollTop - this.lastScrollTop);
+            this.lastScrollTop = scrollTop;
+        }
     }
 }
 
@@ -931,7 +960,9 @@ export const APP_ROUTER_PROVIDERS = [provideRouter([
 
     {path: 'module/:slug',      component: DetailComponent},
 
+    //{path: 'about', pathMatch: 'full', redirectTo: '/about/beautiful-rising'},
     {path: 'about',             component: AboutComponent},
+    {path: 'about/:section',    component: AboutComponent},
     {path: 'platforms',         component: PlatformsComponent},
     {path: 'resources',         component: ResourcesComponent},
     {path: 'contribute',        component: ContributeComponent},
