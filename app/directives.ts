@@ -19,26 +19,26 @@ export class InlineSVGDirective {
 
 
 @Directive({
-    /* Directive which sends (heightchanged) and (widthchanged) events for the given element
+    /* Directive which sends (heightChanged) and (widthChanged) events for the given element
      *
      * Example uses w/ & w/o polling interval in milliseconds:
-     *  <div height-polling (heightchanged)="action($event)">
-     *  <div height-polling="100" (heightchanged)="action($event)">
-     *  <div width-polling="100ms" (widthchanged)="action($event)">
-     *  <div height-polling width-polling="100" (heightchanged)="action($event)" (widthchanged)="action()">
+     *  <div heightPolling (heightChanged)="action($event)">
+     *  <div heightPolling="100" (heightChanged)="action($event)">
+     *  <div widthPolling="100ms" (widthChanged)="action($event)">
+     *  <div heightPolling widthPolling="100" (heightChanged)="action($event)" (widthChanged)="action()">
      */
-    selector: '[height-polling], [width-polling]',
+    selector: '[heightPolling], [widthPolling]',
 })
 export class SizePollingDirective {
-    @Output() heightchanged = new EventEmitter();
-    @Output() widthchanged = new EventEmitter();
+    @Output() heightChanged = new EventEmitter();
+    @Output() widthChanged = new EventEmitter();
     defaultInterval = 100;
 
     constructor(
         private outside: OutsideAngularService,
         private el: ElementRef) {
-        var hInterval = el.nativeElement.getAttribute('height-polling');
-        var wInterval = el.nativeElement.getAttribute('width-polling');
+        var hInterval = el.nativeElement.getAttribute('heightPolling');
+        var wInterval = el.nativeElement.getAttribute('widthPolling');
         hInterval = hInterval ? parseInt(hInterval) : hInterval === '' ? this.defaultInterval : null;
         wInterval = wInterval ? parseInt(wInterval) : wInterval === '' ? this.defaultInterval : null;
 
@@ -47,7 +47,7 @@ export class SizePollingDirective {
         if (hInterval) this.hIntervalId = this.outside.setInterval(() => {
             var hNew = el.nativeElement.clientHeight;
             if (hNew != this.hLast) {
-                this.heightchanged.emit(hNew);
+                this.heightChanged.emit(hNew);
                 this.hLast = hNew;
                 return true; // Force change detection
             }, hInterval);
@@ -55,7 +55,7 @@ export class SizePollingDirective {
         if (wInterval) this.wIntervalId = this.outside.setInterval(() => {
             var wNew = el.nativeElement.clientWidth;
             if (wNew != this.wLast) {
-                this.widthchanged.emit(wNew);
+                this.widthChanged.emit(wNew);
                 this.wLast = wNew;
                 return true; // Force change detection
             }, wInterval);

@@ -98,7 +98,7 @@ export class SearchComponent {
     template: `
         <div class="row">
 
-            <div height-polling="100ms" (heightchanged)="resized.next($event)" 
+            <div heightPolling="100ms" (heightChanged)="resized.next($event)" 
              (window:scroll)="setExpanded()" [ngClass]="['module-types', expanded ? 'expanded' : 'collapsed']">
 
                 <div *ngIf="!textBySlug" class="loader-wrapper">
