@@ -1,6 +1,7 @@
 
 import { Http } from '@angular/http';
-import { Directive, OnInit, Input, Output, EventEmitter, ElementRef } from '@angular/core';
+import { Directive, OnInit, Input, Output, EventEmitter, ElementRef, HostListener } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import { CachedHttpService, OutsideAngularService } from './services';
 
@@ -14,6 +15,63 @@ export class InlineSVGDirective {
         this.cachedHttp.get(this.src)
             .map(res => res.text())
             .subscribe(data => { this.el.nativeElement.innerHTML = data; });
+    }
+}
+
+
+@Directive({
+    /* Directive which sets the route param to a section element's id and 
+     * also handles scrolling to that section when the route param changes
+     *
+     * <div addSectionToRoute="/basepath" thresholdElement="#fixed-div">
+     *   <section id="somesection"></section>
+     *   ...
+     */
+    selector: '[addSectionToRoute]'
+})
+export class SectionRouteDirective {
+    constructor(private router: Router, private route: ActivatedRoute, private el: ElementRef) {
+        this.sectionRoute = el.nativeElement.getAttribute('addSectionToRoute') || '/';
+        this.thresholdElement = el.nativeElement.getAttribute('thresholdElement');
+        this.thresholdOffset = parseInt(el.nativeElement.getAttribute('thresholdOffset') || '0');
+    }
+    ngOnInit() {
+        this.lastSection = null;
+        this.sub = this.route.params.subscribe(params => {
+            // TODO: if (!params.section) ...handle the transitional flicker
+            if (params.section && params.section != this.lastSection) {
+                var sectionEl = document.getElementById(params.section);
+                if (sectionEl) {
+                    window.scrollTo(0, sectionEl.getBoundingClientRect().top - this.getThreshold());
+                    this.lastSection = params.section;
+                }
+            }
+        });
+    }
+    ngOnDestroy() {
+        this.sub && this.sub.unsubscribe();
+    }
+    getThreshold() {
+        if (this.thresholdElement) {
+            var tEl = document.querySelector(this.thresholdElement);
+            if (tEl) return tEl.getBoundingClientRect().bottom + this.thresholdOffset;
+        }
+        return this.thresholdOffset;
+    }
+    @HostListener('window:scroll', ['$event'])
+    onScroll(event) {
+        var visibleSection;
+        var sections = document.querySelectorAll('section[id]');
+        var threshold = this.getThreshold();
+        for (let section of sections) { // Find the lowest visible section
+            if (section.getBoundingClientRect().top <= threshold) {
+                visibleSection = section.id;
+            }
+        }
+        if (visibleSection && visibleSection != this.lastSection) {
+            this.router.navigate([this.sectionRoute, visibleSection]);
+        }
+        this.lastSection = visibleSection;
     }
 }
 
