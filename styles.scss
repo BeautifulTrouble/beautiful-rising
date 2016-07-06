@@ -104,7 +104,6 @@ a:link, a:visited, a:hover, a:active {
 // General
 $margin: 6px;
 $transition: 0.1s;
-$shifted: 240px;
 
 html {
     overflow-y: scroll;
@@ -232,15 +231,13 @@ $nav-height: 96px;
     top: 8px;
     z-index: 1100;
     display: inline-block;
-    //transition: top .75s linear;
 }
-//.logo:hover { top: 1px; }
 
 
 // Tools
 .tools, .sidebar {
     position: absolute;
-    z-index: 1100;
+    z-index: 1000;
     border: 2px solid black;
 }
 .tools {
@@ -347,24 +344,59 @@ $sidebar: 265px;
 
 
 // Menu
-.hamburger-menu-icon svg-inline {
-    display: inline-block;
-    position: relative;
-    left: 6px;
-}
+$menu-top-size: 74px;
+$menu-width: 248px;
 menu {
     display: inline-block;
     padding: 0;
-    .menu {
-        background: white;
+    .menu-toggle {
+        svg-inline.open-icon {
+            display: inline-block;
+            position: relative;
+            left: 6px;
+        }
+        img.close-icon {
+            visibility: hidden;
+            &.visible { visibility: visible; }
+            position: absolute;
+            z-index: 1050;
+        }
+    }
+    .menu-outer {
         position: absolute;
-        z-index: 1000;
         top: 0;
-        width: 40 * $margin;
+    }
+    .menu {
+        position: relative;
+        right: 18px;
+        height: 100vh;  // TODO: polyfill or js
+        width: $menu-width;
+        overflow: hidden;
+        z-index: 1000;
+        background: white;
         border: 2px solid black;
-        margin-left: -21 * $margin;
+    }
+    .menu-inner {
+        position: relative;
+        height: 100vh;
+        overflow-y: scroll;
+        margin-right: -100px;   // Hide scrollbar
+    }
+    .menu-top {
+        position: fixed;
+        height: $menu-top-size;
+        width: $menu-width - 4;
+        border-bottom: 2px solid black;
+        background: white;
+        z-index: 1050;
+        box-shadow: 0 2*$margin 0 0 white;
+    }
+    .menu-scroll {
+        margin-top: $menu-top-size;
+        div:first-of-type { border-top: none; }
     }
     .menu-section {
+        width: $menu-width;
         h3 {
             margin-top: 0;
         }
@@ -377,19 +409,16 @@ menu {
         border-top: 2px solid black;
     }
     .overlay {
-        left: 0; right: 0;
-        top: 0; bottom: 0;
-        opacity: .5;
+        opacity: 0;
         background: $gray;
         z-index: 950;
         position: fixed;
+        @include prefix(transition, opacity 2s linear, webkit moz);
     }
-    .menu-close {
-        padding: 10px;
-        svg-inline { 
-            left: 114px; 
-            position: relative;
-        }
+    .overlay.visible {
+        left: 0; right: 0;
+        top: 0; bottom: 0;
+        opacity: .5;
     }
 }
 

@@ -682,37 +682,39 @@ export class ModalComponent {
 @Component({
     selector: 'menu',
     template: `
-        <div (click)="toggle()" class="hamburger-menu-icon clickable">
-            <svg-inline src="/assets/icons/hamburger.svg"></svg-inline>
-            <svg-inline style="display: none" src="/assets/icons/close.svg"></svg-inline>
+        <div (click)="toggle()" class="menu-toggle clickable">
+            <img [class.visible]="visible" class="close-icon" src="/assets/icons/close.png">
+            <svg-inline class="open-icon" src="/assets/icons/hamburger.svg"></svg-inline>
             <h4>Menu</h4>
         </div>
         <div *ngIf="visible">
-            <div (click)="close()" class="overlay"></div>
-            <div class="menu-wrapper">
+            <div (click)="close()" class="overlay" [class.visible]="visible"></div>
+            <div class="menu-outer">
                 <div class="menu">
-                    <div class="menu-close">
-                        <svg-inline (click)="close()" class="clickable" src="/assets/icons/close.svg"></svg-inline>
-                    </div>
-                    <div class="menu-section">
-                        <h3>About</h3>
-                        <button (click)="router.navigate(['/About'])">About</button><br>
-                    </div>
-                    <div class="menu-section">
-                        <h3>Platforms</h3>
-                        <em>Explore other ways to access the toolbox</em>
-                        <button (click)="router.navigate(['/Platforms'])">Platforms</button><br>
-                    </div>
-                    <div class="menu-section">
-                        <h3>Contribute</h3>
-                        <button (click)="router.navigate(['/Contribute'])">Contribute</button><br>
-                    </div>
-                    <div class="menu-section">
-                        <h3>Training + Resources</h3>
-                        <button (click)="router.navigate(['/Resources'])">Resources</button><br>
-                    </div>
-                    <div class="menu-section">
-                        <h3>Contact Us</h3>
+                    <div class="menu-inner">
+                        <div class="menu-top"></div>
+                        <div class="menu-scroll">
+                            <div class="menu-section">
+                                <h3>About</h3>
+                                <button (click)="router.navigate(['/About'])">About</button><br>
+                            </div>
+                            <div class="menu-section">
+                                <h3>Platforms</h3>
+                                <em>Explore other ways to access the toolbox</em>
+                                <button (click)="router.navigate(['/Platforms'])">Platforms</button><br>
+                            </div>
+                            <div class="menu-section">
+                                <h3>Contribute</h3>
+                                <button (click)="router.navigate(['/Contribute'])">Contribute</button><br>
+                            </div>
+                            <div class="menu-section">
+                                <h3>Training + Resources</h3>
+                                <button (click)="router.navigate(['/Resources'])">Resources</button><br>
+                            </div>
+                            <div class="menu-section">
+                                <h3>Contact Us</h3>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
