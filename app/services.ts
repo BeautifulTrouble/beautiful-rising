@@ -22,7 +22,7 @@ export class CachedHttpService {
     constructor(private http: Http) { }
     get(url, options) {
         var observable;
-        if (!options) { options = {}; }
+        options = options || {};
         if (options.reload) { delete options.reload; }
         else { observable = CachedHttpService.cache[url]; }
         if (!observable) {

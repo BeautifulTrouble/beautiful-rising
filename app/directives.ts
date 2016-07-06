@@ -6,16 +6,10 @@ import { CachedHttpService, OutsideAngularService } from './services';
 
 
 // Inline an svg file with <svg-inline src="url"></svg-inline> tags
-@Directive({
-	selector: 'svg-inline',
-})
+@Directive({ selector: 'svg-inline' })
 export class InlineSVGDirective {
 	@Input() src;
-
-    constructor(
-        private el: ElementRef,
-        private cachedHttp: CachedHttpService) { 
-    }
+    constructor(private el: ElementRef, private cachedHttp: CachedHttpService) { }
     ngOnInit() {
         this.cachedHttp.get(this.src)
             .map(res => res.text())
