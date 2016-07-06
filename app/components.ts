@@ -1,9 +1,9 @@
 // Define all site components here.
 
 import { Component, Input, Output, OnInit, EventEmitter, ElementRef, ViewChild, NgZone } from '@angular/core';
-import { RouteConfig, Router, RouteParams, ROUTER_DIRECTIVES, ROUTER_PROVIDERS } from '@angular/router-deprecated';
-import { BrowserDomAdapter } from '@angular/platform-browser/src/browser/browser_adapter';
+import { Router, ActivatedRoute, provideRouter, ROUTER_DIRECTIVES } from '@angular/router';
 import { Title } from '@angular/platform-browser/src/browser/title';
+import { BrowserDomAdapter } from '@angular/platform-browser/src/browser/browser_adapter';
 
 import { InlineSVGDirective, SizePollingDirective } from './directives';
 import { CapitalizePipe, NotagsPipe, TrimPipe, plainString, noTags, slugify } from './utilities';
@@ -249,14 +249,14 @@ export class ModuleTypeComponent {
                     <h3>Tags</h3>
                     <div class="row border-top tag-list">
                         <span *ngFor="let each of tags; let last=last">
-                            <a [routerLink]="['/Tag', {tag: slugify(each)}]" [class.selected]="tag == slugify(each)">{{ each }}</a><span *ngIf="!last"> / </span>
+                            <a [routerLink]="['/tag', slugify(each)]" [class.selected]="tag == slugify(each)">{{ each }}</a><span *ngIf="!last"> / </span>
                         </span>
                     </div>
                 </div>
                 </div>
                 <div class="gallery-list col-md-9">
                     <div *ngIf="viewStyle == 'grid'" class="row">
-                        <div *ngFor="let module of sortModules()" (click)="router.navigate(['/Detail', {slug: module.slug}])" class="col-md-4 gallery-module-grid">
+                        <div *ngFor="let module of sortModules()" (click)="router.navigate(['/module', module.slug])" class="col-md-4 gallery-module-grid">
                             <!-- Rethink the structure of this whole section -->
 
                             <div class="make-it-square"></div>
@@ -287,7 +287,7 @@ export class ModuleTypeComponent {
                                     <span (click)="clearSearch()" class="gallery-search-clear clickable"><span class="gallery-search-icon">&#9746;</span> Clear</span>
                                     <span>Search Results for "{{ query }}" ({{ modulesFiltered.length }} results found)</span>
                                 </div>
-                                <div *ngFor="let module of sortModules()" (click)="router.navigate(['/Detail', {slug: module.slug}])" class="gallery-module-list col-sm-6">
+                                <div *ngFor="let module of sortModules()" (click)="router.navigate(['/module', module.slug])" class="gallery-module-list col-sm-6">
                                     <div class="module-content clickable">
                                         <div class="module-type-accent"></div>
                                         <div [ngClass]="['module-type', module.type]">{{ module.type }}</div>
@@ -321,7 +321,7 @@ export class GalleryComponent implements OnInit {
         private dom: BrowserDomAdapter,
         private title: Title,
         private router: Router,
-        private routeParams: RouteParams,
+        private route: ActivatedRoute,
         private contentService: ContentService,
         private savingService: ModuleSavingService) { 
     }
@@ -333,16 +333,20 @@ export class GalleryComponent implements OnInit {
         this.marginTop = 0;
 
         this.contentService.injectContent(this, (content) => {
-            var params = this.routeParams.params;
-            this.type = params.type ? params.type : null;
-            if (params.tag) {
-                this.setTag(params.tag);
-            } else if (params.query) {
-                this.doSearch(decodeURIComponent(params.query));
-            }
-            //this.query = params.query ? decodeURIComponent(params.query) : '';
-            this.title.setTitle(content.textBySlug.home['site-title']);
+            this.sub = this.route.params.subscribe((params) => {
+                this.type = params.type ? params.type : null;
+                if (params.tag) {
+                    this.setTag(params.tag);
+                } else if (params.query) {
+                    this.doSearch(decodeURIComponent(params.query));
+                }
+                //this.query = params.query ? decodeURIComponent(params.query) : '';
+                this.title.setTitle(content.textBySlug.home['site-title']);
+            });
         });
+    }
+    ngOnDestroy() {
+        this.sub && this.sub.unsubscribe();
     }
     setRegion(region) {
         this.region = region == this.region ? null : region;
@@ -355,8 +359,8 @@ export class GalleryComponent implements OnInit {
             this.viewStyle = 'list';
             history.replaceState(null, null, '/search/'+query);
             // Allow queries like "authors:andrew-boyd" which search a specific field
-            var prefix = query.split(/\s*:\s*/)[0];
-            query = query.replace(/[^:]+:\s*/, '');
+            var prefix = query.split(/\s*!\s*/)[0];
+            query = query.replace(/[^@]+!\s*/, '');
             var config = {bool: /\s/.test(query) ? 'AND' : 'OR', expand: true};
             if (prefix != query && _.includes(this.config.search, prefix)) {
                 config.fields = {}; config.fields[prefix] = {boost: 5};
@@ -365,7 +369,7 @@ export class GalleryComponent implements OnInit {
             var results = this.index.search(query, config);
             this.modulesFiltered = _.map(results, obj => this.modulesBySlug[obj.ref]);
         } else {
-            //this.router.navigate(['/Home']); // Using navigate de-focuses the search bar
+            //this.router.navigate(['/home']); // Using navigate de-focuses the search bar
             history.replaceState(null, null, '/'); 
             this.modulesFiltered = this.modules;
         }
@@ -380,11 +384,11 @@ export class GalleryComponent implements OnInit {
         if (this.query) this.clearSearch();
         if (this.tag == tag) {
             this.tag = null;
-            this.router.navigate(['/Home']);
+            this.router.navigate(['/home']);
         } else {
             this.tag = tag;
             history.replaceState(null, null, '/tag/'+tag);
-            //this.router.navigate(['/Tag', {tag: tag}]); // TODO: implement routerCanReuse
+            //this.router.navigate(['/tag', tag}]); // TODO: implement routerCanReuse?
         }
     }
     sortModules() {
@@ -457,7 +461,7 @@ export class GalleryComponent implements OnInit {
                     <div class="col-xs-3 col-md-2 left-side">
                         <h3 class="border-bottom bigger">Contributed by</h3>
                         <div *ngFor="let author of authors" >
-                            <a [routerLink]="['/Search', {query: 'authors:' + author.slug}]" class="black">
+                            <a [routerLink]="['/search', 'authors!' + author.slug]" class="black">
                                 <img *ngIf="author.image" class="contributor-image" src="{{ config['asset-path'] }}/{{ author.image }}">
                                 <h4>{{ author.title }}</h4>
                             </a>
@@ -471,7 +475,7 @@ export class GalleryComponent implements OnInit {
                         <div *ngIf="module.tags">
                             <h3 class="border-bottom">Tags</h3>
                             <span *ngFor="let tag of module.tags; let last=last">
-                                <a [routerLink]="['/Tag', {tag: slugify(tag)}]" class="black">{{ tag }}</a><span *ngIf="!last"> / </span>
+                                <a [routerLink]="['/tag', slugify(tag)]" class="black">{{ tag }}</a><span *ngIf="!last"> / </span>
                             </span>
                         </div>
                     </div>
@@ -545,25 +549,25 @@ export class GalleryComponent implements OnInit {
                             <div *ngIf="tactics.length">
                                 <h3 class="indent">Tactics</h3>
                                 <ul><li *ngFor="let m of tactics">
-                                    <a [routerLink]="['Detail', {slug: m.slug}]" class="tactic">{{ m.title }}</a>
+                                    <a [routerLink]="['/module', m.slug]" class="tactic">{{ m.title }}</a>
                                 </li></ul>
                             </div>
                             <div *ngIf="principles.length">
                                 <h3 class="indent">Principles</h3>
                                 <ul><li *ngFor="let m of principles">
-                                    <a [routerLink]="['Detail', {slug: m.slug}]" class="principle">{{ m.title }}</a>
+                                    <a [routerLink]="['/module', m.slug]" class="principle">{{ m.title }}</a>
                                 </li></ul>
                             </div>
                             <div *ngIf="theories.length">
                                 <h3 class="indent">Theories</h3>
                                 <ul><li *ngFor="let m of theories">
-                                    <a [routerLink]="['Detail', {slug: m.slug}]" class="theory">{{ m.title }}</a>
+                                    <a [routerLink]="['/module', m.slug]" class="theory">{{ m.title }}</a>
                                 </li></ul>
                             </div>
                             <div *ngIf="methodologies.length">
                                 <h3 class="indent">Methodologies</h3>
                                 <ul><li *ngFor="let m of methodologies">
-                                    <a [routerLink]="['Detail', {slug: m.slug}]" class="methodology">{{ m.title }}</a>
+                                    <a [routerLink]="['/module', m.slug]" class="methodology">{{ m.title }}</a>
                                 </li></ul>
                             </div>
                         </div>
@@ -587,52 +591,53 @@ export class DetailComponent implements OnInit {
     _ = _;
     slugify = slugify;
     plainString = plainString;
-
     module;
-    patternTypes = [];
-    collapsed = true;
-    riskCollapsed = true;
+    patternTypes;
 
     constructor(
         private dom: BrowserDomAdapter,
         private el: ElementRef,
         private title: Title,
         private router: Router,
-        private routeParams: RouteParams,
+        private route: ActivatedRoute,
         private contentService: ContentService,
         private savingService: ModuleSavingService) { 
     }
     ngOnInit() {
         this.contentService.injectContent(this, () => {
-            this.module = this.modulesBySlug[this.routeParams.params.slug];
-            if (!this.module) {
-                this.router.navigate(['Search', {'query': 'slug:' + this.routeParams.params.slug}]);
-                return;
-            }
+            this.sub = this.route.params.subscribe((params) => {
+                this.module = this.modulesBySlug[params.slug];
+                if (!this.module) {
+                    this.router.navigate(['/search', 'slug!' + params.slug]);
+                    return;
+                }
+                this.collapsed = true;
+                this.riskCollapsed = true;
 
-            // HACK: Fix a few accidental snapshots
-            if (/In a page .500 words. or less/.test(this.module['full-write-up'])) delete this.module['full-write-up'];
+                // HACK: Fix a few accidental snapshots
+                if (/In a page .500 words. or less/.test(this.module['full-write-up'])) delete this.module['full-write-up'];
 
-            this.authors = this.getRelated('authors', this.peopleBySlug);
-            this.stories = this.getRelated('stories', this.modulesBySlug);
-            this.tactics = this.getRelated('tactics', this.modulesBySlug);
-            this.theories = this.getRelated('theories', this.modulesBySlug);
-            this.principles = this.getRelated('principles', this.modulesBySlug);
-            this.methodologies = this.getRelated('methodologies', this.modulesBySlug);
+                this.authors = this.getRelated('authors', this.peopleBySlug);
+                this.stories = this.getRelated('stories', this.modulesBySlug);
+                this.tactics = this.getRelated('tactics', this.modulesBySlug);
+                this.theories = this.getRelated('theories', this.modulesBySlug);
+                this.principles = this.getRelated('principles', this.modulesBySlug);
+                this.methodologies = this.getRelated('methodologies', this.modulesBySlug);
 
-            this.snapshot = !!(this.authors.length == 0 || (!this.module['full-write-up'] && !this.module['short-write-up']))
-            this.gallery = !!(!this.module['full-write-up'] && this.module['short-write-up'])
+                this.snapshot = !!(this.authors.length == 0 || (!this.module['full-write-up'] && !this.module['short-write-up']))
+                this.gallery = !!(!this.module['full-write-up'] && this.module['short-write-up'])
 
-            // Compose the module's pattern
-            var types = {'tactics':'tactic', 'principles':'principle', 'theories':'theory', 'methodologies':'methodology'};
-            var otherTypes = _.pull(_.keys(types), this.module.type);
-            this.patternTypes = _.filter(_.map(otherTypes, each => this.module[`key-${each}`] ? types[each] : null));
+                // Compose the module's pattern
+                var types = {'tactics':'tactic', 'principles':'principle', 'theories':'theory', 'methodologies':'methodology'};
+                var otherTypes = _.pull(_.keys(types), this.module.type);
+                this.patternTypes = _.filter(_.map(otherTypes, each => this.module[`key-${each}`] ? types[each] : null));
 
-            // Adjust the UI
-            this.title.setTitle(this.module['title']);
-            window.scrollTo(0,0);
+                // Adjust the UI
+                this.title.setTitle(this.module['title']);
+                window.scrollTo(0,0);
 
-            console.log(this.module);
+                console.log(this.module);
+            });
         });
     }
     ngAfterViewChecked() {
@@ -654,6 +659,9 @@ export class DetailComponent implements OnInit {
             });
         }
     }
+    ngOnDestroy() {
+        this.sub && this.sub.unsubscribe();
+    }
     getRelated(type, fromCollection) {
         return _.filter(_.map((this.module[type] || []).sort(), (slug) => fromCollection[slug]));
     }
@@ -672,7 +680,6 @@ export class DetailComponent implements OnInit {
     styles: []
 })
 export class ModalComponent {
-    @Input() config;
     _ = _;
     //@LocalStorage() seenPopup;
     seenPopup;
@@ -696,20 +703,20 @@ export class ModalComponent {
                         <div class="menu-scroll">
                             <div class="menu-section">
                                 <h3>About</h3>
-                                <button (click)="router.navigate(['/About'])">About</button><br>
+                                <button (click)="router.navigate(['/about'])">About</button><br>
                             </div>
                             <div class="menu-section">
                                 <h3>Platforms</h3>
                                 <em>Explore other ways to access the toolbox</em>
-                                <button (click)="router.navigate(['/Platforms'])">Platforms</button><br>
+                                <button (click)="router.navigate(['/platforms'])">Platforms</button><br>
                             </div>
                             <div class="menu-section">
                                 <h3>Contribute</h3>
-                                <button (click)="router.navigate(['/Contribute'])">Contribute</button><br>
+                                <button (click)="router.navigate(['/contribute'])">Contribute</button><br>
                             </div>
                             <div class="menu-section">
                                 <h3>Training + Resources</h3>
-                                <button (click)="router.navigate(['/Resources'])">Resources</button><br>
+                                <button (click)="router.navigate(['/resources'])">Resources</button><br>
                             </div>
                             <div class="menu-section">
                                 <h3>Contact Us</h3>
@@ -725,20 +732,24 @@ export class ModalComponent {
     ]
 })
 export class MenuComponent {
+    @Input() textBySlug;
     visible = false;
 
     constructor(
         private router: Router) {
+            console.log(router);
     }
 
     toggle() { this.visible ? this.close() : this.open(); }
     close() { this.visible = false; }
     open() {
         this.visible = true;
+        /*
         var subscription = this.router.subscribe(url => {
             subscription.unsubscribe();
             this.close()
         });
+        */
     }
 }
 
@@ -775,7 +786,7 @@ export class MenuComponent {
                         <p>Click on the <svg-inline src="/assets/icons/+_tileandmodule.svg"></svg-inline> of a module to save it here. You don’t need to login, we’ll remember the next time you visit the site from the same device and keep your modules in store.</p>
                     </div>
                     <div *ngFor="let module of getSavedModules(); let first = first" class="saved-module" [ngClass]="{first: first}">
-                        <div (click)="router.navigate(['/Detail', {slug: module.slug}]); toggleOpened()" class="module-title clickable">{{ module.title }}</div>
+                        <div (click)="router.navigate(['/module', module.slug]); toggleOpened()" class="module-title clickable">{{ module.title }}</div>
                         <div class="module-snapshot" [innerHTML]="module.snapshot"></div>
                         <div class="row">
                             <div (click)="savingService.toggleSaved(module)" class="col-sm-6 module-unsave clickable"><svg-inline src="/assets/icons/Remove.svg"></svg-inline> Remove</div>
@@ -844,9 +855,9 @@ export class ToolsComponent {
                             <span *ngFor="let lang of languages" (click)="language=lang" [class.selected]="language===lang">{{ lang|uppercase }}</span>
                         </div>
 
-                        <menu></menu>
+                        <menu [textBySlug]="textBySlug"></menu>
 
-                        <a [routerLink]="['/Home']"><img class="logo" src="/assets/icons/logo.png"></a>
+                        <a [routerLink]="['']"><img class="logo" src="/assets/icons/logo.png"></a>
                     </div><!-- .container -->
 
                 </div>
@@ -878,18 +889,6 @@ export class ToolsComponent {
         ToolsComponent,
     ]
 })
-@RouteConfig([
-    {path: '/module/:slug',         component: DetailComponent,     name: 'Detail'},
-    {path: '/search/:query',        component: GalleryComponent,    name: 'Search'},
-    {path: '/type/:type',           component: GalleryComponent,    name: 'Type'},
-    {path: '/tag/:tag',             component: GalleryComponent,    name: 'Tag'},
-    {path: '/about',                component: AboutComponent,      name: 'About'},
-    {path: '/platform',             component: PlatformsComponent,  name: 'Platforms'},
-    {path: '/resources',            component: ResourcesComponent,  name: 'Resources'},
-    {path: '/contribute',           component: ContributeComponent, name: 'Contribute'},
-    {path: '',                      component: GalleryComponent,    name: 'Home'},
-    {path: '*',                     component: GalleryComponent,    name: 'NotFound'},
-])
 export class AppComponent implements OnInit {
     @LocalStorage() language;
     toolsOpened = false;
@@ -920,4 +919,22 @@ export class AppComponent implements OnInit {
         if (event.target.dataset && event.target.dataset.background) this.toolsOpened = false;
     }
 }
+
+
+export const APP_ROUTER_PROVIDERS = [provideRouter([
+    //{path: '', pathMatch: 'full', redirectTo: '/home'},
+
+    {path: '',                  component: GalleryComponent},
+    {path: 'search/:query',     component: GalleryComponent},
+    {path: 'tag/:tag',          component: GalleryComponent},
+    {path: 'type/:type',        component: GalleryComponent},
+
+    {path: 'module/:slug',      component: DetailComponent},
+
+    {path: 'about',             component: AboutComponent},
+    {path: 'platforms',         component: PlatformsComponent},
+    {path: 'resources',         component: ResourcesComponent},
+    {path: 'contribute',        component: ContributeComponent},
+])];
+
 
