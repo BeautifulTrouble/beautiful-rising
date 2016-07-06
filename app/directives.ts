@@ -42,7 +42,7 @@ export class SectionRouteDirective {
             if (params.section && params.section != this.lastSection) {
                 var sectionEl = document.getElementById(params.section);
                 if (sectionEl) {
-                    window.scrollTo(0, sectionEl.getBoundingClientRect().top - this.getThreshold());
+                    window.scrollTo(0, sectionEl.offsetTop)
                     this.lastSection = params.section;
                 }
             }
