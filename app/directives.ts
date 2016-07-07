@@ -22,6 +22,12 @@ export class InlineSVGDirective {
 }
 
 
+/* Directive which lazy-loads background images once they've scrolled onscreen
+ *
+ *  <div lazyBackgroundImages="lazybg">
+ *      <div [attr.data-lazybg]="/some/url.png">
+ *      ...
+ */
 @Directive({ selector: '[lazyBackgroundImages]'})
 export class LazyBackgroundDirective {
     constructor(
