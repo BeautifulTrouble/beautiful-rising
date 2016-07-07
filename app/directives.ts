@@ -144,3 +144,4 @@ export var APP_DIRECTIVES = [
     SectionRouteDirective,
     SizePollingDirective,
 ];
+

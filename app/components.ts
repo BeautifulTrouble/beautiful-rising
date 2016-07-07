@@ -5,7 +5,7 @@ import { Router, ActivatedRoute, provideRouter, ROUTER_DIRECTIVES } from '@angul
 import { Title } from '@angular/platform-browser/src/browser/title';
 import { BrowserDomAdapter } from '@angular/platform-browser/src/browser/browser_adapter';
 
-import { InlineSVGDirective, SizePollingDirective, SectionRouteDirective } from './directives';
+import { APP_DIRECTIVES } from './directives';
 import { CapitalizePipe, NotagsPipe, TrimPipe, plainString, noTags, slugify } from './utilities';
 import { ContentService, ClientStorageService, ModuleSavingService, LocalStorage, SessionStorage } from './services';
 
@@ -17,7 +17,7 @@ import _ = require('lodash');
     selector: 'about',
     template: require('../templates/about.html'),
     directives: [
-        SectionRouteDirective,
+        APP_DIRECTIVES,
         ROUTER_DIRECTIVES
     ]
 })
@@ -36,7 +36,7 @@ export class AboutComponent implements OnInit {
     selector: 'platforms',
     template: require('../templates/platforms.html'),
     directives: [
-        SectionRouteDirective,
+        APP_DIRECTIVES,
         ROUTER_DIRECTIVES
     ]
 })
@@ -55,7 +55,7 @@ export class PlatformsComponent implements OnInit {
     selector: 'resources',
     template: require('../templates/resources.html'),
     directives: [
-        SectionRouteDirective,
+        APP_DIRECTIVES,
         ROUTER_DIRECTIVES
     ]
 })
@@ -75,7 +75,7 @@ export class ResourcesComponent implements OnInit {
     selector: 'contribute',
     template: require('../templates/contribute.html'),
     directives: [
-        SectionRouteDirective,
+        APP_DIRECTIVES,
         ROUTER_DIRECTIVES
     ]
 })
@@ -197,10 +197,9 @@ export class SearchComponent {
         </div>
     `,
     directives: [
-        ROUTER_DIRECTIVES,
-        SizePollingDirective,
-        InlineSVGDirective
-    ],
+        APP_DIRECTIVES,
+        ROUTER_DIRECTIVES
+    ]
 })
 export class ModuleTypeComponent {
     @Input() type;
@@ -315,10 +314,10 @@ export class ModuleTypeComponent {
         </div>
     `,
     directives: [
+        APP_DIRECTIVES,
         ROUTER_DIRECTIVES,
         ModuleTypeComponent,
         SearchComponent,
-        InlineSVGDirective
     ],
     styles: []
 })
@@ -590,8 +589,8 @@ export class GalleryComponent implements OnInit {
         </div>
     `,
     directives: [
-        ROUTER_DIRECTIVES,
-        InlineSVGDirective
+        APP_DIRECTIVES,
+        ROUTER_DIRECTIVES
     ],
     pipes: [
         NotagsPipe, 
@@ -759,8 +758,8 @@ export class ModalComponent {
         </div>
     `,
     directives: [
-        ROUTER_DIRECTIVES,
-        InlineSVGDirective
+        APP_DIRECTIVES,
+        ROUTER_DIRECTIVES
     ]
 })
 export class MenuComponent {
@@ -840,8 +839,8 @@ export class MenuComponent {
         </div>
     `,
     directives: [
-        ROUTER_DIRECTIVES,
-        InlineSVGDirective
+        APP_DIRECTIVES,
+        ROUTER_DIRECTIVES
     ]
 })
 export class ToolsComponent {
@@ -912,6 +911,7 @@ export class ToolsComponent {
             </div>
     `,
     directives: [
+        APP_DIRECTIVES,
         ROUTER_DIRECTIVES,
         ModalComponent,
         MenuComponent,
