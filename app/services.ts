@@ -173,7 +173,7 @@ export class ContentService {
 }
 
 
-// Run timed functions outside angular, only triggering change detection when those functions return true
+// Run functions outside angular, only triggering change detection when those functions return true
 @Injectable()
 export class OutsideAngularService {
     intervalIds = [];
@@ -181,8 +181,8 @@ export class OutsideAngularService {
 
     constructor(private zone: NgZone) { }
     ngOnDestroy() {
-        for (let each of this.intervalIds) { clearInterval(intervalId); }
-        for (let each of this.timeoutIds) { clearTimeout(intervalId); }
+        for (let each of this.intervalIds) { clearInterval(each); }
+        for (let each of this.timeoutIds) { clearTimeout(each); }
     }
     setInterval(callback, interval /* TODO: allow callers to subscribe to return values */) {
         return this.zone.runOutsideAngular(() => {
@@ -194,9 +194,21 @@ export class OutsideAngularService {
     setTimeout(callback, interval /* TODO: allow callers to subscribe to return values */) {
         return this.zone.runOutsideAngular(() => {
             var timeoutId = setTimeout(() => { callback() && this.zone.run(() => null); }, interval);
-            this.timeoutIds.push(timeoutIds);
+            this.timeoutIds.push(timeoutId);
             return timeoutId;
         });
+    }
+    addEventListener(target, event, callback) {
+        this.zone.runOutsideAngular(() => {
+            let wrappedCallback = (event) => callback(event) && this.zone.run(() => null);
+            target[`__outside_on${event}_${callback}`] = wrappedCallback;
+            target.addEventListener(event, wrappedCallback)
+        });
+    }
+    removeEventListener(target, event, callback) {
+        let eventKey = `__outside_on${event}_${callback}`;
+        target.removeEventListener(event, target[eventKey]);
+        delete target[eventKey];
     }
 }
 
