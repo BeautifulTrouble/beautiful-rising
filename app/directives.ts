@@ -22,6 +22,38 @@ export class InlineSVGDirective {
 }
 
 
+@Directive({ selector: '[lazyBackgroundImages]'})
+export class LazyBackgroundDirective {
+    constructor(
+        private el: ElementRef,
+        private outside: OutsideAngularService) {
+        this.dataName = 'data-' + (el.nativeElement.getAttribute('lazyBackgroundImages') || 'lazy-background');
+        this.dataSelector = `[${this.dataName}]`;
+    }
+    ngOnInit() {
+        this.outside.addEventListener(window, 'scroll', this.lazyLoad);
+        this.outside.addEventListener(window, 'resize', this.lazyLoad);
+    }
+    ngOnDestroy() {
+        this.outside.removeEventListener(window, 'scroll', this.lazyLoad);
+        this.outside.removeEventListener(window, 'resize', this.lazyLoad);
+    }
+    ngDoCheck() { this.lazyLoad(); }
+    lazyLoad = () => {
+        let elements = this.el.nativeElement.querySelectorAll(this.dataSelector);
+        elements.length || this.ngOnDestroy();
+        let threshold = window.innerHeight + 500;
+        for (let el of elements) {
+            if (el.getBoundingClientRect().top < threshold) {
+                el.style.opacity = 1;   // Use CSS3 transition to fade in
+                el.style.backgroundImage = `url(${el.getAttribute(this.dataName)})`;
+                el.removeAttribute(this.dataName);
+            }
+        }
+    }
+}
+
+
 /* Directive which provides an [innerMarkdown] feature similar to [innerHTML]
  *
  *  <div [innerMarkdown]="variableName">This will be replaced.</div>
@@ -143,5 +175,6 @@ export var APP_DIRECTIVES = [
     MarkdownDirective,
     SectionRouteDirective,
     SizePollingDirective,
+    LazyBackgroundDirective
 ];
 
