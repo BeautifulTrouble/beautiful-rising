@@ -1,9 +1,8 @@
 // Define all site components here.
 
-import { Component, Input, Output, OnInit, EventEmitter, ElementRef, ViewChild, NgZone } from '@angular/core';
+import { Component, Input, Output, Inject, EventEmitter, ElementRef, ViewChild, NgZone } from '@angular/core';
 import { Router, ActivatedRoute, provideRouter, ROUTER_DIRECTIVES } from '@angular/router';
-import { Title } from '@angular/platform-browser/src/browser/title';
-import { BrowserDomAdapter } from '@angular/platform-browser/src/browser/browser_adapter';
+import { Title } from '@angular/platform-browser';
 
 import { APP_DIRECTIVES } from './directives';
 import { CapitalizePipe, NotagsPipe, TrimPipe, plainString, noTags, slugify } from './utilities';
@@ -21,7 +20,7 @@ import _ = require('lodash');
         ROUTER_DIRECTIVES
     ]
 })
-export class AboutComponent implements OnInit {
+export class AboutComponent {
     constructor(
         private router: Router,
         private contentService: ContentService) {
@@ -40,7 +39,7 @@ export class AboutComponent implements OnInit {
         ROUTER_DIRECTIVES
     ]
 })
-export class PlatformsComponent implements OnInit {
+export class PlatformsComponent {
     constructor(
         private router: Router,
         private contentService: ContentService) {
@@ -59,7 +58,7 @@ export class PlatformsComponent implements OnInit {
         ROUTER_DIRECTIVES
     ]
 })
-export class ResourcesComponent implements OnInit {
+export class ResourcesComponent {
     text;
     constructor(
         private router: Router,
@@ -79,7 +78,7 @@ export class ResourcesComponent implements OnInit {
         ROUTER_DIRECTIVES
     ]
 })
-export class ContributeComponent implements OnInit {
+export class ContributeComponent {
     constructor(
         private router: Router,
         private contentService: ContentService) {
@@ -209,7 +208,6 @@ export class ModuleTypeComponent {
     @Output() setRegion = new EventEmitter();
     @Output() resized = new EventEmitter();
     expanded = true;
-    body = document.body;
     types = [['story', 'stories'], 
              ['tactic', 'tactics'], 
              ['principle', 'principles'], 
@@ -218,7 +216,7 @@ export class ModuleTypeComponent {
     typeMap = _.fromPairs(this.types);
 
     constructor(private router: Router) { }
-    setExpanded(override) {
+    setExpanded() {
         if (document.body.scrollTop == 0) {
             this.expanded = true;
             this.overrideExpanded = false;
@@ -321,7 +319,7 @@ export class ModuleTypeComponent {
     ],
     styles: []
 })
-export class GalleryComponent implements OnInit {
+export class GalleryComponent {
     @LocalStorage() sortKey;
     @LocalStorage() viewStyle;
     type;
@@ -329,7 +327,6 @@ export class GalleryComponent implements OnInit {
     slugify = slugify;
 
     constructor(
-        private dom: BrowserDomAdapter,
         private title: Title,
         private router: Router,
         private route: ActivatedRoute,
@@ -598,7 +595,7 @@ export class GalleryComponent implements OnInit {
     ],
     styles: []
 })
-export class DetailComponent implements OnInit {
+export class DetailComponent {
     _ = _;
     slugify = slugify;
     plainString = plainString;
@@ -606,7 +603,6 @@ export class DetailComponent implements OnInit {
     patternTypes;
 
     constructor(
-        private dom: BrowserDomAdapter,
         private el: ElementRef,
         private title: Title,
         private router: Router,
@@ -653,11 +649,11 @@ export class DetailComponent implements OnInit {
     }
     ngAfterViewChecked() {
         // HACK: Ensure fragment links don't reload the page
-        var links = this.dom.querySelectorAll(this.el.nativeElement, 'a[href^="#"]');
+        var links = document.body.querySelectorAll(this.el.nativeElement, 'a[href^="#"]');
         if (links.length) _.map(links, el => el.setAttribute('href', location.pathname + el.hash));
 
         // HACK: Prevent module links rendered from markdown from reloading the page
-        var links = this.dom.querySelectorAll(this.el.nativeElement, 'a[href^="/module"]');
+        var links = document.body.querySelectorAll(this.el.nativeElement, 'a[href^="/module"]');
         if (links.length) {
             _.map(links, el => {
                 if (el.hash) return; // Don't rewrite links with fragment ids
@@ -918,12 +914,11 @@ export class ToolsComponent {
         ToolsComponent,
     ]
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
     @LocalStorage() language;
     toolsOpened = false;
 
     constructor(
-        private dom: BrowserDomAdapter,
         private router: Router,
         private clientStorageService: ClientStorageService,
         private contentService: ContentService) {
@@ -939,8 +934,8 @@ export class AppComponent implements OnInit {
     }
     setToolsOffset() {
         // Calculate how much to shift the content-area when the tools panel is expanded
-        var toolsRect = this.dom.query('.tools').getBoundingClientRect();
-        var currentOffset = parseInt(getComputedStyle(this.dom.query('.content-area')).right);
+        var toolsRect = document.body.querySelector('.tools').getBoundingClientRect();
+        var currentOffset = parseInt(getComputedStyle(document.body.querySelector('.content-area')).right);
         var spaceToRight = document.documentElement.clientWidth - (toolsRect.left + toolsRect.width) - currentOffset;
         this.toolsOffset = Math.max(265 - spaceToRight, 0);
     }
