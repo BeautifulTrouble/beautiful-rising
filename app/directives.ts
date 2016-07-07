@@ -25,12 +25,12 @@ export class InlineSVGDirective {
 /* Directive which provides an [innerMarkdown] feature similar to [innerHTML]
  *
  *  <div [innerMarkdown]="variableName">This will be replaced.</div>
+ *  <div [innerMarkdown]="'# Bare markdown works too!'"></div>
  */
 @Directive({ selector: '[innerMarkdown]' })
 export class MarkdownDirective {
     @Input() innerMarkdown;
     constructor(private el: ElementRef, private md: MarkdownService) { }
-    ngOnInit() { this.updateContent(); }
     ngOnChanges() { this.updateContent(); }
     updateContent() { this.el.nativeElement.innerHTML = this.md.render(this.innerMarkdown); }
 }
