@@ -78,7 +78,11 @@ export class MarkdownDirective {
  */
 @Directive({ selector: '[addSectionToRoute]' })
 export class SectionRouteDirective {
-    constructor(private router: Router, private route: ActivatedRoute, private el: ElementRef) {
+    constructor(
+        private outside: OutsideAngularService,
+        private router: Router, 
+        private route: ActivatedRoute, 
+        private el: ElementRef) {
         this.basePath = el.nativeElement.getAttribute('addSectionToRoute') || '/';
         this.thresholdElement = el.nativeElement.getAttribute('thresholdElement');
         this.thresholdOffset = parseInt(el.nativeElement.getAttribute('thresholdOffset') || '0');
@@ -95,9 +99,11 @@ export class SectionRouteDirective {
                 }
             }
         });
+        this.outside.addEventListener(window, 'scroll', this.onScroll);
     }
     ngOnDestroy() {
         this.sub && this.sub.unsubscribe();
+        this.outside.removeEventListener(window, 'scroll', this.onScroll);
     }
     getThreshold() {
         if (this.thresholdElement) {
@@ -106,8 +112,7 @@ export class SectionRouteDirective {
         }
         return this.thresholdOffset;
     }
-    @HostListener('window:scroll', ['$event'])
-    onScroll(event) {
+    onScroll = () => {
         var visibleSection;
         var sections = document.querySelectorAll('section[id]');
         var threshold = this.getThreshold();
