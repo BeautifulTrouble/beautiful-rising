@@ -10,8 +10,7 @@ import { BrowserDomAdapter } from '@angular/platform-browser/src/browser/browser
 import { Title } from '@angular/platform-browser/src/browser/title';
 
 import { APP_ROUTER_PROVIDERS } from './components';
-import { ContentService, ClientStorageService, ModuleSavingService, OutsideAngularService, CachedHttpService } from './services';
-
+import { ContentService, ClientStorageService, ModuleSavingService, OutsideAngularService, CachedHttpService, MarkdownService } from './services';
 
 if (process.env.ENV === 'production') {
     enableProdMode();
@@ -23,6 +22,7 @@ bootstrap(AppComponent, [
     Title,
 
     APP_ROUTER_PROVIDERS,
+    MarkdownService,
     ContentService,
     ClientStorageService,
     ModuleSavingService,

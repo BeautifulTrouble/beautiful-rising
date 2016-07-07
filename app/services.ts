@@ -35,6 +35,31 @@ export class CachedHttpService {
 }
 
 
+// Common markdown rendering functionality
+@Injectable()
+export class MarkdownService {
+    constructor(private sanitizer: DomSanitizationService) {
+        this.md = new MarkdownIt({
+            'html': true,
+            'linkify': true,
+            'typographer': true
+        }).use(markdownitFootnote);
+    }
+    render = (x) => ({
+        'array': a => _.map(a, this.render),
+        'object': o => _.mapValues(o, this.render),
+        'string': s => this.md.render(s),
+        'number': n => n
+    })[x instanceof Array ? 'array' : typeof x](x);
+    renderTrusted = (x) => ({
+        'array': a => _.map(a, this.renderTrusted),
+        'object': o => _.mapValues(o, this.renderTrusted),
+        'string': s => this.sanitizer.bypassSecurityTrustHtml(this.md.render(s)),
+        'number': n => n
+    })[x instanceof Array ? 'array' : typeof x](x);
+}
+
+
 // Content Service (for fetching and transforming API content)
 @Injectable()
 export class ContentService {
@@ -46,7 +71,7 @@ export class ContentService {
 
     constructor(
         private cachedHttp: CachedHttpService,
-        private sanitizer: DomSanitizationService) { 
+        private markdown: MarkdownService) {
     }
 
     // Returns an object containing several sorted and ordered forms of the API content
@@ -91,7 +116,6 @@ export class ContentService {
                     output.tags = _.keys(output.modulesByTag).sort();
                     output.modulesByTag = _.mapKeys(output.modulesByTag, (v,k) => slugify(k));
 
-
                     // Preprocess content before passing to markdown processor (90% of these tasks belong in the contentloader)
                     output.config.markdown.push('potential-risks-short');
                     output.config.markdown.push('key-modules');
@@ -117,25 +141,11 @@ export class ContentService {
                         }
                     }
 
-
-                    // Render markdown
-                    var md = new MarkdownIt({
-                        'html': true,
-                        'linkify': true,
-                        'typographer': true
-                    }).use(markdownitFootnote);
-                    // Recursive markdown function handles most nested structures
-                    var markdown = (x) => ({
-                        'array': a => _.map(a, markdown),
-                        'object': o => _.mapValues(o, markdown),
-                        'string': s => this.sanitizer.bypassSecurityTrustHtml(md.render(s)),
-                        'number': n => n
-                    })[x instanceof Array ? 'array' : typeof x](x);
-                    // TODO: special-case the text type for easier markdown stuff
+                    // Prerender markdown
                     for (let collection of [output.contentByType.person, output.contentByType.text, output.modules]) {
                         for (let module of collection) {
                             for (let field of output.config.markdown) {
-                                if (module[field]) module[field] = markdown(module[field]);
+                                if (module[field]) module[field] = this.markdown.renderTrusted(module[field]);
                             }
                         }
                     }
@@ -146,6 +156,7 @@ export class ContentService {
                     output.index.setRef('slug');
                     output.config.search.forEach(field => output.index.addField(field));
                     output.modules.forEach(module => output.index.addDoc(module)); 
+
                     // Cache the prepared content and emit it to subscribers
                     this.contentCacheByLanguage[this.language] = output;
                     this.contentSource.next(output);
