@@ -649,11 +649,11 @@ export class DetailComponent {
     }
     ngAfterViewChecked() {
         // HACK: Ensure fragment links don't reload the page
-        var links = document.body.querySelectorAll(this.el.nativeElement, 'a[href^="#"]');
+        var links = this.el.nativeElement.querySelectorAll('a[href^="#"]');
         if (links.length) _.map(links, el => el.setAttribute('href', location.pathname + el.hash));
 
         // HACK: Prevent module links rendered from markdown from reloading the page
-        var links = document.body.querySelectorAll(this.el.nativeElement, 'a[href^="/module"]');
+        var links = this.el.nativeElement.querySelectorAll('a[href^="/module"]');
         if (links.length) {
             _.map(links, el => {
                 if (el.hash) return; // Don't rewrite links with fragment ids
