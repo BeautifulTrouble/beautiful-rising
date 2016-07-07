@@ -951,21 +951,22 @@ export class AppComponent implements OnInit {
 
 
 export const APP_ROUTER_PROVIDERS = [provideRouter([
-    //{path: '', pathMatch: 'full', redirectTo: '/home'},
+    {path: '',                      component: GalleryComponent},
+    {path: 'search/:query',         component: GalleryComponent},
+    {path: 'tag/:tag',              component: GalleryComponent},
+    {path: 'type/:type',            component: GalleryComponent},
 
-    {path: '',                  component: GalleryComponent},
-    {path: 'search/:query',     component: GalleryComponent},
-    {path: 'tag/:tag',          component: GalleryComponent},
-    {path: 'type/:type',        component: GalleryComponent},
-
-    {path: 'module/:slug',      component: DetailComponent},
+    {path: 'module/:slug',          component: DetailComponent},
 
     //{path: 'about', pathMatch: 'full', redirectTo: '/about/beautiful-rising'},
-    {path: 'about',             component: AboutComponent},
-    {path: 'about/:section',    component: AboutComponent},
-    {path: 'platforms',         component: PlatformsComponent},
-    {path: 'resources',         component: ResourcesComponent},
-    {path: 'contribute',        component: ContributeComponent},
+    {path: 'about',                 component: AboutComponent},
+    {path: 'about/:section',        component: AboutComponent},
+    {path: 'platforms',             component: PlatformsComponent},
+    {path: 'platforms/:section',    component: PlatformsComponent},
+    {path: 'resources',             component: ResourcesComponent},
+    {path: 'resources/:section',    component: ResourcesComponent},
+    {path: 'contribute',            component: ContributeComponent},
+    {path: 'contribute/:section',   component: ContributeComponent},
 ])];
 
 
