@@ -101,20 +101,22 @@ export class ContentService {
                     // Prepare a few more useful representations of modules
                     output.moduleTypes = _.map(output.config['types-modules'], t => t.one);
                     output.modulesByType = _.pick(output.contentByType, output.moduleTypes);
-                    output.modules = _.flatten(_.values(output.modulesByType));
-                    output.modulesFiltered = output.modules; // TODO: remove this
+                    output.modules = _.flatten(_.values(output.modulesByType)); // XXX: does this result in copied data?
                     output.modulesBySlug = _.keyBy(output.modules, 'slug');
                     //output.modulesByRegion = _.mapKeys(_.groupBy(output.modules, 'region'), (v,k) => slugify(k || 'all'));
-                    // Collect all tags
+                    // Collect and slugify tags & regions
                     output.modulesByTag = {};
+                    output.tagsBySlug = {}
                     for (let module of output.modules) {
                         for (let tag of module['tags'] || []) {
-                            output.modulesByTag[tag] = output.modulesByTag[tag] || [];
-                            output.modulesByTag[tag].push(module);
+                            let slugTag = slugify(tag);
+                            output.modulesByTag[slugTag] = output.modulesByTag[slugTag] || [];
+                            output.modulesByTag[slugTag].push(module);
+                            output.tagsBySlug[slugTag] = tag;
                         }
+                        if (module.region) module.region = slugify(module.region);
                     }
-                    output.tags = _.keys(output.modulesByTag).sort();
-                    output.modulesByTag = _.mapKeys(output.modulesByTag, (v,k) => slugify(k));
+                    output.tags = _.keys(output.tagsBySlug).sort();
 
                     // Preprocess content before passing to markdown processor (90% of these tasks belong in the contentloader)
                     output.config.markdown.push('potential-risks-short');
