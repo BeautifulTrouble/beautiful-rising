@@ -112,6 +112,7 @@ html {
 body {
     font-family: "Avenir";
     font-size: 14px;
+    height: 100%;
 }
 a:link, a:visited, a:hover, a:active { 
     color: $gray; 
@@ -237,10 +238,11 @@ $nav-height: 96px;
 // Tools
 .tools, .sidebar {
     position: absolute;
-    z-index: 1000;
+    z-index: 1100;
     border: 2px solid black;
 }
 .tools {
+    background: white;
     padding: $margin;
     //right: -18 * $margin;
     right: 0; top: 0;
@@ -639,12 +641,6 @@ $search-height: 50px;
 .gallery {
     padding-top: $search-height;
     @include prefix(transition, margin-top $transition linear, webkit moz);
-    &.header-small {
-        height: 200px;
-    }
-    &.header-large {
-        height: 400px;
-    }
 }
 .gallery-sort {
     text-align: center;
@@ -661,15 +657,19 @@ $search-height: 50px;
     .clickable {
         text-decoration: underline;
     }
+    .gallery-clear {
+        padding-top: 6 * $margin;
+        text-decoration: none;
+    }
 }
-.gallery-sort, .gallery-list, .gallery-search-info {
+.gallery-sort, .gallery-list, .gallery-info {
     padding-top: 2 * $margin;
 }
-.gallery-search-clear {
+.gallery-clear {
     font-weight: bold;
     padding-right: 4 * $margin;
     text-transform: uppercase;
-    .gallery-search-icon {
+    .icon {
         font-size: 150%;
     }
 }
@@ -678,19 +678,37 @@ $search-height: 50px;
         margin-top: 110%;
     }
     .module-save {
-        padding-top: 2 * $margin;
+        padding: 2 * $margin 4 * $margin 4 * $margin 0; // Make it more clickable
+        display: inline-block;
+        svg path { fill: white; }
+    }
+    .region-icon {
+        position: absolute;
+        top: 2 * $margin; right: 2 * $margin;
+        svg * { fill: $story; }
     }
     .module-title {
         color: white;
+        padding-right: 15px;
+        &.story {
+            padding-right: 60px;
+        }
     }
     .module-content {
         overflow: hidden;
         padding: 2 * $margin;
         z-index: 100;
+        position: relative;
+        top: 50%;
+        .offset {
+            position: absolute;
+        }
     }
     .module-image {
         background-size: cover;
         background-position: 50% 50%;
+        opacity: 0;
+        @include prefix(transition, opacity .75s ease-in, webkit moz);
     }
     .module-overlay {
         background: black;
@@ -713,6 +731,7 @@ $search-height: 50px;
     .module-snapshot, .module-hide-on-hover, .module-overlay {
         @include prefix(transition, opacity $transition linear, webkit moz);
     }
+
 }
 .gallery-module-list {
     .module-type-accent {

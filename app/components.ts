@@ -94,7 +94,7 @@ export class ContributeComponent {
     template: `
         <div class="row">
 
-            <div heightPolling="100ms" (heightChanged)="resized.next($event)" 
+            <div heightPolling="100ms" (heightChanged)="resized.next($event)"
              (window:scroll)="setExpanded()" [ngClass]="['module-types', expanded ? 'expanded' : 'collapsed']">
 
                 <div *ngIf="!textBySlug" class="loader-wrapper">
@@ -183,7 +183,7 @@ export class ContributeComponent {
     directives: [
         APP_DIRECTIVES,
         ROUTER_DIRECTIVES
-    ]
+    ],
 })
 export class ModuleTypeComponent {
     @Input() type;
@@ -276,11 +276,12 @@ export class ModuleTypeComponent {
                                 <div class="module-hide-on-hover">
                                     <svg-inline *ngIf="module.region" src="/assets/icons/{{ module.region }}.svg" class="region-icon"></svg-inline>
                                     <div class="offset" [style.transform]="'translateY(' + (25 + module.timestamp % 50) + '%)'">
-                                        <div (mouseenter)="crazyHover($event,0,1,0.75)" (mouseleave)="crazyHover($event,1,0,0.5)">
+                                        <!--<div (mouseenter)="crazyHover($event,0,1,0.75)" (mouseleave)="crazyHover($event,1,0,0.5)">-->
+                                        <div>
                                             <div [ngClass]="['module-type', module.type]">{{ module.type }}</div>
                                             <div [class.story]="module.type == 'story'" class="module-title">{{ module.title }}</div>
                                         </div>
-                                        <div (click)="savingService.toggleSaved(module)" [ngSwitch]="savingService.isSaved(module)" class="module-save">
+                                        <div (click)="savingService.toggleSaved(module); $event.stopPropagation()" [ngSwitch]="savingService.isSaved(module)" class="module-save">
                                             <svg-inline *ngSwitchCase="true" src="/assets/icons/-_tileandmodule.svg"></svg-inline>
                                             <svg-inline *ngSwitchCase="false" src="/assets/icons/+_tileandmodule.svg"></svg-inline>
                                         </div>
@@ -756,6 +757,19 @@ export class MenuComponent {
 @Component({
     selector: 'tools',
     template: `
+        <div (click)="toggleOpened()" class="tools" [class.opened]="opened">
+            <div class="clickable icon tools-toggle">
+                <svg-inline src="/assets/icons/arrow.svg"></svg-inline>
+            </div>
+            <div class="clickable icon" [class.selected]="opened && visible == 'news-feed'" (click)="selectTool('news-feed'); $event.stopPropagation()">
+                <svg-inline src="/assets/icons/News_Feed.svg"></svg-inline>
+                <div class="tool-text">News feed</div>
+            </div>
+            <div class="clickable icon" [class.selected]="opened && visible == 'my-tools'" (click)="selectTool('my-tools'); $event.stopPropagation()">
+                <svg-inline src="/assets/icons/My_tools.svg"></svg-inline>
+                <div class="tool-text">My tools</div>
+            </div>
+        </div>
         <div *ngIf="opened" class="sidebar">
             <div *ngIf="visible == 'news-feed'">
                 <div class="top-buttons border-bottom">
@@ -789,23 +803,10 @@ export class MenuComponent {
                         <div class="module-snapshot" [innerHTML]="module.snapshot"></div>
                         <div class="row">
                             <div (click)="savingService.toggleSaved(module)" class="col-sm-6 module-unsave clickable"><svg-inline src="/assets/icons/Remove.svg"></svg-inline> Remove</div>
-                            <div (click)="window.alert('Coming soon')" class="col-sm-6 module-share clickable"><svg-inline src="/assets/icons/Share_not_in_module.svg"></svg-inline> Share</div>
+                            <div class="col-sm-6 module-share clickable"><svg-inline src="/assets/icons/Share_not_in_module.svg"></svg-inline> Share</div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="tools" [class.opened]="opened">
-            <div (click)="toggleOpened()" class="clickable icon tools-toggle">
-                <svg-inline src="/assets/icons/arrow.svg"></svg-inline>
-            </div>
-            <div class="clickable icon" [class.selected]="opened && visible == 'news-feed'" (click)="selectTool('news-feed')">
-                <svg-inline src="/assets/icons/News_Feed.svg"></svg-inline>
-                <div class="tool-text">News feed</div>
-            </div>
-            <div class="clickable icon" [class.selected]="opened && visible == 'my-tools'" (click)="selectTool('my-tools')">
-                <svg-inline src="/assets/icons/My_tools.svg"></svg-inline>
-                <div class="tool-text">My tools</div>
             </div>
         </div>
     `,
