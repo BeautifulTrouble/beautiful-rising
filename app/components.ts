@@ -90,21 +90,6 @@ export class ContributeComponent {
 
 
 @Component({
-    selector: 'search',
-    template: `
-        <div class="row">
-            <input [(ngModel)]="query" (ngModelChange)="search.next($event)" class="search-box" 
-                placeholder="Search for keywords, ex: legislation, state repression, etc..." autofocus>
-        </div>
-    `
-})
-export class SearchComponent {
-    @Input() query;
-    @Output() search = new EventEmitter();
-}
-
-
-@Component({
     selector: 'module-types',
     template: `
         <div class="row">
@@ -120,7 +105,7 @@ export class SearchComponent {
                         <div [ngClass]="['col-xs-12', expanded ? 'col-md-10 col-md-offset-1' : 'col-md-12']">
                             <div class="row">
                                 <div *ngFor="let each of types; let first=first">
-                                    <div (click)="setType.next(each[0])" class="clickable">
+                                    <div [routerLink]="['/type', each[0]]" class="clickable">
                                         <div *ngIf="first" class="type-representation first" [class.expanded]="expanded">
                                             <div [ngClass]="[expanded ? 'col-xs-3 col-xs-offset-3' : 'col-xs-2 col-xs-offset-1']">
                                                 <h3>{{ each[1] }}</h3>
@@ -146,9 +131,9 @@ export class SearchComponent {
                             <div *ngIf="expanded">
                                 <div class="col-md-2 type-list">
                                     <div class="expanded type-link clickable">
-                                        <div (click)="setType.next()">All</div>
+                                        <div [routerLink]="['/']">All</div>
                                     </div>
-                                    <div *ngFor="let each of types" (click)="setType.next(each[0])" class="expanded type-link clickable">
+                                    <div *ngFor="let each of types" [routerLink]="['/type', each[0]]" class="expanded type-link clickable">
                                         <div [class.selected]="each[0] == type">{{ each[1] }}</div>
                                     </div>
                                 </div>
@@ -165,7 +150,7 @@ export class SearchComponent {
                                     <div *ngIf="type == 'story'" class="regions">
                                         <h3>Region</h3>
                                         <span *ngFor="let each of ['africa','latin-america-and-the-caribbean','north-america','asia','europe','middle-east','oceania']">
-                                            <svg-inline (click)="setRegion.next(each)" [ngClass]="{clickable:true, selected:region==each}" src="/assets/icons/{{ each }}.svg"></svg-inline>
+                                            <svg-inline [routerLink]="['/type/story', each]" [ngClass]="{clickable:true, selected:region==each}" src="/assets/icons/{{ each }}.svg"></svg-inline>
                                         </span>
                                     </div>
                                 </div>
@@ -173,16 +158,16 @@ export class SearchComponent {
                             <div *ngIf="!expanded">
                                 <div class="col-md-12 type-list">
                                     <span class="type-link clickable">
-                                        <div (click)="setType.next()">All</div>
+                                        <div [routerLink]="['/']">All</div>
                                     </span>
-                                    <span *ngFor="let each of types" (click)="setType.next(each[0])" class="type-link clickable">
+                                    <span *ngFor="let each of types" [routerLink]="['/type', each[0]]" class="type-link clickable">
                                         <div *ngIf="each[0] != type">{{ each[1] }}</div>
                                         <h3 *ngIf="each[0] == type" class="selected">{{ each[1] }}</h3>
                                         <svg-inline *ngIf="each[0] == type" class="pattern" src="/assets/patterns/1row/{{ each[0] }}.svg"></svg-inline>
                                     </span>
                                     <div *ngIf="type == 'story'" class="regions">
                                         <span *ngFor="let each of ['africa','latin-america-and-the-caribbean','north-america','asia','europe','middle-east','oceania']">
-                                            <svg-inline (click)="setRegion.next(each)" [ngClass]="{clickable:true, selected:region==each}" src="/assets/icons/{{ each }}.svg"></svg-inline>
+                                            <svg-inline [routerLink]="['/type/story', each]" [ngClass]="{clickable:true, selected:region==each}" src="/assets/icons/{{ each }}.svg"></svg-inline>
                                         </span>
                                     </div>
                                 </div>
@@ -204,8 +189,6 @@ export class ModuleTypeComponent {
     @Input() type;
     @Input() region;
     @Input() textBySlug;
-    @Output() setType = new EventEmitter();
-    @Output() setRegion = new EventEmitter();
     @Output() resized = new EventEmitter();
     expanded = true;
     types = [['story', 'stories'], 
@@ -232,9 +215,11 @@ export class ModuleTypeComponent {
     template: `
         <div class="fixed-container-wrapper">
             <div class="container">
-                <search [query]="query" (search)="doSearch($event)"></search>
-                <module-types (setType)="type = $event" (resized)="marginTop = $event" 
-                 (setRegion)="setRegion($event)" [region]="region" [type]="type" [textBySlug]="textBySlug"></module-types>
+                <div class="row">
+                    <input [(ngModel)]="query" (ngModelChange)="filterModules()" class="search-box" 
+                     placeholder="Search for keywords, ex: legislation, state repression, etc..." autofocus>
+                </div>
+                <module-types (resized)="marginTop = $event" [region]="region" [type]="type" [textBySlug]="textBySlug"></module-types>
             </div>
         </div>
         <div class="container">
@@ -252,35 +237,55 @@ export class ModuleTypeComponent {
                     </div>
                     <h3>Sort By</h3>
                     <div class="row border-top border-bottom sort-by">
-                        <div (click)="sortKey='title'" [class.selected]="sortKey == 'title'" class="col-xs-6 clickable">Alphabetical</div>
-                        <div (click)="sortKey='timestamp'" [class.selected]="sortKey == 'timestamp'" class="col-xs-6 clickable">Newest</div>
+                        <div (click)="sortModules('title')" [class.selected]="sortKey == 'title'" class="col-xs-6 clickable">Alphabetical</div>
+                        <div (click)="sortModules('timestamp')" [class.selected]="sortKey == 'timestamp'" class="col-xs-6 clickable">Newest</div>
                     </div>
                     <h3>Tags</h3>
                     <div class="row border-top tag-list">
                         <span *ngFor="let each of tags; let last=last">
-                            <a [routerLink]="['/tag', slugify(each)]" [class.selected]="tag == slugify(each)">{{ each }}</a><span *ngIf="!last"> / </span>
+                            <a *ngIf="tag != each" [routerLink]="['/tag', each]" routerLinkActive="selected">{{ tagsBySlug[each] }}</a>
+                            <a *ngIf="tag == each" [routerLink]="['/']" routerLinkActive="selected">{{ tagsBySlug[each] }}</a>
+                            <span *ngIf="!last"> / </span>
                         </span>
+                    </div>
+                    <div *ngIf="tag" class="gallery-info gray">
+                        <span [routerLink]="['/']" class="gallery-clear clickable"><span class="icon">&#9746;</span> Clear Selection</span>
                     </div>
                 </div>
                 </div>
-                <div class="gallery-list col-md-9">
-                    <div *ngIf="viewStyle == 'grid'" class="row">
-                        <div *ngFor="let module of sortModules()" (click)="router.navigate(['/module', module.slug])" class="col-md-4 gallery-module-grid">
+                <div *ngIf="selectedModules" class="gallery-list col-md-9">
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div *ngIf="query" class="col-md-11 col-md-offset-1 gallery-info gray">
+                                <span (click)="query = ''; filterModules()" class="gallery-clear clickable"><span class="icon">&#9746;</span> Clear</span>
+                                <span>Search Results for "{{ query }}" ({{ selectedModules.length }} results found)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div lazyBackgroundImages *ngIf="viewStyle == 'grid'" class="row">
+                        <div *ngFor="let module of selectedModules" (click)="router.navigate(['/module', module.slug])" class="col-md-4 gallery-module-grid">
                             <!-- Rethink the structure of this whole section -->
 
                             <div class="make-it-square"></div>
-                            <div class="module-image" [ngStyle]="{'background-image': module.image ? 'url('+config['asset-path']+'/'+module.image+')' : ''}"></div>
+                            <div *ngIf="module.image" [attr.data-lazy-background]="config['asset-path'] +'/'+ module.image" class="module-image"></div>
                             <div class="module-overlay"></div>
-                            <div class="module-content">
+
+                            <div class="module-content clickable">
                                 <div class="module-hide-on-hover">
-                                    <div (mouseenter)="crazyHover($event,0,1,0.75)" (mouseleave)="crazyHover($event,1,0,0.5)">
-                                        <div [ngClass]="['module-type', module.type]">{{ module.type }}</div>
-                                        <div class="module-title">{{ module.title }}</div>
+                                    <svg-inline *ngIf="module.region" src="/assets/icons/{{ module.region }}.svg" class="region-icon"></svg-inline>
+                                    <div class="offset" [style.transform]="'translateY(' + (25 + module.timestamp % 50) + '%)'">
+                                        <div (mouseenter)="crazyHover($event,0,1,0.75)" (mouseleave)="crazyHover($event,1,0,0.5)">
+                                            <div [ngClass]="['module-type', module.type]">{{ module.type }}</div>
+                                            <div [class.story]="module.type == 'story'" class="module-title">{{ module.title }}</div>
+                                        </div>
+                                        <div (click)="savingService.toggleSaved(module)" [ngSwitch]="savingService.isSaved(module)" class="module-save">
+                                            <svg-inline *ngSwitchCase="true" src="/assets/icons/-_tileandmodule.svg"></svg-inline>
+                                            <svg-inline *ngSwitchCase="false" src="/assets/icons/+_tileandmodule.svg"></svg-inline>
+                                        </div>
                                     </div>
-                                    <div (click)="savingService.toggleSaved(module)" [ngSwitch]="savingService.isSaved(module)" class="module-save">
-                                        <svg-inline *ngSwitchCase="true" src="/assets/icons/-_tileandmodule.svg"></svg-inline>
-                                        <svg-inline *ngSwitchCase="false" src="/assets/icons/+_tileandmodule.svg"></svg-inline>
-                                    </div>
+
                                 </div>
                                 <div [ngClass]="['module-snapshot', module.type]" [innerHTML]="module.snapshot"></div>
                             </div>
@@ -289,14 +294,9 @@ export class ModuleTypeComponent {
                         </div>
                     </div>
                     <div *ngIf="viewStyle == 'list'">
-                        <div class="col-md-1"></div>
-                        <div class="col-md-11">
-                            <div class="row">
-                                <div *ngIf="query" class="gallery-search-info gray col-sm-12">
-                                    <span (click)="clearSearch()" class="gallery-search-clear clickable"><span class="gallery-search-icon">&#9746;</span> Clear</span>
-                                    <span>Search Results for "{{ query }}" ({{ modulesFiltered.length }} results found)</span>
-                                </div>
-                                <div *ngFor="let module of sortModules()" (click)="router.navigate(['/module', module.slug])" class="gallery-module-list col-sm-6">
+                        <div class="row">
+                            <div class="col-md-11 col-md-offset-1">
+                                <div *ngFor="let module of selectedModules" (click)="router.navigate(['/module', module.slug])" class="gallery-module-list col-sm-6">
                                     <div class="module-content clickable">
                                         <div class="module-type-accent"></div>
                                         <div [ngClass]="['module-type', module.type]">{{ module.type }}</div>
@@ -315,16 +315,14 @@ export class ModuleTypeComponent {
         APP_DIRECTIVES,
         ROUTER_DIRECTIVES,
         ModuleTypeComponent,
-        SearchComponent,
     ],
     styles: []
 })
 export class GalleryComponent {
     @LocalStorage() sortKey;
     @LocalStorage() viewStyle;
-    type;
     textBySlug;
-    slugify = slugify;
+    marginTop = 0;
 
     constructor(
         private title: Title,
@@ -336,93 +334,70 @@ export class GalleryComponent {
     ngOnInit() {
         this.sortKey = this.sortKey || 'timestamp';
         this.viewStyle = this.viewStyle || 'grid';
-        this.query = '';
-        this.region = null;
-        this.marginTop = 0;
+        this.type = this.tag = this.query = this.region = null;
 
         this.contentService.injectContent(this, (content) => {
-            this.sub = this.route.params.subscribe((params) => {
-                this.type = params.type ? params.type : null;
-                if (params.tag) {
-                    this.setTag(params.tag);
-                } else if (params.query) {
-                    this.doSearch(decodeURIComponent(params.query));
-                }
-                //this.query = params.query ? decodeURIComponent(params.query) : '';
-                this.title.setTitle(content.textBySlug.home['site-title']);
-            });
+            this.title.setTitle(content.textBySlug.home['site-title']);
+            if (!this.sub) {
+                this.sub = this.route.params.subscribe((params) => {
+                    if (params.type) this.type = params.type;
+                    else if (params.tag) this.tag = params.tag;
+                    else if (params.query) this.query = decodeURIComponent(params.query);
+                    else if (params.region) {
+                        this.type = 'story'
+                        this.region = params.region;
+                    }
+                    this.filterModules();
+                });
+            }
         });
+    }
+    ngAfterViewInit() {
+        //window.scrollTo(0, 5);
     }
     ngOnDestroy() {
         this.sub && this.sub.unsubscribe();
     }
-    setRegion(region) {
-        this.region = region == this.region ? null : region;
-    }
-
-    doSearch(query) {
-        this.query = query;
-        if (query) {
-            // Update the browser
+    filterModules() {
+        // Detect the blank (as opposed to null) query
+        if (!this.query && this.query !== null) {
+            history.replaceState(null, null, '');
+            this.query = null;
+            //this.router.navigate(['/']);
+        }
+        if (this.query) {
+            history.replaceState(null, null, '/search/' + this.query);
             this.viewStyle = 'list';
-            history.replaceState(null, null, '/search/'+query);
-            // Allow queries like "authors:andrew-boyd" which search a specific field
-            var prefix = query.split(/\s*!\s*/)[0];
-            query = query.replace(/[^@]+!\s*/, '');
-            var config = {bool: /\s/.test(query) ? 'AND' : 'OR', expand: true};
+            // Allow queries like "authors!andrew-boyd" which search a specific field
+            var prefix = this.query.split(/\s*!\s*/)[0];
+            var query = this.query.replace(/[^@]+!\s*/, '');
+            var config = { bool: /\s/.test(query) ? 'AND' : 'OR', expand: true };
             if (prefix != query && _.includes(this.config.search, prefix)) {
                 config.fields = {}; config.fields[prefix] = {boost: 5};
             }
-            // Perform the actual search
-            var results = this.index.search(query, config);
-            this.modulesFiltered = _.map(results, obj => this.modulesBySlug[obj.ref]);
-        } else {
-            //this.router.navigate(['/home']); // Using navigate de-focuses the search bar
-            history.replaceState(null, null, '/'); 
-            this.modulesFiltered = this.modules;
-        }
-    }
-    clearSearch() {
-        this.tag = null;
-        this.doSearch('');
-    }
-    // setType has the right idea... it sets a type without changing much
-    // setTag should also be used instead of routerLinks
-    setTag(tag) { 
-        if (this.query) this.clearSearch();
-        if (this.tag == tag) {
-            this.tag = null;
-            this.router.navigate(['/home']);
-        } else {
-            this.tag = tag;
-            history.replaceState(null, null, '/tag/'+tag);
-            //this.router.navigate(['/tag', tag}]); // TODO: implement routerCanReuse?
-        }
-    }
-    sortModules() {
-        var modules = this.modulesFiltered;
-        if (!this.query && this.tag) {
-            modules = this.modulesByTag[this.tag];
-        }
-        if (this.type) {
-            modules = _.filter(modules, m => m.type == this.type);
-            if (this.type == 'story' && this.region) {
-                modules = _.filter(modules, m => m.region && slugify(m.region) == this.region);
-                // If no modules are present, reset
-                if (!modules.length) { 
-                    var resetRegion = this.region;
-                    setTimeout(() => { if (this.region == resetRegion) this.region = null }, 500);
-                }
+            this.selectedModules = _.map(this.index.search(query, config), obj => this.modulesBySlug[obj.ref]);
+        } else if (this.type) {
+            this.selectedModules = this.modulesByType[this.type] || [];
+            if (this.region) {
+                this.selectedModules = _.filter(this.selectedModules, m => m.region == this.region);
+                if (!this.selectedModules.length) setTimeout(() => this.router.navigate(['/type', this.type]), 1000);
             }
+        } else if (this.tag) {
+            this.selectedModules = this.modulesByTag[this.tag];
+        } else {
+            this.selectedModules = this.modules;
         }
-        modules = _.sortBy(modules, this.sortKey);
-        if (this.sortKey == 'timestamp') modules = _.reverse(modules);
-        return modules;
+        this.sortModules();
+    }
+    sortModules(key) {
+        if (key) this.sortKey = key;
+        this.selectedModules = _.orderBy(this.selectedModules, this.sortKey, this.sortKey == 'timestamp' ? 'desc' : 'asc');
     }
     crazyHover($event,a,b,c) {
+        return;
         // TODO: think of some other way to structure the html/css!
         // Hover state covers up save button, so jump through some hoops
-        var parent = $event.target.parentElement
+        var parent = $event.target.parentElement;
         parent.style.opacity = a;
         parent.nextElementSibling.style.opacity = b;
         parent.parentElement.previousElementSibling.style.opacity = c;
@@ -950,6 +925,7 @@ export const APP_ROUTER_PROVIDERS = [provideRouter([
     {path: 'search/:query',         component: GalleryComponent},
     {path: 'tag/:tag',              component: GalleryComponent},
     {path: 'type/:type',            component: GalleryComponent},
+    {path: 'type/story/:region',    component: GalleryComponent},
 
     {path: 'module/:slug',          component: DetailComponent},
 
