@@ -160,19 +160,21 @@ export class SizePollingDirective {
         // Angular has wrapped every call to setInterval with change detection logic using
         // zone.js, so we run this polling outside of Angular's zone for better performance
         if (hInterval) this.hIntervalId = this.outside.setInterval(() => {
-            var hNew = el.nativeElement.clientHeight;
-            if (hNew != this.hLast) {
-                this.heightChanged.emit(hNew);
-                this.hLast = hNew;
-                return true; // Force change detection
+                var hNew = el.nativeElement.clientHeight;
+                if (hNew != this.hLast) {
+                    this.heightChanged.emit(hNew);
+                    this.hLast = hNew;
+                    return true; // Force change detection
+                }
             }, hInterval);
 
         if (wInterval) this.wIntervalId = this.outside.setInterval(() => {
-            var wNew = el.nativeElement.clientWidth;
-            if (wNew != this.wLast) {
-                this.widthChanged.emit(wNew);
-                this.wLast = wNew;
-                return true; // Force change detection
+                var wNew = el.nativeElement.clientWidth;
+                if (wNew != this.wLast) {
+                    this.widthChanged.emit(wNew);
+                    this.wLast = wNew;
+                    return true; // Force change detection
+                }
             }, wInterval);
     }
     ngOnDestroy() {
