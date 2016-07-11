@@ -7,8 +7,6 @@ import { bootstrap } from '@angular/platform-browser-dynamic';
 import { HTTP_PROVIDERS } from '@angular/http';
 import { Title } from '@angular/platform-browser';
 
-import { Angulartics2 } from 'angulartics2';
-
 import { AppComponent, APP_ROUTER_PROVIDERS } from './components';
 import { ContentService, ClientStorageService, ModuleSavingService, OutsideAngularService, CachedHttpService, MarkdownService } from './services';
 
@@ -21,14 +19,12 @@ bootstrap(AppComponent, [
     HTTP_PROVIDERS,
     Title,
 
-    Angulartics2,
-
     APP_ROUTER_PROVIDERS,
-    MarkdownService,
+    CachedHttpService,
     ContentService,
     ClientStorageService,
+    MarkdownService,
     ModuleSavingService,
     OutsideAngularService,
-    CachedHttpService,
 ]);
 

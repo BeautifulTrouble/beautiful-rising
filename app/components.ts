@@ -1,7 +1,7 @@
 // Define all site components here.
 
-import { Component, Input, Output, Inject, EventEmitter, ElementRef, ViewChild, NgZone } from '@angular/core';
-import { Router, ActivatedRoute, provideRouter, ROUTER_DIRECTIVES } from '@angular/router';
+import { Component, Input, Output, Inject, EventEmitter, ElementRef, ViewChild, NgZone, isDevMode } from '@angular/core';
+import { Router, ActivatedRoute, provideRouter, ROUTER_DIRECTIVES, NavigationEnd } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 
 import { APP_DIRECTIVES } from './directives';
@@ -900,6 +900,17 @@ export class AppComponent {
         private contentService: ContentService) {
     }
     ngOnInit() {
+        // Send pageviews to Google Analytics
+        if (!isDevMode()) {
+            let lastUrl;
+            this.router.events.subscribe(event => {
+                if (event instanceof NavigationEnd && event.url != lastUrl) {
+                    ga('set', 'page', event.url);
+                    ga('send', 'pageview');
+                    lastUrl = event.url;
+                }
+            });
+        }
         // Attempt to guess and the language
         this.language = this.language || (navigator.languages || ['en'])[0].slice(0,2);
         this.contentService.language = this.language;
