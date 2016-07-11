@@ -24,7 +24,8 @@
     "lodash": "^4.10.0",
     "markdown-it": "^6.0.0",
     "markdown-it-footnote": "^2.0.0",
-    "elasticlunr": "git+https://github.com/weixsong/elasticlunr.js#v0.8.9"
+    "elasticlunr": "git+https://github.com/weixsong/elasticlunr.js#v0.8.9",
+    "angulartics2": "^1.1.1"
   },
   "devDependencies": {
     "extract-text-webpack-plugin": "^1.0.1",
