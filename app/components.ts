@@ -902,12 +902,10 @@ export class AppComponent {
     ngOnInit() {
         // Send pageviews to Google Analytics
         if (!isDevMode()) {
-            let lastUrl;
             this.router.events.subscribe(event => {
-                if (event instanceof NavigationEnd && event.url != lastUrl) {
+                if (event instanceof NavigationEnd) {
                     ga('set', 'page', event.url);
                     ga('send', 'pageview');
-                    lastUrl = event.url;
                 }
             });
         }
