@@ -51,7 +51,7 @@ import _ = require('lodash');
                 </div>
             </section>
             <section id="process">
-                <div *ngFor="let item of text['process']" [ngSwitch]="item.type">
+                <div *ngFor="let item of text.process" [ngSwitch]="item.type">
                     <h4 *ngSwitchCase="'title'" class="heading">{{ item.value }}</h4>
                     <div *ngSwitchCase="'steps'" class="row">
                         <div *ngFor="let step of item.value" class="col-md-3 steps">
@@ -72,7 +72,7 @@ import _ = require('lodash');
                 </div>
             </section>
             <section id="values">
-                <div *ngFor="let item of text['values']" [ngSwitch]="item.type">
+                <div *ngFor="let item of text.values" [ngSwitch]="item.type">
                     <h4 *ngSwitchCase="'title'" class="heading">{{ item.value }}</h4>
                     <div *ngSwitchCase="'values'">
                         <div *ngFor="let value of item.value; let index=index">
@@ -115,18 +115,39 @@ import _ = require('lodash');
                 </div>
             </section>
             <section id="beautiful-trouble-and-action-aid">
-                <div class="content">
-
+                <h4 class="heading">{{ text['beautiful-trouble-and-action-aid'].title }}</h4>
+                <div class="row">
+                    <div class="col-md-4 col-md-offset-4">
+                        <div [innerMarkdown]="text['beautiful-trouble-and-action-aid'].introduction" class="introduction"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div [innerMarkdown]="text['beautiful-trouble-and-action-aid'].bt" class="blurb"></div>
+                        <img src="/assets/icons/bt-logo.png">
+                    </div>
+                    <div class="col-md-6">
+                        <div [innerMarkdown]="text['beautiful-trouble-and-action-aid'].aa" class="blurb"></div>
+                        <img src="/assets/icons/aa-logo.png">
+                    </div>
                 </div>
             </section>
             <section id="partners">
-                <div class="content">
-
+                <h4 class="heading">{{ text.partners.title }}</h4>
+                <div class="row">
+                    <div *ngFor="let partner of text['network-partners']" class="col-md-4">
+                        <div class="img-wrapper"><img *ngIf="partner.logo" src="{{ config['asset-path'] }}/{{ partner.logo }}"></div>
+                        <h5 class="overline">{{ partner.name }}</h5>
+                    </div>
                 </div>
             </section>
             <section id="faq">
-                <div class="content">
-
+                <div *ngFor="let item of text.questions" [ngSwitch]="item.type">
+                    <h4 *ngSwitchCase="'title'" class="heading">{{ item.value }}</h4>
+                    <div *ngSwitchCase="'questions'">
+                        <div *ngFor="let qa of item.value" class="question">
+                            <h4 class="overline">{{ qa.question }}</h4>
+                            <div [innerMarkdown]="qa.answer"></div>
+                        </div>
+                    </div>
                 </div>
             </section>
         </div>

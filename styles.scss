@@ -956,17 +956,17 @@ detail {
         border-top: 2px solid black;
         margin-top: -2 * $margin;
     }
+    h5 {
+        text-decoration: underline;
+        text-transform: uppercase;
+        font-weight: bold;
+        color: gray;
+        margin-top: $margin;
+    }
 }
 .about {
     .person {
         height: 500px;  // TODO: make responsive;
-        h5 {
-            text-decoration: underline;
-            text-transform: uppercase;
-            font-weight: bold;
-            color: gray;
-            margin-top: $margin;
-        }
         p {
             margin-top: 4 * $margin;
             margin-right: 4 * $margin;
@@ -1011,8 +1011,9 @@ detail {
             width: 66%; right: -5%;
         }
     }
-    #values {
-        h3 { padding-bottom: $margin; }
+    #values, #faq {
+        //h3 { padding-bottom: $margin; }
+        h4 { padding-top: $margin; }
         p { padding-left: 10%; }
         .disclaimer { margin-top: 10 * $margin; }
         .disclaimer-text { color: gray; }
@@ -1020,8 +1021,23 @@ detail {
     #advisory-network {
         .network-members { margin-top: 3 * $margin; }
     }
-    #team {
-
+    #beautiful-trouble-and-action-aid {
+        .blurb { min-height: 12 * $margin; }
+        .introduction { 
+            padding-bottom: 6 * $margin; 
+            text-align: center; 
+        }
+    }
+    #partners {
+        .img-wrapper { 
+            width: 100%;
+            height: 140px;
+            img { max-height: 120px; }
+        }
+        h5 { padding-bottom: 48px; }
+    }
+    #faq {
+        .question { padding-bottom: 3 * $margin; }
     }
 }
 
