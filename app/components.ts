@@ -559,6 +559,7 @@ export class GalleryComponent {
                 </div>
             </div><!-- .container -->
 
+            <a target="_blank" class="edit-link" href="{{ module.document_link }}">edit</a>
         </div>
     `,
     directives: [

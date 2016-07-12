@@ -916,6 +916,20 @@ detail {
             }
         }
     }
+    .edit-link {
+        position: fixed;
+        bottom: 0; right: 0;
+        text-decoration: none;
+        color: red;
+        z-index: 2000;
+        opacity: 0;
+        width: 10px; height: 10px;
+        &:hover { 
+            opacity: 1; 
+            width: initial; height: initial;
+            padding: 10px;
+        }
+    }
 }
 
 
