@@ -490,6 +490,24 @@ $search-height: 50px;
 }
 
 // Types
+.type-representation {
+    text-align: left;
+    h3 {
+        margin-top: 0;
+        margin-bottom: 2px;
+    }
+    svg { border-right: 4*$margin solid white; }
+    &.first p.definition {
+        padding-top: 7*$margin;
+    }
+    &.expanded {
+        h3 { padding-top: 3*$margin; }
+        svg { border-right: 0; }
+    }
+    .definition {
+        p { padding-top: $margin; }
+    }
+}
 .module-types {
     //@include prefix(transition, height $transition linear, webkit moz);
     border: 2px solid black;
@@ -502,22 +520,6 @@ $search-height: 50px;
     > div {
         overflow: hidden;
         height: 100%;
-    }
-    .type-representation {
-        text-align: left;
-        h3 {
-            margin-top: 0;
-            margin-bottom: 2px;
-        }
-        svg { border-right: 4*$margin solid white; }
-        &.first p.definition {
-            padding-top: 8*$margin;
-        }
-        &.expanded {
-            h3 { padding-top: 3*$margin; }
-            p { padding-top: $margin; }
-            svg { border-right: 0; }
-        }
     }
     .loader-wrapper {
         min-height: 100px;

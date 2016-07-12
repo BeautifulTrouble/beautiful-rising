@@ -27,6 +27,27 @@ import _ = require('lodash');
                 <h4 class="heading">{{ text['whats-inside'].title }}</h4>
                 <div class="row">
                     <div class="col-md-6 col-md-offset-3" [innerMarkdown]="text['whats-inside'].introduction"></div>
+                    <div class="col-xs-12">
+                        <div *ngFor="let each of types; let first=first">
+                            <div [routerLink]="['/type', each[0]]" class="clickable">
+                                <div *ngIf="first" class="type-representation expanded first">
+                                    <div class="col-xs-3 col-xs-offset-3">
+                                        <h3>{{ each[1] }}</h3>
+                                        <svg-inline class="2rows pattern" src="/assets/patterns/2rows/{{ each[0] }}.svg"></svg-inline>
+                                    </div>
+                                    <div class="col-xs-3"><p class="definition" [innerHTML]="textBySlug.home.definitions[each[0] + '-short']"></p></div>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div *ngIf="!first" class="type-representation expanded">
+                                    <div class="col-xs-3">
+                                        <h3>{{ each[1] }}</h3>
+                                        <svg-inline class="2rows pattern" src="/assets/patterns/2rows/{{ each[0] }}.svg"></svg-inline>
+                                        <p class="definition" [innerHTML]="textBySlug.home.definitions[each[0] + '-short']"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
             <section id="process">
@@ -117,6 +138,11 @@ import _ = require('lodash');
     ]
 })
 export class AboutComponent {
+    types = [['story', 'stories'], 
+             ['tactic', 'tactics'], 
+             ['principle', 'principles'], 
+             ['theory', 'theories'], 
+             ['methodology', 'methodologies']];
     constructor(
         private router: Router,
         private contentService: ContentService) {
