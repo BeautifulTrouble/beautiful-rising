@@ -95,17 +95,13 @@ export class SectionRouteDirective {
     }
     ngOnInit() {
         this.lastSection = null;
-        this.sub = this.route.params.subscribe(params => {
-            // TODO: if (!params.section) ...handle the transitional flicker
-            if (params.section && params.section != this.lastSection) {
-                var sectionEl = document.getElementById(params.section);
-                if (sectionEl) {
-                    window.scrollTo(0, sectionEl.offsetTop)
-                    this.lastSection = params.section;
-                }
-            }
-        });
+        this.sub = this.route.params.subscribe(this.onRoute);
         this.outside.addEventListener(window, 'scroll', this.onScroll);
+    }
+    ngAfterViewChecked() {
+        if (this.lastSection === null) {
+            this.onRoute(this.route.snapshot.params);
+        }
     }
     ngOnDestroy() {
         this.sub && this.sub.unsubscribe();
@@ -118,6 +114,17 @@ export class SectionRouteDirective {
         }
         return this.thresholdOffset;
     }
+    onRoute = (params) => {
+        // TODO: handle !params.section specially to avoid delay as component is re-loaded
+        if (this.reNavigating) return this.reNavigating = false;
+        if (params.section) {
+            var sectionEl = document.getElementById(params.section);
+            if (sectionEl) {
+                window.scrollTo(0, sectionEl.offsetTop)
+                this.lastSection = params.section;
+            }
+        }
+    }
     onScroll = () => {
         var visibleSection;
         var sections = document.querySelectorAll('section[id]');
@@ -127,10 +134,13 @@ export class SectionRouteDirective {
                 visibleSection = section.id;
             }
         }
-        if (visibleSection && visibleSection != this.lastSection) {
-            this.router.navigate([this.basePath, visibleSection]);
+        if (visibleSection) {
+            if (visibleSection != this.lastSection) {
+                this.reNavigating = true;
+                this.router.navigate([this.basePath, visibleSection]);
+            }
+            this.lastSection = visibleSection;
         }
-        this.lastSection = visibleSection;
     }
 }
 
