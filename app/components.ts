@@ -14,6 +14,123 @@ import _ = require('lodash');
 
 @Component({
     selector: 'about',
+    //template: require('../templates/about.html'),
+    template: `
+        <div class="container page" addSectionToRoute="/about" thresholdElement="#fixed-nav">
+
+        <div *ngIf="text" class="about">
+            <div class="page-heading">
+                <h3>{{ text.heading.title }}</h3>
+                <p>{{ text.heading.introduction }}</p>
+            </div>
+            <section id="whats-inside">
+                <h4 class="heading">{{ text['whats-inside'].title }}</h4>
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-3" [innerMarkdown]="text['whats-inside'].introduction"></div>
+                </div>
+            </section>
+            <section id="process">
+                <div *ngFor="let item of text['process']" [ngSwitch]="item.type">
+                    <h4 *ngSwitchCase="'title'" class="heading">{{ item.value }}</h4>
+                    <div *ngSwitchCase="'steps'" class="row">
+                        <div *ngFor="let step of item.value" class="col-md-3 steps">
+                            <div class="step-circle"></div>
+                            <h3>{{ step.title }}</h3>
+                            <div [innerMarkdown]="step.description"></div>
+                        </div>
+                    </div>
+                    <h4 *ngSwitchCase="'subheading'" class="subheading">{{ item.value }}</h4>
+                    <div *ngSwitchCase="'workshops'" class="row">
+                        <div *ngFor="let workshop of text.workshops; let index=index" 
+                         [class.col-md-offset-3]="index == 4" class="col-md-3 workshop-list">
+                            <div class="img-wrapper"><img src="/assets/icons/{{ workshop.name }}.png"></div>
+                            <h3 class="overline">{{ item.value[workshop.name] }}</h3>
+                            <ul><li *ngFor="let participant of workshop.participants">{{ participant }}</li></ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="values">
+                <div *ngFor="let item of text['values']" [ngSwitch]="item.type">
+                    <h4 *ngSwitchCase="'title'" class="heading">{{ item.value }}</h4>
+                    <div *ngSwitchCase="'values'">
+                        <div *ngFor="let value of item.value; let index=index">
+                            <h3>{{ index+1 }}</h3>
+                            <h4 class="overline">{{ value.title }}</h4>
+                            <div [innerMarkdown]="value.description"></div>
+                        </div>
+                    </div>
+                    <h4 *ngSwitchCase="'disclaimer'" class="disclaimer">{{ item.value }}</h4>
+                    <div *ngSwitchCase="'disclaimer-text'" [innerMarkdown]="item.value" class="disclaimer-text"></div>
+                </div>
+            </section>
+            <section id="advisory-network">
+                <h4 class="heading">{{ text['advisory-network'].title }}</h4>
+                <div class="row">
+                    <div class="col-md-4 col-md-offset-8" [innerMarkdown]="text['advisory-network'].introduction"></div>
+                </div>
+                <div class="row network-members">
+                    <div *ngFor="let member of text['network-members']" class="col-md-4 person">
+                        <div *ngIf="peopleBySlug[member]">
+                            <div class="person-image" [style.background-image]="'url('+config['asset-path']+'/'+peopleBySlug[member].image+')'"></div>
+                            <h4>{{ peopleBySlug[member].title }}</h4>
+                            <h5 *ngIf="peopleBySlug[member]['team-title']" class="team-title">{{ peopleBySlug[member]['team-title'] }}</h5>
+                            <div *ngIf="peopleBySlug[member]['team-bio']" [innerMarkdown]="peopleBySlug[member]['team-bio']" class="team-bio"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="team">
+                <h4 class="heading">{{ text.team.title }}</h4>
+                <div class="row team-members">
+                    <div *ngFor="let member of text['team-members']" class="col-md-4 person">
+                        <div *ngIf="peopleBySlug[member]">
+                            <div class="person-image" [style.background-image]="'url('+config['asset-path']+'/'+peopleBySlug[member].image+')'"></div>
+                            <h4>{{ peopleBySlug[member].title }}</h4>
+                            <h5 *ngIf="peopleBySlug[member]['team-title']" class="team-title">{{ peopleBySlug[member]['team-title'] }}</h5>
+                            <div *ngIf="peopleBySlug[member]['team-bio']" [innerMarkdown]="peopleBySlug[member]['team-bio']" class="team-bio"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="beautiful-trouble-and-action-aid">
+                <div class="content">
+
+                </div>
+            </section>
+            <section id="partners">
+                <div class="content">
+
+                </div>
+            </section>
+            <section id="faq">
+                <div class="content">
+
+                </div>
+            </section>
+        </div>
+        </div>
+    `,
+    directives: [
+        APP_DIRECTIVES,
+        ROUTER_DIRECTIVES
+    ]
+})
+export class AboutComponent {
+    constructor(
+        private router: Router,
+        private contentService: ContentService) {
+    }
+    ngOnInit() {
+        this.contentService.injectContent(this, (content) => {
+            this.text = content.textBySlug.about;
+        });
+    }
+}
+
+/*
+@Component({
+    selector: 'about',
     template: require('../templates/about.html'),
     directives: [
         APP_DIRECTIVES,
@@ -29,6 +146,7 @@ export class AboutComponent {
         this.contentService.injectContent(this);
     }
 }
+*/
 
 
 @Component({
@@ -688,6 +806,7 @@ export class ModalComponent {
                             <div class="menu-section">
                                 <!-- wait for https://github.com/angular/angular/pull/9792 to add routerLinkActive -->
                                 <h3 class="clickable" (click)="close()" [routerLink]="['/about', 'beautiful-rising']">About</h3>
+                                <p class="clickable" (click)="close()" [routerLink]="['/about', 'whats-inside']">The Toolbox</p>
                                 <p class="clickable" (click)="close()" [routerLink]="['/about', 'process']">Our Process</p>
                                 <p class="clickable" (click)="close()" [routerLink]="['/about', 'values']">Our Values</p>
                                 <p class="clickable" (click)="close()" [routerLink]="['/about', 'advisory-network']">Our Advisory Network</p>
