@@ -25,7 +25,7 @@ export class AboutComponent implements OnInit {
         private contentService: ContentService) {
     }
     ngOnInit() {
-        this.contentService.injectContent(this);
+        this.contentService.injectContent(this, content => this.text = content.textBySlug['about']);
     }
 }
 

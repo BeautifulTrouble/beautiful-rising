@@ -1,1 +1,81 @@
-<h1>about</h1>
+<div *ngIf="text">
+    <h1>{{ text.title }}</h1>
+    <p class="lead">{{ text.introduction }}</p>
+    <div id="whats-inside">
+        <h2>{{ text['whats-inside-heading'] }}</h2>
+        <p class="lead">{{ text['whats-inside-text'] }}</p>
+        <div id="module-types">
+            <!--Awkward module type layout goes here-->
+        </div>
+    </div>
+    <div id="how-did-we-make">
+        <h2>{{ text['how-did-we-make-the-toolbox-heading'] }}</h2>
+        <div class="text-md">
+            {{ text['how-did-we-make-the-toolbox-text'] }}
+        </div>
+    </div>
+    <div id="participants-and-workshops">
+        <h2>{{ text['participants-and-workshops-heading'] }}</h2>
+        <div *ngFor="let each of text['workshops']">
+            <h3>{{ each.name }}</h3>
+            <ul *ngFor="let name of each['participants']">
+                <li>{{ name }}</li>
+            </ul>
+        </div>
+    </div>
+    <div id="our-values">
+        <h2>{{ text['our-values-heading'] }}</h2>
+        <div class="text-md">
+            {{ text['our-values-text'] }}
+        </div>
+    </div>
+    <div id="our-advisory-network">
+        <h2>{{ text['advisory-network-heading'] }}</h2>
+        <div class="text-md">
+            {{ text['advisory-network-text'] }}
+        </div>
+        <ul *ngFor="let name of text['network']">
+            <li>{{ name }}</li>
+        </ul>
+    </div>
+    <div id="our-team">
+        <h2>{{ text['our-team-heading'] }}</h2>
+        <div class="text-md">
+            {{ text['our-team-text'] }}
+        </div>
+        <ul *ngFor="let name of text['team']">
+            <li>{{ name }}</li>
+        </ul>
+    </div>
+    <div id="core-partners">
+        <h2>{{ text['partnership-heading'] }}</h2>
+        <div class="text-md">
+            {{ text['partnership-text'] }}
+        </div>
+        <dl *ngFor="let each of text['core-partners']">
+            <dt>{{ each.name }}</dt>
+            <dd>{{ each.description }}</dd>
+            <dd>{{ each.logo }}</dd>
+        </dl>
+    </div>
+    <div id="core-partners">
+        <h2>{{ text['who-are-our-network-partners-heading'] }}</h2>
+        <div class="text-md">
+            {{ text['who-our-our-network-partners-text'] }}
+        </div>
+        <dl *ngFor="let each of text['network-partners']">
+            <dt>{{ each.name }}</dt>
+            <dd>{{ each.logo }}</dd>
+        </dl>
+    </div>
+    <div id="questions">
+        <h2>{{ text['questions-heading'] }}</h2>
+        <div class="text-md">
+            {{ text['questions-text'] }}
+        </div>
+        <dl *ngFor="let each of text['questions']">
+            <dt>{{ each.question }}</dt>
+            <dd>{{ each.answer }}</dd>
+        </dl>
+    </div>
+</div>
