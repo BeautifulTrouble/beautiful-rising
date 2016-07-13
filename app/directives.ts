@@ -22,6 +22,41 @@ export class InlineSVGDirective {
 }
 
 
+/* Simple accordion directive which can be "disabled" to lock it in place
+ *
+ *  <div accordion> <!-- use <div [accordion]="false"> to disable -->
+ *      <div class="some-intermediate-structure">
+ *          <div accordionToggle>Click here to toggle next sibling</div>
+ *          <div>Inner portion to be toggled</div>
+ *          ...
+ */
+@Directive({ selector: '[accordion]' })
+export class AccordionDirective {
+    @Input() accordion;
+    els = [];
+    add(el) {
+        if (this.accordion !== false) el.hidden = true;
+        this.els.push(el);
+    }
+    remove(el) {
+        _.pull(this.els, el);
+    }
+    toggle(el) {
+        if (this.accordion === false) return;
+        var state = el.hidden;
+        _.map(this.els, (el) => { el.hidden = true; });
+        el.hidden = !state;
+    }
+}
+@Directive({ selector: '[accordionToggle]' })
+export class AccordionToggleDirective {
+    constructor(private el: ElementRef, private accordion: AccordionDirective) { }
+    ngOnInit() { this.accordion.add(this.el.nativeElement.nextElementSibling); }
+    ngOnDestroy() { this.accordion.remove(this.el.nativeElement.nextElementSibling); }
+    @HostListener('click') onClick() { this.accordion.toggle(this.el.nativeElement.nextElementSibling); }
+}
+
+
 /* Directive which lazy-loads background images once they've scrolled onscreen
  *
  *  <div lazyBackgroundImages="lazybg">
@@ -194,6 +229,8 @@ export class SizePollingDirective {
 }
 
 export var APP_DIRECTIVES = [
+    AccordionDirective,
+    AccordionToggleDirective,
     InlineSVGDirective,
     MarkdownDirective,
     SectionRouteDirective,
