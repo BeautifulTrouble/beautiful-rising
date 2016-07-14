@@ -19,8 +19,10 @@ $methodology: #b700c2;
 $principle: #166ce3;    
 $theory: #f93732;       
 $story: #08eb8c;        
-$gray: #b3b3b3;         
+$gray: #606162;
+//$gray: #b3b3b3;         
 $lightgray: #afafaf;
+$lightergray: #f7f7f7;
 $darkgray: #333;
 .type-story { 
     a:link, a:visited, a:hover, a:active { color: $story; } 
@@ -800,6 +802,11 @@ detail {
         }
         .module-image-caption {
             top: initial; 
+            p::before {
+                content: "/";
+                position: absolute;
+                left: -2 * $margin;
+            }
         }
         .module-type {
             font-size: 42px;
@@ -832,14 +839,18 @@ detail {
         }
         h4 {
             padding: $margin 0;
+            color: $gray;
+            text-decoration: underline;
         }
         .clickable {
-            text-decoration: underline;
         }
         .contributor-image {
             width: 100%;
             max-height: 250px;
             border: 2px solid black;
+        }
+        .tag {
+            color: $gray;
         }
     }
     .right-side {
@@ -870,7 +881,12 @@ detail {
             }
         }
         .related {
-            padding-left: 3 * $margin;
+            padding: 4 * $margin;
+            padding-top: $margin;
+            background: $lightergray;
+            h3 {
+                padding-left: 22px;
+            }
             ul { 
                 list-style-type: square;
                 text-transform: uppercase;

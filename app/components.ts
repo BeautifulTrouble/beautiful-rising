@@ -624,7 +624,7 @@ export class GalleryComponent {
                         <div *ngIf="module.tags">
                             <h3 class="border-bottom">Tags</h3>
                             <span *ngFor="let tag of module.tags; let last=last">
-                                <a [routerLink]="['/tag', slugify(tag)]" class="black">{{ tag }}</a><span *ngIf="!last"> / </span>
+                                <a [routerLink]="['/tag', slugify(tag)]" class="tag">{{ tag }}</a><span *ngIf="!last"> / </span>
                             </span>
                         </div>
                     </div>
@@ -693,31 +693,33 @@ export class GalleryComponent {
                             <div *ngIf="riskCollapsed && !module['potential-risks-short']" [innerHTML]="module['potential-risks']"></div>
                             <div *ngIf="!riskCollapsed" [innerHTML]="module['potential-risks']"></div>
                         </div>
-                        <div *ngIf="tactics.length || principles.length || theories.length || methodologies.length" class="related">
-                            <h3 class="bigger">Related Modules</h3>
-                            <div *ngIf="tactics.length">
-                                <h3 class="indent">Tactics</h3>
-                                <ul><li *ngFor="let m of tactics">
-                                    <a [routerLink]="['/module', m.slug]" class="tactic">{{ m.title }}</a>
-                                </li></ul>
-                            </div>
-                            <div *ngIf="principles.length">
-                                <h3 class="indent">Principles</h3>
-                                <ul><li *ngFor="let m of principles">
-                                    <a [routerLink]="['/module', m.slug]" class="principle">{{ m.title }}</a>
-                                </li></ul>
-                            </div>
-                            <div *ngIf="theories.length">
-                                <h3 class="indent">Theories</h3>
-                                <ul><li *ngFor="let m of theories">
-                                    <a [routerLink]="['/module', m.slug]" class="theory">{{ m.title }}</a>
-                                </li></ul>
-                            </div>
-                            <div *ngIf="methodologies.length">
-                                <h3 class="indent">Methodologies</h3>
-                                <ul><li *ngFor="let m of methodologies">
-                                    <a [routerLink]="['/module', m.slug]" class="methodology">{{ m.title }}</a>
-                                </li></ul>
+                        <div *ngIf="tactics.length || principles.length || theories.length || methodologies.length">
+                            <h3 class="bigger related">Related Modules</h3>
+                            <div class="related">
+                                <div *ngIf="tactics.length">
+                                    <h3 class="indent">Tactics</h3>
+                                    <ul><li *ngFor="let m of tactics">
+                                        <a [routerLink]="['/module', m.slug]" class="tactic">{{ m.title }}</a>
+                                    </li></ul>
+                                </div>
+                                <div *ngIf="principles.length">
+                                    <h3 class="indent">Principles</h3>
+                                    <ul><li *ngFor="let m of principles">
+                                        <a [routerLink]="['/module', m.slug]" class="principle">{{ m.title }}</a>
+                                    </li></ul>
+                                </div>
+                                <div *ngIf="theories.length">
+                                    <h3 class="indent">Theories</h3>
+                                    <ul><li *ngFor="let m of theories">
+                                        <a [routerLink]="['/module', m.slug]" class="theory">{{ m.title }}</a>
+                                    </li></ul>
+                                </div>
+                                <div *ngIf="methodologies.length">
+                                    <h3 class="indent">Methodologies</h3>
+                                    <ul><li *ngFor="let m of methodologies">
+                                        <a [routerLink]="['/module', m.slug]" class="methodology">{{ m.title }}</a>
+                                    </li></ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -852,7 +854,7 @@ export class ModalComponent {
                         <div (window:scroll)="onScroll()" class="menu-scroll">
                             <div class="menu-section">
                                 <!-- wait for https://github.com/angular/angular/pull/9792 to add routerLinkActive -->
-                                <h3 class="clickable" (click)="close()" [routerLink]="['/about', 'beautiful-rising']">About</h3>
+                                <h3 class="clickable" (click)="close()" [routerLink]="['/about']">About</h3>
                                 <p class="clickable" (click)="close()" [routerLink]="['/about', 'whats-inside']">The Toolbox</p>
                                 <p class="clickable" (click)="close()" [routerLink]="['/about', 'process']">Our Process</p>
                                 <p class="clickable" (click)="close()" [routerLink]="['/about', 'values']">Our Values</p>
