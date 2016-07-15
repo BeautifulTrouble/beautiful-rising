@@ -1055,6 +1055,31 @@ detail {
         .question { padding-bottom: 3 * $margin; }
     }
 }
+.platforms {
+    .platform-image {
+        padding-top: 40%;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: 50% 50%;
+    }
+    #pdf .platform-image { border: 1px solid black; }
+    h3.title { font-size: 48px; }
+    svg-inline { 
+        float: right;   //TODO: fix for bidirectional site
+        position: relative;
+        top: 28px;
+        svg * { fill: $darkgray !important; }
+    }
+    .what, .how, .links {
+        padding-top: 2 * $margin;
+        h4 { padding-bottom: $margin; }
+    }
+    .links {
+        font-weight: bold;
+        text-transform: uppercase;
+        color: $gray;
+    }
+}
 
 
 // Development styles

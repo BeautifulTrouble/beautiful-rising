@@ -2,7 +2,7 @@
 
 import { Component, Input, Output, Inject, EventEmitter, ElementRef, ViewChild, NgZone, isDevMode } from '@angular/core';
 import { Router, ActivatedRoute, provideRouter, ROUTER_DIRECTIVES, NavigationEnd } from '@angular/router';
-import { Title } from '@angular/platform-browser';
+import { Title, DomSanitizationService } from '@angular/platform-browser';
 
 import { APP_DIRECTIVES } from './directives';
 import { CapitalizePipe, NotagsPipe, TrimPipe, plainString, noTags, slugify } from './utilities';
@@ -13,192 +13,102 @@ import _ = require('lodash');
 
 
 @Component({
-    selector: 'about',
-    //template: require('../templates/about.html'),
-    template: `
-        <div class="container page" addSectionToRoute="/about" thresholdElement="#fixed-nav">
-
-        <div *ngIf="text" class="about">
-            <div class="page-heading">
-                <h3>{{ text.heading.title }}</h3>
-                <p>{{ text.heading.introduction }}</p>
-            </div>
-            <section id="whats-inside">
-                <h4 class="heading">{{ text['whats-inside'].title }}</h4>
-                <div class="row">
-                    <div class="col-md-6 col-md-offset-3" [innerMarkdown]="text['whats-inside'].introduction"></div>
-                    <div class="col-xs-12">
-                        <div *ngFor="let each of types; let first=first">
-                            <div [routerLink]="['/type', each[0]]" class="clickable">
-                                <div *ngIf="first" class="type-representation expanded first">
-                                    <div class="col-xs-3 col-xs-offset-3">
-                                        <h3>{{ each[1] }}</h3>
-                                        <svg-inline class="2rows pattern" src="/assets/patterns/2rows/{{ each[0] }}.svg"></svg-inline>
-                                    </div>
-                                    <div class="col-xs-3"><p class="definition" [innerHTML]="textBySlug.home.definitions[each[0] + '-short']"></p></div>
-                                    <div class="clearfix"></div>
-                                </div>
-                                <div *ngIf="!first" class="type-representation expanded">
-                                    <div class="col-xs-3">
-                                        <h3>{{ each[1] }}</h3>
-                                        <svg-inline class="2rows pattern" src="/assets/patterns/2rows/{{ each[0] }}.svg"></svg-inline>
-                                        <p class="definition" [innerHTML]="textBySlug.home.definitions[each[0] + '-short']"></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <section id="process">
-                <div *ngFor="let item of text.process" [ngSwitch]="item.type">
-                    <h4 *ngSwitchCase="'title'" class="heading">{{ item.value }}</h4>
-                    <div *ngSwitchCase="'steps'" class="row">
-                        <div *ngFor="let step of item.value" class="col-md-3 steps">
-                            <div class="step-circle"></div>
-                            <h3>{{ step.title }}</h3>
-                            <div [innerMarkdown]="step.description"></div>
-                        </div>
-                    </div>
-                    <h4 *ngSwitchCase="'subheading'" class="subheading">{{ item.value }}</h4>
-                    <div *ngSwitchCase="'workshops'" class="row">
-                        <div *ngFor="let workshop of text.workshops; let index=index" 
-                         [class.col-md-offset-3]="index == 4" class="col-md-3 workshop-list">
-                            <div class="img-wrapper"><img src="/assets/icons/{{ workshop.name }}.png"></div>
-                            <h3 class="overline">{{ item.value[workshop.name] }}</h3>
-                            <ul><li *ngFor="let participant of workshop.participants">{{ participant }}</li></ul>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <section id="values">
-                <div *ngFor="let item of text.values" [ngSwitch]="item.type">
-                    <h4 *ngSwitchCase="'title'" class="heading">{{ item.value }}</h4>
-                    <div *ngSwitchCase="'values'">
-                        <div *ngFor="let value of item.value; let index=index">
-                            <h3>{{ index+1 }}</h3>
-                            <h4 class="overline">{{ value.title }}</h4>
-                            <div [innerMarkdown]="value.description"></div>
-                        </div>
-                    </div>
-                    <h4 *ngSwitchCase="'disclaimer'" class="disclaimer">{{ item.value }}</h4>
-                    <div *ngSwitchCase="'disclaimer-text'" [innerMarkdown]="item.value" class="disclaimer-text"></div>
-                </div>
-            </section>
-            <section id="advisory-network">
-                <h4 class="heading">{{ text['advisory-network'].title }}</h4>
-                <div class="row">
-                    <div class="col-md-4 col-md-offset-8" [innerMarkdown]="text['advisory-network'].introduction"></div>
-                </div>
-                <div class="row network-members">
-                    <div *ngFor="let member of text['network-members']" class="col-md-4 person">
-                        <div *ngIf="peopleBySlug[member]">
-                            <div class="person-image" [style.background-image]="'url('+config['asset-path']+'/'+peopleBySlug[member].image+')'"></div>
-                            <h4>{{ peopleBySlug[member].title }}</h4>
-                            <h5 *ngIf="peopleBySlug[member]['team-title']" class="team-title">{{ peopleBySlug[member]['team-title'] }}</h5>
-                            <div *ngIf="peopleBySlug[member]['team-bio']" [innerMarkdown]="peopleBySlug[member]['team-bio']" class="team-bio"></div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <section id="team">
-                <h4 class="heading">{{ text.team.title }}</h4>
-                <div class="row team-members">
-                    <div *ngFor="let member of text['team-members']" class="col-md-4 person">
-                        <div *ngIf="peopleBySlug[member]">
-                            <div class="person-image" [style.background-image]="'url('+config['asset-path']+'/'+peopleBySlug[member].image+')'"></div>
-                            <h4>{{ peopleBySlug[member].title }}</h4>
-                            <h5 *ngIf="peopleBySlug[member]['team-title']" class="team-title">{{ peopleBySlug[member]['team-title'] }}</h5>
-                            <div *ngIf="peopleBySlug[member]['team-bio']" [innerMarkdown]="peopleBySlug[member]['team-bio']" class="team-bio"></div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <section id="beautiful-trouble-and-action-aid">
-                <h4 class="heading">{{ text['beautiful-trouble-and-action-aid'].title }}</h4>
-                <div class="row">
-                    <div class="col-md-4 col-md-offset-4">
-                        <div [innerMarkdown]="text['beautiful-trouble-and-action-aid'].introduction" class="introduction"></div>
-                    </div>
-                    <div class="col-md-6">
-                        <div [innerMarkdown]="text['beautiful-trouble-and-action-aid'].bt" class="blurb"></div>
-                        <img src="/assets/icons/bt-logo.png">
-                    </div>
-                    <div class="col-md-6">
-                        <div [innerMarkdown]="text['beautiful-trouble-and-action-aid'].aa" class="blurb"></div>
-                        <img src="/assets/icons/aa-logo.png">
-                    </div>
-                </div>
-            </section>
-            <section id="partners">
-                <h4 class="heading">{{ text.partners.title }}</h4>
-                <div class="row">
-                    <div *ngFor="let partner of text['network-partners']" class="col-md-4">
-                        <div class="img-wrapper"><img *ngIf="partner.logo" src="{{ config['asset-path'] }}/{{ partner.logo }}"></div>
-                        <h5 class="overline">{{ partner.name }}</h5>
-                    </div>
-                </div>
-            </section>
-            <section id="faq">
-                <div *ngFor="let item of text.questions" [ngSwitch]="item.type">
-                    <h4 *ngSwitchCase="'title'" class="heading">{{ item.value }}</h4>
-                    <div *ngSwitchCase="'questions'">
-                        <div *ngFor="let qa of item.value" class="question">
-                            <h4 class="overline">{{ qa.question }}</h4>
-                            <div [innerMarkdown]="qa.answer"></div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-        </div>
-    `,
-    directives: [
-        APP_DIRECTIVES,
-        ROUTER_DIRECTIVES
-    ]
+    selector: 'about-inner',
+    template: require('../templates/about_inner.html'),
+    directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES ]
 })
-export class AboutComponent {
+export class AboutInnerComponent {
+    @Input() config;
+    @Input() peopleBySlug;
+    @Input() textBySlug;
+    @Input() useAccordion;
     types = [['story', 'stories'], 
              ['tactic', 'tactics'], 
              ['principle', 'principles'], 
              ['theory', 'theories'], 
              ['methodology', 'methodologies']];
-    constructor(
-        private router: Router,
-        private contentService: ContentService) {
-    }
-    ngOnInit() {
-        this.contentService.injectContent(this, (content) => {
-            this.text = content.textBySlug.about;
-        });
-    }
+    constructor(private router: Router) { }
 }
 
-/*
 @Component({
     selector: 'about',
-    template: require('../templates/about.html'),
-    directives: [
-        APP_DIRECTIVES,
-        ROUTER_DIRECTIVES
-    ]
+    template: `
+        <div class="container page" addSectionToRoute="/about" thresholdElement="#fixed-nav">
+            <div class="row">
+                <div *ngIf="textBySlug" class="page-heading">
+                    <h3>{{ textBySlug.about.sections.heading }}</h3>
+                    <p>{{ textBySlug.about.heading.introduction }}</p>
+                </div>
+                <about-inner [config]="config" [textBySlug]="textBySlug" [peopleBySlug]="peopleBySlug" [useAccordion]="false"></about-inner>
+            </div>
+        </div>
+    `,
+    directives: [ AboutInnerComponent, APP_DIRECTIVES, ROUTER_DIRECTIVES ]
 })
 export class AboutComponent {
-    constructor(
-        private router: Router,
-        private contentService: ContentService) {
-    }
-    ngOnInit() {
-        this.contentService.injectContent(this);
-    }
+    constructor(private contentService: ContentService) { }
+    ngOnInit() { this.contentService.injectContent(this); }
 }
-*/
+
+
+@Component({
+    selector: 'modal',
+    template: `
+        <div *ngIf="!(dismissedDeliberately || dismissedImplicitly)" class="modal-window">
+            <div (click)="dismissedImplicitly = true" class="overlay visible"></div>
+            <div class="absolute-container-wrapper">
+                <button (click)="dismissedImplicitly = true">I've seen it</button>
+                <div class="container">
+                    <div class="row">
+                        <div class="banner"></div>
+                        <div class="inner">
+                            <about-inner [config]="config" [textBySlug]="textBySlug" [peopleBySlug]="peopleBySlug" [useAccordion]="true"></about-inner>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `,
+    directives: [ AboutInnerComponent, APP_DIRECTIVES, ROUTER_DIRECTIVES ]
+})
+export class ModalComponent {
+    //@LocalStorage() dismissedDeliberately;
+    dismissedDeliberately;
+    dismissedImplicitly;
+    constructor(private contentService: ContentService) { }
+    ngOnInit() { this.contentService.injectContent(this); }
+}
 
 
 @Component({
     selector: 'platforms',
-    template: require('../templates/platforms.html'),
+    template: `
+        <div *ngIf="textBySlug" addSectionToRoute="/platforms" thresholdElement="#fixed-nav" class="container page platforms">
+            <div class="row">
+                <div class="col-xs-12 page-heading">
+                    <h3 class="heading">{{ textBySlug.platforms.general.heading }}</h3>
+                </div>
+                <section *ngFor="let p of ['chatbot', 'game', 'pdf']" id="{{ p }}">
+                    <div class="col-md-1"><svg-inline src="/assets/icons/{{ p }}.svg"></svg-inline></div>
+                    <div class="col-md-4">
+                        <h3 class="overline title">{{ textBySlug.platforms[p].title }}</h3> 
+                        <h4>{{ textBySlug.platforms[p].introduction }}</h4>
+                        <div class="what">
+                            <h4>{{ textBySlug.platforms.general.what }}</h4>
+                            <div [innerMarkdown]="textBySlug.platforms[p].what"></div>
+                        </div>
+                        <div class="how">
+                            <h4>{{ textBySlug.platforms.general.how }}</h4>
+                            <div [innerMarkdown]="textBySlug.platforms[p].how"></div>
+                        </div>
+                        <div class="links" [innerMarkdown]="textBySlug.platforms[p].get"></div>
+                    </div>
+                    <div class="col-md-7 platform-image" [style.background-image]="sanitizer.bypassSecurityTrustStyle('url(/' + textBySlug.platforms[p].image + ')')"></div>
+                    <div class="clearfix"></div>
+                </section>
+            </div>
+        </div>
+    `,
     directives: [
         APP_DIRECTIVES,
         ROUTER_DIRECTIVES
@@ -207,6 +117,7 @@ export class AboutComponent {
 export class PlatformsComponent {
     constructor(
         private router: Router,
+        private sanitizer: DomSanitizationService,
         private contentService: ContentService) {
     }
     ngOnInit() {
