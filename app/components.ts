@@ -955,8 +955,8 @@ export class MenuComponent {
             </div>
             <div *ngIf="visible == 'my-tools'">
                 <div class="top-buttons border-bottom">
-                    <svg-inline (click)="toolTab = 'pdf'" [class.selected]="toolTab == 'pdf'" class="sidebar-icon clickable fix-icon" src="/assets/icons/PDF.svg"></svg-inline>
-                    <svg-inline (click)="toolTab = 'email'" [class.selected]="toolTab == 'email'" class="sidebar-icon clickable" src="/assets/icons/Email.svg"></svg-inline>
+                    <svg-inline (click)="toolTab = 'pdf'" [class.selected]="toolTab == 'pdf'" class="sidebar-icon clickable" src="/assets/icons/pdf.svg"></svg-inline>
+                    <svg-inline (click)="toolTab = 'email'" [class.selected]="toolTab == 'email'" class="sidebar-icon clickable" src="/assets/icons/email.svg"></svg-inline>
                 </div>
                 <div class="scrollable">
                     <div class="downloaders">
