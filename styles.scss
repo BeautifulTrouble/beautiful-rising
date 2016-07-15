@@ -219,6 +219,18 @@ $nav-height: 96px;
     z-index: 1050;
     height: $nav-height;
 }
+.overlay {
+    opacity: 0;
+    background: $lightgray;
+    left: 0; right: 0;
+    top: 0; bottom: 0;
+    z-index: 1500;  // Anything above the overlay needs to be z-indexed > 1500
+    position: fixed;
+    @include prefix(transition, opacity 2s linear, webkit moz);
+}
+.overlay.visible {
+    opacity: .75;
+}
 
 
 // Content area (everything below the nav)
@@ -232,38 +244,72 @@ $nav-height: 96px;
     position: relative;
     left: 20px;
     top: 8px;
-    z-index: 1100;
+    z-index: 1550;
     display: inline-block;
 }
 
 
 // Tools
 .tools, .sidebar {
-    position: absolute;
-    z-index: 1100;
     border: 2px solid black;
-}
-.tools {
+    z-index: 1100;
     background: white;
     padding: $margin;
-    //right: -18 * $margin;
-    right: 0; top: 0;
-    min-height: 100%; 
     text-align: center;
-    width: $margin * 11;
-    a {
-        color: black;
-    }
+    a { color: black; }
     .tool-text {
-        padding-top: $margin;
         text-transform: uppercase;
         font-weight: bold;
         color: $lightgray;
         @include prefix(transition, color $transition linear, webkit moz);
+        padding-top: $margin;
     }
     .selected .tool-text {
         color: black;
     }
+}
+.tools {
+    &.opened {
+        .tools-toggle svg { transform: translate(-4px,-2px) rotate(60deg); }
+        .tools-toggle svg * { fill: black; }
+    }
+}
+
+.navbar-fixed-bottom {
+    height: 13 * $margin;
+    &.opened {
+        height: 100vh;
+        z-index: 1050;
+    }
+    .icon {
+        vertical-align: bottom;
+        display: inline-block;
+        padding: $margin;
+    }
+    .icon > * {
+        vertical-align: middle;
+        display: inline-block;
+    }
+    .icon.tools-toggle {
+        display: none;
+    }
+    .tool-text {
+        width: $margin * 10;
+    }
+}
+
+
+/*
+.tools, .sidebar {
+    position: absolute;
+}
+.tools {
+    right: 0; top: 0;
+    min-height: 100%; 
+    width: $margin * 11;
+}
+*/
+.navbar-right-side .tools {
     .icon {
         padding: 4 * $margin 0 0 0;
     }
@@ -274,10 +320,6 @@ $nav-height: 96px;
         margin: $margin;
         transform: translate(-2px,0) rotate(0deg);
         @include prefix(transition, transform $transition linear, webkit moz);
-    }
-    &.opened {
-        .tools-toggle svg { transform: translate(-4px,-2px) rotate(60deg); }
-        .tools-toggle svg * { fill: black; }
     }
 }
 $sidebar: 265px;
@@ -362,7 +404,7 @@ menu {
             visibility: hidden;
             &.visible { visibility: visible; }
             position: absolute;
-            z-index: 1050;
+            z-index: 1600;
         }
     }
     .menu-outer {
@@ -375,7 +417,7 @@ menu {
         height: 100vh;  // TODO: polyfill or js
         width: $menu-width;
         overflow: hidden;
-        z-index: 1000;
+        z-index: 1550;
         background: white;
         border: 2px solid black;
     }
@@ -391,7 +433,7 @@ menu {
         width: $menu-width - 4;
         border-bottom: 2px solid black;
         background: white;
-        z-index: 1050;
+        z-index: 1550;
         box-shadow: 0 2*$margin 0 0 white;
     }
     .menu-scroll {
@@ -448,18 +490,6 @@ menu {
         padding: 3 * $margin;
         border-top: 2px solid black;
     }
-    .overlay {
-        opacity: 0;
-        background: $gray;
-        z-index: 950;
-        position: fixed;
-        @include prefix(transition, opacity 2s linear, webkit moz);
-    }
-    .overlay.visible {
-        left: 0; right: 0;
-        top: 0; bottom: 0;
-        opacity: .5;
-    }
 }
 
 // Footer
@@ -497,7 +527,7 @@ $search-height: 50px;
         margin-top: 0;
         margin-bottom: 2px;
     }
-    svg { border-right: 4*$margin solid white; }
+    svg { width: 100%; }
     &.first p.definition {
         padding-top: 7*$margin;
     }
@@ -949,20 +979,41 @@ detail {
 }
 
 
-// About page
-.page {
+// Pages & modal window (about)
+.modal-window {
+    .absolute-container-wrapper {
+        border: 5px dotted black;
+        position: absolute;
+        top: 0;
+        //height: 100%;
+        width: 100%;
+        z-index: 1900;
+    }
+    .banner {
+        background-image: url('/assets/');
+    }
+    .inner {
+        background: pink;
+        padding: 0;
+    }
+}
+.page, .accordion {
+    .page-heading {
+        text-align: center;
+        h3 { font-size: 48px; }
+    }
     h4.heading { 
-        font-size: 20px; 
+        font-size: 3 * $margin; 
         border-bottom: 2px solid black;
         padding: 3 * $margin 2 * $margin;
         margin-bottom: 10 * $margin;
     }
     section {
         padding-bottom: 12 * $margin;
-    }
-    .page-heading {
-        text-align: center;
-        h3 { font-size: 48px; }
+        .content {
+            padding-right: 3 * $margin;
+            padding-left: 3 * $margin;
+        }
     }
     .overline::before {
         position: absolute;
@@ -978,8 +1029,30 @@ detail {
         color: gray;
         margin-top: $margin;
     }
+    .links {
+        font-weight: bold;
+        text-transform: uppercase;
+        color: $gray;
+    }
 }
 .about {
+    h4.heading svg-inline { display: none; }
+    &.accordion {
+        h4.heading svg-inline { 
+            display: inline-block; 
+            vertical-align: bottom;
+            @include prefix(transition, transform $transition linear, webkit moz);
+            transform: rotate(180deg) scale(0.5);
+            svg * { fill: $lightgray; }
+        }
+        h4.heading { 
+            margin: 0;
+        }
+        section {
+            padding: 0;
+            .content { padding: 4 * $margin 3 * $margin; }
+        }
+    }
     .person {
         height: 500px;  // TODO: make responsive;
         p {
@@ -1027,9 +1100,8 @@ detail {
         }
     }
     #values, #faq {
-        //h3 { padding-bottom: $margin; }
-        h4 { padding-top: $margin; }
         p { padding-left: 10%; }
+        .content h4 { padding-top: $margin; }
         .disclaimer { margin-top: 10 * $margin; }
         .disclaimer-text { color: gray; }
     }
@@ -1044,15 +1116,20 @@ detail {
         }
     }
     #partners {
+        h5 { padding-bottom: 48px; }
         .img-wrapper { 
             width: 100%;
             height: 140px;
             img { max-height: 120px; }
         }
-        h5 { padding-bottom: 48px; }
     }
     #faq {
         .question { padding-bottom: 3 * $margin; }
+    }
+}
+.platforms, .contribute {
+    .page-heading {
+        margin-bottom: 6 * $margin;
     }
 }
 .platforms {
@@ -1074,11 +1151,48 @@ detail {
         padding-top: 2 * $margin;
         h4 { padding-bottom: $margin; }
     }
-    .links {
-        font-weight: bold;
-        text-transform: uppercase;
-        color: $gray;
+}
+.contribute {
+    #how-it-works {
+        text-align: center;
     }
+    .instructions-heading {
+        padding-top: 6 * $margin;
+    }
+    svg {
+        width: 100%;
+    }
+    .types {
+        text-align: left;
+        .description { 
+            display: none; 
+            width: 100%;
+            position: relative;
+            margin-top: 6 * $margin;
+        }
+        .description::before {
+            content: "";
+            position: absolute;
+            top: -8 * $margin;
+            left: 50%;
+            height: 6 * $margin;
+            border: 1px solid black;
+        }
+        .active.description { 
+            display: inline-block; 
+        }
+    }
+}
+.bar-center {
+    position: relative;
+    height: 90px;
+}
+.bar-center::after {
+    content: "";
+    position: absolute;
+    bottom: 0; top: 0;
+    left: 50%;
+    border: 1px solid black;
 }
 
 

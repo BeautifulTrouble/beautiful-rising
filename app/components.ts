@@ -30,6 +30,7 @@ export class AboutInnerComponent {
     constructor(private router: Router) { }
 }
 
+
 @Component({
     selector: 'about',
     template: `
@@ -76,7 +77,9 @@ export class ModalComponent {
     dismissedDeliberately;
     dismissedImplicitly;
     constructor(private contentService: ContentService) { }
-    ngOnInit() { this.contentService.injectContent(this); }
+    ngOnInit() { 
+        this.contentService.injectContent(this); 
+    }
 }
 
 
@@ -135,7 +138,6 @@ export class PlatformsComponent {
     ]
 })
 export class ResourcesComponent {
-    text;
     constructor(
         private router: Router,
         private contentService: ContentService) {
@@ -148,13 +150,46 @@ export class ResourcesComponent {
 
 @Component({
     selector: 'contribute',
-    template: require('../templates/contribute.html'),
-    directives: [
-        APP_DIRECTIVES,
-        ROUTER_DIRECTIVES
-    ]
+    template: `
+        <div *ngIf="textBySlug" addSectionToRoute="/contribute" thresholdElement="#fixed-nav" class="container page contribute">
+            <div class="row">
+                <div class="col-xs-12 page-heading">
+                    <h3 class="heading">{{ textBySlug.contribute.general.heading }}</h3>
+                </div>
+                <section id="how-it-works">
+                    <div class="col-xs-12">
+                        <h4 class="heading">{{ textBySlug.contribute.general.subheading }}</h4>
+                        <div [innerMarkdown]="textBySlug.contribute.general.introduction"></div>
+                        <h4 class="instructions-heading">{{ textBySlug.contribute.general['instructions-heading'] }}</h4>
+                        <div [innerMarkdown]="textBySlug.contribute.general.instructions"></div>
+                        <div class="bar-center"></div>
+                    </div>
+                    <div class="col-xs-12">
+                        <h4 class="heading">{{ textBySlug.contribute.general.prompt }}</h4>
+                    </div>
+                    <div class="clickable types" *ngFor="let each of types; let first=first" (click)="activeType = each[0]">
+                        <div [ngClass]="first ? 'col-xs-2 col-md-offset-1' : 'col-xs-2'">
+                            <h3>{{ textBySlug.ui.types[each[1]] }}</h3>
+                            <svg-inline class="2rows pattern" src="/assets/patterns/2rows/{{ each[0] }}.svg"></svg-inline>
+                            <div class="description" [class.active]="activeType == each[0]">
+                                <div [innerHTML]="textBySlug.ui.definitions[each[0] + '-short']"></div>
+                                <div class="links">Go to form</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    `,
+    directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES ]
 })
 export class ContributeComponent {
+    activeType = 'story';
+    types = [['story', 'stories'], 
+             ['tactic', 'tactics'], 
+             ['principle', 'principles'], 
+             ['theory', 'theories'], 
+             ['methodology', 'methodologies']];
     constructor(
         private router: Router,
         private contentService: ContentService) {
@@ -187,14 +222,14 @@ export class ContributeComponent {
                                                 <h3>{{ each[1] }}</h3>
                                                 <svg-inline class="2rows pattern" src="/assets/patterns/2rows/{{ each[0] }}.svg"></svg-inline>
                                             </div>
-                                            <div *ngIf="expanded" class="col-xs-3"><p class="definition" [innerHTML]="textBySlug.home.definitions[each[0] + '-short']"></p></div>
+                                            <div *ngIf="expanded" class="col-xs-3"><p class="definition" [innerHTML]="textBySlug.ui.definitions[each[0] + '-short']"></p></div>
                                             <div *ngIf="expanded" class="clearfix"></div>
                                         </div>
                                         <div *ngIf="!first" class="type-representation" [class.expanded]="expanded">
                                             <div [ngClass]="[expanded ? 'col-xs-3' : 'col-xs-2']">
                                                 <h3>{{ each[1] }}</h3>
                                                 <svg-inline class="2rows pattern" src="/assets/patterns/2rows/{{ each[0] }}.svg"></svg-inline>
-                                                <p *ngIf="expanded" class="definition" [innerHTML]="textBySlug.home.definitions[each[0] + '-short']"></p>
+                                                <p *ngIf="expanded" class="definition" [innerHTML]="textBySlug.ui.definitions[each[0] + '-short']"></p>
                                             </div>
                                         </div>
                                     </div>
@@ -222,7 +257,7 @@ export class ContributeComponent {
                                     </div>
                                 </div>
                                 <div class="col-md-6 type-description">
-                                    <p [innerHtml]="textBySlug.home.definitions[type]"></p>
+                                    <p [innerHtml]="textBySlug.ui.definitions[type]"></p>
                                     <div *ngIf="type == 'story'" class="regions">
                                         <h3>Region</h3>
                                         <span *ngFor="let each of ['africa','latin-america-and-the-caribbean','north-america','asia','europe','middle-east','oceania']">
@@ -414,7 +449,7 @@ export class GalleryComponent {
         this.type = this.tag = this.query = this.region = null;
 
         this.contentService.injectContent(this, (content) => {
-            this.title.setTitle(content.textBySlug.home['site-title']);
+            this.title.setTitle(content.textBySlug.ui['site-title']);
             if (!this.sub) {
                 this.sub = this.route.params.subscribe((params) => {
                     if (params.type) this.type = params.type;
@@ -731,24 +766,6 @@ export class DetailComponent {
 
 
 @Component({
-    selector: 'modal',
-    template: `
-        <div *ngIf="!seenPopup" class="modal-window row" style="border: 2px dotted gray; padding: 20px;">
-            <h1>Popup Window</h1>
-            <h4>(it won't look like this)</h4>
-            <button (click)="seenPopup = true">I've seen it</button>
-        </div>
-    `,
-    styles: []
-})
-export class ModalComponent {
-    _ = _;
-    //@LocalStorage() seenPopup;
-    seenPopup;
-}
-
-
-@Component({
     selector: 'menu',
     template: `
         <div (click)="toggle()" class="menu-toggle clickable">
@@ -785,7 +802,6 @@ export class ModalComponent {
                             <div class="menu-section">
                                 <h3 class="clickable" (click)="close()" [routerLink]="['/contribute']">Contribute</h3>
                                 <p class="clickable" (click)="close()" [routerLink]="['/contribute', 'how-it-works']">How does it work?</p>
-                                <p class="clickable" (click)="close()" [routerLink]="['/contribute', 'write-a-module']">Write up a module</p>
                             </div>
                             <div class="menu-section">
                                 <h3 class="clickable" (click)="close()" [routerLink]="['/resources']">Training + Resources</h3>
@@ -837,17 +853,30 @@ export class MenuComponent {
 @Component({
     selector: 'tools',
     template: `
-        <div (click)="toggleOpened()" class="tools" [class.opened]="opened">
-            <div class="clickable icon tools-toggle">
-                <svg-inline src="/assets/icons/arrow.svg"></svg-inline>
-            </div>
-            <div class="clickable icon" [class.selected]="opened && visible == 'news-feed'" (click)="selectTool('news-feed'); $event.stopPropagation()">
-                <svg-inline src="/assets/icons/News_Feed.svg"></svg-inline>
-                <div class="tool-text">News feed</div>
-            </div>
-            <div class="clickable icon" [class.selected]="opened && visible == 'my-tools'" (click)="selectTool('my-tools'); $event.stopPropagation()">
-                <svg-inline src="/assets/icons/My_tools.svg"></svg-inline>
-                <div class="tool-text">My tools</div>
+        <!-- new stuff 
+        <div *ngIf="bottom" class="navbar-fixed-bottom" [class.opened]="opened">
+            <div class="container">
+                <div (click)="toggle()" class="row tool-toggle">
+                    <div class="col-xs-6 clickable icon" [class.selected]="opened && visible == 'news-feed'" 
+                     (click)="selectTool('news-feed'); $event.stopPropagation()">
+        -->
+
+
+        <!--
+        <div *ngIf="bottom" class="navbar-fixed-bottom" [class.opened]="opened">
+            <div class="container">
+                <div class="row">
+                    <div (click)="toggleOpened()" class="tools" [class.opened]="opened">
+                        <div class="col-xs-6 clickable icon" [class.selected]="opened && visible == 'news-feed'" 
+                         (click)="selectTool('news-feed'); $event.stopPropagation()">
+                            <svg-inline src="/assets/icons/News_Feed.svg"></svg-inline><div class="tool-text">News feed</div>
+                        </div>
+                        <div class="col-xs-6 clickable icon" [class.selected]="opened && visible == 'my-tools'" 
+                         (click)="selectTool('my-tools'); $event.stopPropagation()">
+                            <svg-inline src="/assets/icons/My_tools.svg"></svg-inline><div class="tool-text">My tools</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div *ngIf="opened" class="sidebar">
@@ -889,6 +918,7 @@ export class MenuComponent {
                 </div>
             </div>
         </div>
+        -->
     `,
     directives: [
         APP_DIRECTIVES,
@@ -904,6 +934,8 @@ export class ToolsComponent {
     visible = 'my-tools';
     newsTab = 'twitter';
     toolTab = 'pdf';
+
+    bottom = true;
 
     constructor(
         private router: Router,
@@ -928,6 +960,7 @@ export class ToolsComponent {
     template: `
             <div class="background" data-background="true" (click)="closeToolsOnBackgroundClick($event)" 
              [ngStyle]="{'direction': contentService.language==='ar' ? 'rtl' : 'ltr'}">
+                <!-- <modal></modal> -->
                 <div id="fixed-nav" class="fixed-container-wrapper">
 
                     <div class="container" data-background="true">
@@ -941,21 +974,22 @@ export class ToolsComponent {
                     </div><!-- .container -->
 
                 </div>
+                <tools class="bottom" [modulesBySlug]="modulesBySlug" [opened]="toolsOpened" 
+                 (open)="toolsOpened = true" (close)="toolsOpened = false"></tools>
                 <div class="content-area" (window:resize)="setToolsOffset()" [ngStyle]="{'right': toolsOpened ? toolsOffset : '0'}">
-
-                    <!-- <modal></modal> -->
 
                     <router-outlet></router-outlet>
 
                     <div class="container">
-                        <tools (open)="toolsOpened = true" (close)="toolsOpened = false" [opened]="toolsOpened" [modulesBySlug]="modulesBySlug"></tools>
-                        <div class="footer row">
-                            <div class="col-md-2"></div>
-                            <div class="col-md-8">
-                                <img src="/assets/icons/Creative_Commons.svg">
-                                <p>Beautiful Rising by Beautiful Rising, various authors is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License. Permissions beyond the scope of this license may be available at beautifulrising.org.</p>
+                        <div class="row">
+                            <div class="footer">
+                                <div class="col-md-2"></div>
+                                <div class="col-md-8">
+                                    <img src="/assets/icons/Creative_Commons.svg">
+                                    <p>Beautiful Rising by Beautiful Rising, various authors is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License. Permissions beyond the scope of this license may be available at beautifulrising.org.</p>
+                                </div>
+                                <div class="col-md-2"></div>
                             </div>
-                            <div class="col-md-2"></div>
                         </div>
                     </div><!-- .container -->
 
@@ -998,6 +1032,7 @@ export class AppComponent {
         this.setToolsOffset();
     }
     setToolsOffset() {
+        return;
         // Calculate how much to shift the content-area when the tools panel is expanded
         var toolsRect = document.body.querySelector('.tools').getBoundingClientRect();
         var currentOffset = parseInt(getComputedStyle(document.body.querySelector('.content-area')).right);
