@@ -37,7 +37,7 @@ export class AboutInnerComponent {
         <div class="container page" addSectionToRoute="/about" thresholdElement="#fixed-nav">
             <div class="row">
                 <div *ngIf="textBySlug" class="page-heading">
-                    <h3>{{ textBySlug.about.sections.heading }}</h3>
+                    <h3>{{ textBySlug.about.misc.heading }}</h3>
                     <p>{{ textBySlug.about.heading.introduction }}</p>
                 </div>
                 <about-inner [config]="config" [textBySlug]="textBySlug" [peopleBySlug]="peopleBySlug" [useAccordion]="false"></about-inner>
@@ -55,17 +55,29 @@ export class AboutComponent {
 @Component({
     selector: 'modal',
     template: `
-        <div *ngIf="!(dismissedDeliberately || dismissedImplicitly)" class="modal-window">
-            <div (click)="dismissedImplicitly = true" class="overlay visible"></div>
-            <div class="absolute-container-wrapper">
-                <button (click)="dismissedImplicitly = true">I've seen it</button>
-                <div class="container">
-                    <div class="row">
+        <div class="fixed-container-wrapper"
+         *ngIf="!(dismissedExplicitly || dismissedImplicitly)"
+         #wrapper
+         [style.margin-right.px]="-50" 
+         [style.right.px]="50 - (wrapper.offsetWidth - wrapper.clientWidth)"
+         (click)="dismissedImplicitly = true">
+            <div class="container">
+                <div (click)="$event.stopPropagation()" class="inner row">
+                    <div class="upper row">
                         <div class="banner"></div>
-                        <div class="inner">
+                        <div class="col-md-5">
+                            <img class="logo" src="/assets/icons/logo-reverse.png">
+                            <h3>Welcome to the toolbox</h3>
+                            <p>One paragraph that introduces the toolbox for the modal window. Some words here would be nice but at the moment I can't find them. That'll be fixed pretty soon, I imagine.</p>
+                        </div>
+                    </div>
+                    <div class="lower row">
+                        <div class="col-xs-12">
                             <about-inner [config]="config" [textBySlug]="textBySlug" [peopleBySlug]="peopleBySlug" [useAccordion]="true"></about-inner>
                         </div>
                     </div>
+                    <img (click)="dismissedExplicitly = true" class="clickable close-icon" src="/assets/icons/close.png">
+                    <div (click)="dismissedExplicitly = true" class="clickable dismiss"><p>Yeah, I got this. Just take me to the toolbox!</p></div>
                 </div>
             </div>
         </div>
@@ -73,8 +85,8 @@ export class AboutComponent {
     directives: [ AboutInnerComponent, APP_DIRECTIVES, ROUTER_DIRECTIVES ]
 })
 export class ModalComponent {
-    //@LocalStorage() dismissedDeliberately;
-    dismissedDeliberately;
+    //@LocalStorage() dismissedExplicitly;
+    dismissedExplicitly;
     dismissedImplicitly;
     constructor(private contentService: ContentService) { }
     ngOnInit() { 
@@ -89,7 +101,7 @@ export class ModalComponent {
         <div *ngIf="textBySlug" addSectionToRoute="/platforms" thresholdElement="#fixed-nav" class="container page platforms">
             <div class="row">
                 <div class="col-xs-12 page-heading">
-                    <h3 class="heading">{{ textBySlug.platforms.general.heading }}</h3>
+                    <h3 class="heading">{{ textBySlug.platforms.misc.heading }}</h3>
                 </div>
                 <section *ngFor="let p of ['chatbot', 'game', 'pdf']" id="{{ p }}">
                     <div class="col-md-1"><svg-inline src="/assets/icons/{{ p }}.svg"></svg-inline></div>
@@ -97,11 +109,11 @@ export class ModalComponent {
                         <h3 class="overline title">{{ textBySlug.platforms[p].title }}</h3> 
                         <h4>{{ textBySlug.platforms[p].introduction }}</h4>
                         <div class="what">
-                            <h4>{{ textBySlug.platforms.general.what }}</h4>
+                            <h4>{{ textBySlug.platforms.misc.what }}</h4>
                             <div [innerMarkdown]="textBySlug.platforms[p].what"></div>
                         </div>
                         <div class="how">
-                            <h4>{{ textBySlug.platforms.general.how }}</h4>
+                            <h4>{{ textBySlug.platforms.misc.how }}</h4>
                             <div [innerMarkdown]="textBySlug.platforms[p].how"></div>
                         </div>
                         <div class="links" [innerMarkdown]="textBySlug.platforms[p].get"></div>
@@ -154,18 +166,18 @@ export class ResourcesComponent {
         <div *ngIf="textBySlug" addSectionToRoute="/contribute" thresholdElement="#fixed-nav" class="container page contribute">
             <div class="row">
                 <div class="col-xs-12 page-heading">
-                    <h3 class="heading">{{ textBySlug.contribute.general.heading }}</h3>
+                    <h3 class="heading">{{ textBySlug.contribute.misc.heading }}</h3>
                 </div>
                 <section id="how-it-works">
                     <div class="col-xs-12">
-                        <h4 class="heading">{{ textBySlug.contribute.general.subheading }}</h4>
-                        <div [innerMarkdown]="textBySlug.contribute.general.introduction"></div>
-                        <h4 class="instructions-heading">{{ textBySlug.contribute.general['instructions-heading'] }}</h4>
-                        <div [innerMarkdown]="textBySlug.contribute.general.instructions"></div>
+                        <h4 class="heading">{{ textBySlug.contribute.misc.subheading }}</h4>
+                        <div [innerMarkdown]="textBySlug.contribute.misc.introduction"></div>
+                        <h4 class="instructions-heading">{{ textBySlug.contribute.misc['instructions-heading'] }}</h4>
+                        <div [innerMarkdown]="textBySlug.contribute.misc.instructions"></div>
                         <div class="bar-center"></div>
                     </div>
                     <div class="col-xs-12">
-                        <h4 class="heading">{{ textBySlug.contribute.general.prompt }}</h4>
+                        <h4 class="heading">{{ textBySlug.contribute.misc.prompt }}</h4>
                     </div>
                     <div class="clickable types" *ngFor="let each of types; let first=first" (click)="activeType = each[0]">
                         <div [ngClass]="first ? 'col-xs-2 col-md-offset-1' : 'col-xs-2'">
@@ -449,7 +461,7 @@ export class GalleryComponent {
         this.type = this.tag = this.query = this.region = null;
 
         this.contentService.injectContent(this, (content) => {
-            this.title.setTitle(content.textBySlug.ui['site-title']);
+            this.title.setTitle(content.textBySlug.ui.misc['site-title']);
             if (!this.sub) {
                 this.sub = this.route.params.subscribe((params) => {
                     if (params.type) this.type = params.type;
@@ -960,39 +972,32 @@ export class ToolsComponent {
     template: `
             <div class="background" data-background="true" (click)="closeToolsOnBackgroundClick($event)" 
              [ngStyle]="{'direction': contentService.language==='ar' ? 'rtl' : 'ltr'}">
-                <!-- <modal></modal> -->
+                <modal></modal>
                 <div id="fixed-nav" class="fixed-container-wrapper">
-
                     <div class="container" data-background="true">
                         <div class="language-selection">
                             <span *ngFor="let lang of languages" (click)="language=lang" [class.selected]="language===lang">{{ lang|uppercase }}</span>
                         </div>
-
                         <menu [textBySlug]="textBySlug"></menu>
-
-                        <a [routerLink]="['']"><img class="logo" src="/assets/icons/logo.png"></a>
+                        <a [routerLink]="['']">
+                            <img class="logo" src="/assets/icons/logo.png">
+                        </a>
                     </div><!-- .container -->
-
                 </div>
                 <tools class="bottom" [modulesBySlug]="modulesBySlug" [opened]="toolsOpened" 
                  (open)="toolsOpened = true" (close)="toolsOpened = false"></tools>
                 <div class="content-area" (window:resize)="setToolsOffset()" [ngStyle]="{'right': toolsOpened ? toolsOffset : '0'}">
-
                     <router-outlet></router-outlet>
-
                     <div class="container">
                         <div class="row">
                             <div class="footer">
-                                <div class="col-md-2"></div>
-                                <div class="col-md-8">
+                                <div class="col-md-8 col-md-offset-2">
                                     <img src="/assets/icons/Creative_Commons.svg">
                                     <p>Beautiful Rising by Beautiful Rising, various authors is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License. Permissions beyond the scope of this license may be available at beautifulrising.org.</p>
                                 </div>
-                                <div class="col-md-2"></div>
                             </div>
                         </div>
                     </div><!-- .container -->
-
                 </div>
             </div>
     `,

@@ -527,7 +527,7 @@ $search-height: 50px;
         margin-top: 0;
         margin-bottom: 2px;
     }
-    svg { width: 100%; }
+    svg { max-width: 100%; }
     &.first p.definition {
         padding-top: 7*$margin;
     }
@@ -980,21 +980,64 @@ detail {
 
 
 // Pages & modal window (about)
-.modal-window {
-    .absolute-container-wrapper {
-        border: 5px dotted black;
-        position: absolute;
-        top: 0;
-        //height: 100%;
-        width: 100%;
+modal {
+    .fixed-container-wrapper {
+        padding-top: 50px;
+        padding-bottom: 100px;
+        top: 0; bottom: 0;
+        left: 0;
         z-index: 1900;
-    }
-    .banner {
-        background-image: url('/assets/');
+        overflow-y: scroll;
+        overflow-x: hidden;
+        background-color: rgba($lightgray, .75);
+        width: initial;
     }
     .inner {
-        background: pink;
-        padding: 0;
+        background: white;
+        border: 2px solid black;
+        position: relative;
+    }
+    .upper, .lower { padding: 30px 60px; }
+    .lower { padding-bottom: 12*$margin; }
+    .upper {
+        color: white;
+        position: relative;
+        h3 { font-size: 40px; }
+        .logo { top: 0; }
+    }
+    .banner {
+        background-image: url('/assets/icons/modal.jpg');
+        background-size: cover;
+        background-position: 50% 50%;
+        position: absolute;
+        top: 0; bottom: 0;
+        left: 15px; right: 15px;
+        &::after {
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,.5);
+            content: "";
+            position: absolute;
+        }
+    }
+    .close-icon {
+        position: absolute;
+        right: -25px; top: 25px;
+    }
+    .dismiss p {
+        position: relative;
+        display: inline-block;
+        width: 210px;
+        bottom: 42px;
+        padding: 2*$margin 4*$margin;
+        border: 2px solid black;
+        background: white;
+        text-transform: uppercase;
+        font-weight: bold;
+    }
+    .dismiss {
+        text-align: center;
+        height: 0;
     }
 }
 .page, .accordion {
@@ -1003,7 +1046,7 @@ detail {
         h3 { font-size: 48px; }
     }
     h4.heading { 
-        font-size: 3 * $margin; 
+        //font-size: 3 * $margin; 
         border-bottom: 2px solid black;
         padding: 3 * $margin 2 * $margin;
         margin-bottom: 10 * $margin;
@@ -1139,7 +1182,9 @@ detail {
         background-repeat: no-repeat;
         background-position: 50% 50%;
     }
-    #pdf .platform-image { border: 1px solid black; }
+    #pdf .platform-image { 
+        border: 1px solid black; 
+    }
     h3.title { font-size: 48px; }
     svg-inline { 
         float: right;   //TODO: fix for bidirectional site
@@ -1160,7 +1205,7 @@ detail {
         padding-top: 6 * $margin;
     }
     svg {
-        width: 100%;
+        max-width: 100%;
     }
     .types {
         text-align: left;
