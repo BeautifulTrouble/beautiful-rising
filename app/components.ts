@@ -56,7 +56,7 @@ export class AboutComponent {
     selector: 'modal',
     template: `
         <div class="fixed-container-wrapper"
-         *ngIf="!(dismissedExplicitly || dismissedImplicitly)"
+         *ngIf="textBySlug && !(dismissedExplicitly || dismissedImplicitly)"
          #wrapper
          [style.margin-right.px]="-50" 
          [style.right.px]="50 - (wrapper.offsetWidth - wrapper.clientWidth)"
@@ -67,8 +67,8 @@ export class AboutComponent {
                         <div class="banner"></div>
                         <div class="col-md-5">
                             <img class="logo" src="/assets/icons/logo-reverse.png">
-                            <h3>Welcome to the toolbox</h3>
-                            <p>One paragraph that introduces the toolbox for the modal window. Some words here would be nice but at the moment I can't find them. That'll be fixed pretty soon, I imagine.</p>
+                            <h3>{{ textBySlug.about.modal.welcome }}</h3>
+                            <p>{{ textBySlug.about.modal.introduction }}</p>
                         </div>
                     </div>
                     <div class="lower row">
@@ -77,7 +77,7 @@ export class AboutComponent {
                         </div>
                     </div>
                     <img (click)="dismissedExplicitly = true" class="clickable close-icon" src="/assets/icons/close.png">
-                    <div (click)="dismissedExplicitly = true" class="clickable dismiss"><p>Yeah, I got this. Just take me to the toolbox!</p></div>
+                    <div (click)="dismissedExplicitly = true" class="clickable dismiss"><p>{{ textBySlug.about.modal.dismiss }}</p></div>
                 </div>
             </div>
         </div>
@@ -85,6 +85,8 @@ export class AboutComponent {
     directives: [ AboutInnerComponent, APP_DIRECTIVES, ROUTER_DIRECTIVES ]
 })
 export class ModalComponent {
+    // Uncomment this when we're ready to have the modal *really* show up only once. 
+    // Maybe set a timestamp value each time the site is visited and re-show if some time has passed?
     //@LocalStorage() dismissedExplicitly;
     dismissedExplicitly;
     dismissedImplicitly;
