@@ -39,15 +39,15 @@
         <div class="content">
             <div *ngFor="let item of textBySlug.about.process" [ngSwitch]="item.type">
                 <div *ngSwitchCase="'steps'" class="row">
-                    <div *ngFor="let step of item.value" class="col-md-3 steps">
-                        <div class="step-circle"></div>
+                    <div *ngFor="let step of item.value; let last=last" class="col-md-3 steps">
+                        <div class="step-circle" [class.last]="last"></div>
                         <h3>{{ step.title }}</h3>
                         <div [innerMarkdown]="step.description"></div>
                     </div>
                 </div>
                 <h4 *ngSwitchCase="'subheading'" class="subheading">{{ item.value }}</h4>
                 <div *ngSwitchCase="'workshops'" class="row">
-                    <div *ngFor="let workshop of textBySlug.about.workshops; let index=index" 
+                    <div *ngFor="let workshop of textBySlug['workshop-participants'].groups; let index=index" 
                      [class.col-md-offset-3]="index == 4" class="col-md-3 workshop-list">
                         <div class="img-wrapper"><img src="/assets/icons/{{ workshop.name }}.png"></div>
                         <h3 class="overline">{{ item.value[workshop.name] }}</h3>

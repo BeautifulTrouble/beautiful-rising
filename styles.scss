@@ -1117,11 +1117,13 @@ modal {
             margin-bottom: 4 * $margin;
             text-align: center;
         }
-        .steps {
-            p { padding-left: 2 * $margin; }
+        .steps p {
+            padding-left: 2 * $margin; 
         }
-        .workshop-list {
-            ul { list-style-type: decimal; }
+        .workshop-list ul {
+            list-style-type: decimal; 
+            font-size: 12px;
+            padding-left: 4*$margin;
         }
         .img-wrapper { 
             width: 100%;
@@ -1130,16 +1132,20 @@ modal {
             img { max-height: 120px; }
         }
         .step-circle {
-            width: 60%; padding-top: 60%;
+            width: 65%; padding-top: 65%;
             border: 2px solid black;
             border-radius: 50%;
+            position: relative;
         }
         .step-circle::after {
             content: "";
             border: 1px solid black;
             position: absolute;
-            top: 24%; 
-            width: 66%; right: -5%;
+            top: 50%; 
+            width: 110%; right: -79%;
+        }
+        .step-circle.last::after {
+            content: initial;
         }
     }
     #values, #faq {
