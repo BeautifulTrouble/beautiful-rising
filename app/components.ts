@@ -90,8 +90,20 @@ export class ModalComponent {
     //@LocalStorage() dismissedExplicitly;
     dismissedExplicitly;
     dismissedImplicitly;
-    constructor(private contentService: ContentService) { }
+    constructor(
+        private router: Router,
+        private contentService: ContentService) { 
+    }
     ngOnInit() { 
+        var firstNav = true;
+        var sub = this.router.events.subscribe(event => {
+            if (event instanceof NavigationEnd) {
+                // XXX: Bug: on certain pages, navigation events are triggered by scrolling
+                if (firstNav) return firstNav = false;
+                this.dismissedImplicitly = true;
+                sub.unsubscribe();
+            }
+        });
         this.contentService.injectContent(this); 
     }
 }
@@ -782,13 +794,13 @@ export class DetailComponent {
 @Component({
     selector: 'menu',
     template: `
-        <div (click)="toggle()" class="menu-toggle clickable">
+        <div (click)="visible = !visible" class="menu-toggle clickable">
             <img [class.visible]="visible" class="close-icon" src="/assets/icons/close.png">
             <svg-inline class="open-icon" src="/assets/icons/hamburger.svg"></svg-inline>
             <h4>Menu</h4>
         </div>
         <div *ngIf="visible">
-            <div (click)="close()" class="overlay" [class.visible]="visible"></div>
+            <div (click)="visible = false" class="overlay" [class.visible]="visible"></div>
             <div class="menu-outer">
                 <div class="menu">
                     <div #menu class="menu-inner">
@@ -796,37 +808,37 @@ export class DetailComponent {
                         <div (window:scroll)="onScroll()" class="menu-scroll">
                             <div class="menu-section">
                                 <!-- wait for https://github.com/angular/angular/pull/9792 to add routerLinkActive -->
-                                <h3 class="clickable" (click)="close()" [routerLink]="['/about']">About</h3>
-                                <p class="clickable" (click)="close()" [routerLink]="['/about', 'whats-inside']">The Toolbox</p>
-                                <p class="clickable" (click)="close()" [routerLink]="['/about', 'process']">Our Process</p>
-                                <p class="clickable" (click)="close()" [routerLink]="['/about', 'values']">Our Values</p>
-                                <p class="clickable" (click)="close()" [routerLink]="['/about', 'advisory-network']">Our Advisory Network</p>
-                                <p class="clickable" (click)="close()" [routerLink]="['/about', 'team']">Our Team</p>
-                                <p class="clickable" (click)="close()" [routerLink]="['/about', 'beautiful-trouble-and-action-aid']">Beautiful Trouble + AA</p>
-                                <p class="clickable" (click)="close()" [routerLink]="['/about', 'partners']">Partners</p>
-                                <p class="clickable" (click)="close()" [routerLink]="['/about', 'faq']">FAQ</p>
+                                <h3 class="clickable" (click)="nav(['/about'])">About</h3>
+                                <p class="clickable" (click)="nav(['/about', 'whats-inside'])">The Toolbox</p>
+                                <p class="clickable" (click)="nav(['/about', 'process'])">Our Process</p>
+                                <p class="clickable" (click)="nav(['/about', 'values'])">Our Values</p>
+                                <p class="clickable" (click)="nav(['/about', 'advisory-network'])">Our Advisory Network</p>
+                                <p class="clickable" (click)="nav(['/about', 'team'])">Our Team</p>
+                                <p class="clickable" (click)="nav(['/about', 'beautiful-trouble-and-action-aid'])">Beautiful Trouble + AA</p>
+                                <p class="clickable" (click)="nav(['/about', 'partners'])">Partners</p>
+                                <p class="clickable" (click)="nav(['/about', 'faq'])">FAQ</p>
                             </div>
                             <div class="menu-section">
-                                <h3 class="clickable" (click)="close()" [routerLink]="['/platforms']">Platforms</h3>
+                                <h3 class="clickable" (click)="nav(['/platforms'])">Platforms</h3>
                                 <em>Explore other ways to access the toolbox</em>
-                                <p class="clickable" (click)="close()" [routerLink]="['/platforms', 'chatbot']">Chat Bot</p>
-                                <p class="clickable" (click)="close()" [routerLink]="['/platforms', 'game']">Game</p>
-                                <p class="clickable" (click)="close()" [routerLink]="['/platforms', 'pdf']">PDF</p>
+                                <p class="clickable" (click)="nav(['/platforms', 'chatbot'])">Chat Bot</p>
+                                <p class="clickable" (click)="nav(['/platforms', 'game'])">Game</p>
+                                <p class="clickable" (click)="nav(['/platforms', 'pdf'])">PDF</p>
                             </div>
                             <div class="menu-section">
-                                <h3 class="clickable" (click)="close()" [routerLink]="['/contribute']">Contribute</h3>
-                                <p class="clickable" (click)="close()" [routerLink]="['/contribute', 'how-it-works']">How does it work?</p>
+                                <h3 class="clickable" (click)="nav(['/contribute'])">Contribute</h3>
+                                <p class="clickable" (click)="nav(['/contribute', 'how-it-works'])">How does it work?</p>
                             </div>
                             <div class="menu-section">
-                                <h3 class="clickable" (click)="close()" [routerLink]="['/resources']">Training + Resources</h3>
-                                <p class="clickable" (click)="close()" [routerLink]="['/resources', 'training']">Request a Training</p>
-                                <p class="clickable" (click)="close()" [routerLink]="['/resources', 'other']">Other Resources</p>
+                                <h3 class="clickable" (click)="nav(['/resources'])">Training + Resources</h3>
+                                <p class="clickable" (click)="nav(['/resources', 'training'])">Request a Training</p>
+                                <p class="clickable" (click)="nav(['/resources', 'other'])">Other Resources</p>
                             </div>
                             <div class="menu-section">
                                 <h3>Contact Us</h3>
                                 <p></p>
-                                <svg-inline class="clickable" (click)="close()" src="/assets/icons/Twitter.svg"></svg-inline>
-                                <svg-inline class="clickable" (click)="close()" src="/assets/icons/facebook.svg"></svg-inline>
+                                <svg-inline class="clickable" src="/assets/icons/Twitter.svg"></svg-inline>
+                                <svg-inline class="clickable" src="/assets/icons/facebook.svg"></svg-inline>
                                 <p class="subscribe-note">Subscribe to our newsletter</p>
                                 <div class="wrapper">
                                     <input placeholder="name@example.com">
@@ -851,9 +863,10 @@ export class MenuComponent {
     lastScrollTop = 0;
 
     constructor(private router: Router) { }
-    toggle() { this.visible ? this.close() : this.open(); }
-    close() { this.visible = false; }
-    open() { this.visible = true; }
+    nav(linkParam) {
+        this.visible = false;
+        this.router.navigate(linkParam);
+    }
     onScroll() {
         var scrollTop = document.body.scrollTop;
         if (scrollTop != this.lastScrollTop) {
