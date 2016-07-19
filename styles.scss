@@ -795,7 +795,7 @@ detail {
         display: inline-block;
     }
     .module-image {
-        padding-top: 34%;
+        padding-top: 35%;
         background-size: cover;
         background-position: 50% 35%;
         position: relative;
@@ -810,19 +810,17 @@ detail {
         }
         .pattern-snapshot {
             background-repeat: no-repeat;
-            background-size: contain;
             position: absolute;
-            top: 0;
+            top: 0; bottom: 0;
             left: 0; right: 0;
-            padding-top: 100%;
         }
         .overlay {
             position: absolute;
             top: 0; bottom: 0;
             left: 0; right: 0;
-            z-index: 50;
+            z-index: 0;
             background: black;
-            opacity: .375;
+            opacity: .5;
         }
         .module-header, .module-image-caption {
             position: absolute;
