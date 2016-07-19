@@ -827,7 +827,7 @@ detail {
         .module-header, .module-image-caption {
             position: absolute;
             top: 18%; bottom: 0;
-            left: 7%; right: 7%;
+            left: 7%; right: 4%;
             color: white;
             z-index: 100;
         }
@@ -857,6 +857,13 @@ detail {
                 width: 35px;
             }
             svg * { fill: white; }
+        }
+        .story-extra {
+            position: absolute;
+            right: 0; top: -2*$margin;
+            text-align: right;
+            font-weight: bold;
+            text-transform: uppercase;
         }
     }
     .left-side, .right-side {
@@ -1189,9 +1196,6 @@ modal {
         background-size: contain;
         background-repeat: no-repeat;
         background-position: 50% 50%;
-    }
-    #pdf .platform-image { 
-        border: 1px solid black; 
     }
     h3.title { font-size: 48px; }
     svg-inline { 

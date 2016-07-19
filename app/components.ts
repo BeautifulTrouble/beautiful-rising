@@ -563,6 +563,10 @@ export class GalleryComponent {
                             <div *ngIf="snapshot" [ngClass]="['pattern', 'pattern-snapshot', module.type]" 
                                 [ngStyle]="{'background-image': 'url(/assets/patterns/snapshotoverlay/'+module.type+'.svg)'}"></div>
                             <div class="module-header">
+                                <div *ngIf="module.type == 'story'" class="story-extra">
+                                    <p *ngIf="module.where || module.when">{{ module.where }} {{ module.when }}</p>
+                                    <svg-inline *ngIf="module.region" src="/assets/icons/{{ module.region }}.svg" class="region-icon"></svg-inline>
+                                </div>
                                 <div [ngClass]="['module-type', module.type]">{{ module.type }}</div>
                                 <div class="module-title">{{ module.title }}</div>
                                 <div (click)="savingService.toggleSaved(module)" [ngSwitch]="savingService.isSaved(module)" class="module-save clickable">
