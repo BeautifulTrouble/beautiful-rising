@@ -412,7 +412,7 @@ export class ModuleTypeComponent {
                             <div class="module-content clickable">
                                 <div class="module-hide-on-hover">
                                     <svg-inline *ngIf="module.region" src="/assets/icons/{{ module.region }}.svg" class="region-icon"></svg-inline>
-                                    <div class="offset" [style.transform]="'translateY(' + (25 + module.timestamp % 50) + '%)'">
+                                    <div class="offset" [style.justify-content]="['center','flex-start','flex-end'][module.timestamp%3]">
                                         <!--<div (mouseenter)="crazyHover($event,0,1,0.75)" (mouseleave)="crazyHover($event,1,0,0.5)">-->
                                         <div>
                                             <div [ngClass]="['module-type', module.type]">{{ module.type }}</div>

@@ -711,8 +711,8 @@ $search-height: 50px;
         margin-top: 110%;
     }
     .module-save {
-        padding: 2 * $margin 4 * $margin 4 * $margin 0; // Make it more clickable
-        display: inline-block;
+        padding: 2*$margin 0;
+        width: 50px;
         svg path { fill: white; }
     }
     .region-icon {
@@ -734,7 +734,9 @@ $search-height: 50px;
         position: relative;
         top: 50%;
         .offset {
-            position: absolute;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
         }
     }
     .module-image {
@@ -1142,7 +1144,7 @@ modal {
             border: 1px solid black;
             position: absolute;
             top: 50%; 
-            width: 110%; right: -79%;
+            width: 110%; right: -77%;
         }
         .step-circle.last::after {
             content: initial;
