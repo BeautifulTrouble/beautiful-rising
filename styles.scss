@@ -1082,10 +1082,8 @@ modal {
         margin-top: -2 * $margin;
     }
     h5 {
-        text-decoration: underline;
         text-transform: uppercase;
         font-weight: bold;
-        color: gray;
         margin-top: $margin;
     }
     .links {
@@ -1182,8 +1180,12 @@ modal {
         .disclaimer { margin-top: 10 * $margin; }
         .disclaimer-text { color: gray; }
     }
-    #advisory-network {
+    #advisory-network, #team {
         .network-members { margin-top: 3 * $margin; }
+        h4 { 
+            font-size: 19px; 
+            margin-bottom: 0;
+        }
     }
     #beautiful-trouble-and-action-aid {
         .blurb { min-height: 12 * $margin; }
