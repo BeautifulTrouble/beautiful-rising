@@ -803,6 +803,7 @@ detail {
         background-size: cover;
         background-position: 50% 35%;
         position: relative;
+        margin-bottom: 32px;
         .pattern {
             position: relative;
             svg-inline {
@@ -868,8 +869,8 @@ detail {
             text-transform: uppercase;
         }
     }
-    .left-side, .right-side {
-        margin-top: 32px;
+    .column-a, .column-b {
+        //margin-top: 32px;
         h3.bigger {
             padding-top: 0;
             padding-bottom: 0;
@@ -882,18 +883,18 @@ detail {
             color: $gray;
             text-decoration: underline;
         }
-        .clickable {
-        }
         .contributor-image {
             width: 100%;
-            max-height: 250px;
+            height: 180px;
             border: 2px solid black;
+            background-size: cover;
+            background-position: 50% 30%;
         }
         .tag {
             color: $gray;
         }
     }
-    .right-side {
+    .column-b {
         .risks {
             margin-bottom: 32px;
             &.clickable {
@@ -938,7 +939,7 @@ detail {
         }
     }
     .content {
-        margin-top: 32px;
+        //margin-top: 32px;
         h3 {
             margin-top: 0;
             margin-bottom: 2 * $margin;
@@ -973,6 +974,10 @@ detail {
                 text-decoration: underline;
             }
         }
+    }
+    .hr {
+        border: 1px solid black;
+        margin: 4*$margin 0;
     }
     .edit-link {
         position: fixed;
@@ -1149,13 +1154,20 @@ modal {
             border: 2px solid black;
             border-radius: 50%;
             position: relative;
+            svg-inline {
+                position: absolute;
+                top: 50%; left: 50%;
+                transform: translate(-50%,-50%);
+                z-index: 1;
+                svg * { fill: black; }
+            }
         }
         .step-circle::after {
             content: "";
             border: 1px solid black;
             position: absolute;
             top: 50%; 
-            width: 110%; right: -77%;
+            width: 125%; right: -77%;
         }
         .step-circle.last::after {
             content: initial;

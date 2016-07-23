@@ -77,7 +77,7 @@ export class AboutComponent {
                         </div>
                     </div>
                     <img (click)="dismissedExplicitly = true" class="clickable close-icon" src="/assets/icons/close.png">
-                    <div (click)="dismissedExplicitly = true" class="clickable dismiss"><p>{{ textBySlug.about.modal.dismiss }}</p></div>
+                    <div (click)="dismissedExplicitly = true" [routerLink]="['/']" class="clickable dismiss"><p>{{ textBySlug.about.modal.dismiss }}</p></div>
                 </div>
             </div>
         </div>
@@ -402,7 +402,7 @@ export class ModuleTypeComponent {
                     </div>
 
                     <div lazyBackgroundImages *ngIf="viewStyle == 'grid'" class="row">
-                        <div *ngFor="let module of selectedModules" (click)="router.navigate(['/module', module.slug])" class="col-md-4 gallery-module-grid">
+                        <div *ngFor="let module of selectedModules" (click)="router.navigate(['/module', module.slug])" class="col-sm-6 col-md-4 gallery-module-grid">
                             <!-- Rethink the structure of this whole section -->
 
                             <div class="make-it-square"></div>
@@ -583,15 +583,15 @@ export class GalleryComponent {
 
             <div class="container">
                 <div [ngClass]="['row', 'type-' + module.type]">
-                    <div class="col-xs-3 col-md-2 left-side">
+
+                    <div class="hidden-xs hidden-sm col-md-3 col-lg-2 column-a"><!-- large -->
                         <h3 class="border-bottom bigger">Contributed by</h3>
                         <div *ngFor="let author of authors" >
-                            <a [routerLink]="['/search', 'authors!' + author.slug]" class="black">
-                                <img *ngIf="author.image" class="contributor-image" src="{{ config['asset-path'] }}/{{ author.image }}">
+                            <a [routerLink]="['/search', 'authors!' + author.slug]">
+                                <div class="contributor-image" [ngStyle]="{'background-image': author.image ? 'url('+config['asset-path']+'/'+author.image+')' : ''}"></div>
                                 <h4>{{ author.title }}</h4>
                             </a>
                             <p *ngIf="author.bio" [innerHTML]="author.bio"></p>
-                            <p *ngIf="!author.bio && author['team-bio']" [innerHTML]="author['team-bio']"></p>
                         </div>
                         <div *ngIf="!authors.length">
                             <img class="contributor-image" src="/assets/icons/anon.png">
@@ -604,8 +604,35 @@ export class GalleryComponent {
                             </span>
                         </div>
                     </div>
-                    <div class="hidden-xs hidden-sm col-md-1 spacer">&nbsp;</div>
-                    <div class="col-xs-9 col-md-5 content">
+
+                    <div class="hidden-md hidden-lg"><!-- small -->
+                        <div class="col-xs-12 column-a">
+                            <h3 class="border-bottom bigger">Contributed by</h3>
+                        </div>
+                        <div *ngFor="let author of authors">
+                            <div class="col-xs-12 col-sm-4 column-a">
+                                <a [routerLink]="['/search', 'authors!' + author.slug]">
+                                    <div class="contributor-image" [ngStyle]="{'background-image': author.image ? 'url('+config['asset-path']+'/'+author.image+')' : ''}"></div>
+                                </a>
+                            </div>
+                            <div class="col-xs-12 col-sm-8 column-a">
+                                <a [routerLink]="['/search', 'authors!' + author.slug]">
+                                    <h4>{{ author.title }}</h4>
+                                </a>
+                                <p *ngIf="author.bio" [innerHTML]="author.bio"></p>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="col-xs-12 hr"></div>
+                        </div>
+                        <div *ngFor="let author of authors">
+                            <div *ngIf="!authors.length">
+                                <img class="contributor-image" src="/assets/icons/anon.png">
+                                <h4>It could be you</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-md-5 col-lg-offset-1 content">
                         <div *ngIf="snapshot">
                             <p [innerHTML]="module.snapshot"></p>
                             <p><strong>Hey, this isn't written yet but people like you are likely using it in all kinds of ways. Do you have insights to share on how to use this theory? Go ahead and share them through the form below...</strong></p>
@@ -658,7 +685,7 @@ export class GalleryComponent {
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4 right-side">
+                    <div class="col-xs-12 col-md-4 column-b">
                         <div *ngIf="module['potential-risks']" (click)="riskCollapsed = !riskCollapsed" [ngClass]="{risks:true, clickable:module['potential-risks-short']}">
                             <div class="heading">
                                 <svg-inline src="/assets/icons/pr.svg" [ngClass]="'type-' + module.type"></svg-inline>
