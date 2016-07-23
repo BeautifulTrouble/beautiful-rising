@@ -1163,7 +1163,10 @@ modal {
     }
     #values, #faq {
         p { padding-left: 10%; }
-        .content h4 { padding-top: $margin; }
+        .content h4 { 
+            font-size: 19px;
+            padding-top: $margin; 
+        }
         .disclaimer { margin-top: 10 * $margin; }
         .disclaimer-text { color: gray; }
     }
