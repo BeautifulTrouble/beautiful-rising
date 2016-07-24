@@ -328,6 +328,9 @@ export class ModuleTypeComponent {
     typeMap = _.fromPairs(this.types);
 
     constructor(private router: Router) { }
+    ngAfterContentInit() { 
+        this.setExpanded();
+    }
     setExpanded() {
         if (document.body.scrollTop == 0) {
             this.expanded = true;
