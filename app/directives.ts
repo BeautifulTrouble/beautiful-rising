@@ -14,11 +14,13 @@ import { CachedHttpService, OutsideAngularService, MarkdownService } from './ser
 export class InlineSVGDirective {
 	@Input() src;
     constructor(private el: ElementRef, private cachedHttp: CachedHttpService) { }
-    ngOnInit() {
+    getSVG() {
         this.cachedHttp.get(this.src)
             .map(res => res.text())
             .subscribe(data => { this.el.nativeElement.innerHTML = data; });
     }
+    ngOnInit() { this.getSVG(); }
+    ngOnChanges() { this.getSVG(); }
 }
 
 
