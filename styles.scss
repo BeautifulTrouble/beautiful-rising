@@ -731,8 +731,11 @@ $search-height: 50px;
     }
     .region-icon {
         position: absolute;
-        top: 2 * $margin; right: 2 * $margin;
+        top: 2 * $margin; 
+        right: 0;
+        height: 32px;
         svg * { fill: $story; }
+        svg { height: 100%; }
     }
     .module-title {
         color: white;
