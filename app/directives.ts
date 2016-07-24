@@ -1,6 +1,6 @@
 
 import { Http } from '@angular/http';
-import { Directive, OnInit, Input, Output, EventEmitter, ElementRef, HostListener } from '@angular/core';
+import { Directive, OnInit, Input, Output, EventEmitter, ElementRef, HostBinding, HostListener } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import _ = require('lodash');
@@ -32,17 +32,17 @@ export class InlineSVGDirective {
  */
 @Directive({ selector: '[accordion]' })
 export class AccordionDirective {
-    @Input() accordion;
+    @Input('accordion') active;
     els = [];
     add(el) {
-        if (this.accordion !== false) el.hidden = true;
+        if (this.active !== false) el.hidden = true;
         this.els.push(el);
     }
     remove(el) {
         _.pull(this.els, el);
     }
     toggle(el) {
-        if (this.accordion === false) return;
+        if (this.active === false) return;
         var state = el.hidden;
         _.map(this.els, (el) => { el.hidden = true; });
         el.hidden = !state;
@@ -50,10 +50,22 @@ export class AccordionDirective {
 }
 @Directive({ selector: '[accordionToggle]' })
 export class AccordionToggleDirective {
-    constructor(private el: ElementRef, private accordion: AccordionDirective) { }
-    ngOnInit() { this.accordion.add(this.el.nativeElement.nextElementSibling); }
-    ngOnDestroy() { this.accordion.remove(this.el.nativeElement.nextElementSibling); }
-    @HostListener('click') onClick() { this.accordion.toggle(this.el.nativeElement.nextElementSibling); }
+    constructor(
+        private el: ElementRef,
+        private accordion: AccordionDirective) {
+    }
+    ngOnInit() {
+        this.accordion.add(this.el.nativeElement.nextElementSibling);
+    }
+    ngOnDestroy() {
+        this.accordion.remove(this.el.nativeElement.nextElementSibling);
+    }
+    @HostListener('click') onClick() {
+        this.accordion.toggle(this.el.nativeElement.nextElementSibling);
+    }
+    @HostBinding('class.expanded') get isExpanded() {
+        return !this.el.nativeElement.nextElementSibling.hidden;
+    }
 }
 
 

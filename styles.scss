@@ -1102,6 +1102,10 @@ modal {
             transform: rotate(180deg) scale(0.5);
             svg * { fill: $lightgray; }
         }
+        h4.heading.expanded svg-inline {
+            transform: rotate(270deg) scale(0.5);
+            svg * { fill: black; }
+        }
         h4.heading { 
             margin: 0;
         }
