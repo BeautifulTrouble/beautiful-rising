@@ -103,7 +103,7 @@ export class ContentService {
                     output.modulesByType = _.pick(output.contentByType, output.moduleTypes);
                     output.modules = _.flatten(_.values(output.modulesByType)); // XXX: does this result in copied data?
                     output.modulesBySlug = _.keyBy(output.modules, 'slug');
-                    //output.modulesByRegion = _.mapKeys(_.groupBy(output.modules, 'region'), (v,k) => slugify(k || 'all'));
+                    output.modulesByRegion = _.mapKeys(_.groupBy(output.modules, 'region'), (v,k) => slugify(k || 'all'));
                     // Collect and slugify tags & regions
                     output.modulesByTag = {};
                     output.tagsBySlug = {}

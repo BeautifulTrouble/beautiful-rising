@@ -184,6 +184,10 @@ svg-inline.selected * {
 .clickable {
     cursor: pointer;
 }
+.disabled {
+    pointer-events: none;
+    opacity: .3;
+}
 .border-top {
     border-top: 2px solid black;
     padding-top: 2 * $margin;
@@ -554,7 +558,7 @@ $search-height: 50px;
         position: absolute;
         opacity: .3;
         bottom: 0;
-        width: 100%;
+        width: 95%;
         svg {
             width: 100%;
             height: auto;
@@ -649,6 +653,7 @@ $search-height: 50px;
         h3 {
             border-bottom: 2px solid black;
             padding-bottom: 4px;
+            margin-bottom: 36px;
             width: 50%;
         }
         h3::before {
@@ -657,14 +662,6 @@ $search-height: 50px;
             border: 1px solid black;
             height: 30px; width: 0;
             left: 75%; top: 25px;
-        }
-        .expanded {
-            h3 {
-                text-decoration: none;
-            }
-            .type-link {
-                display: inline-block;
-            }
         }
     }
     .arrow {

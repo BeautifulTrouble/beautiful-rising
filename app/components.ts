@@ -282,7 +282,8 @@ export class ContributeComponent {
                                 <div *ngIf="type == 'story'" class="regions">
                                     <h3>Region</h3>
                                     <span *ngFor="let each of ['africa','latin-america-and-the-caribbean','north-america','asia','europe','middle-east','oceania']">
-                                        <svg-inline [routerLink]="['/type/story', each]" [ngClass]="{clickable:true, selected:region==each}" src="/assets/icons/{{ each }}.svg"></svg-inline>
+                                        <svg-inline *ngIf="region == each" [routerLink]="['/type/story']" [ngClass]="modulesByRegion[each] ? 'clickable' : 'disabled'" class="selected" src="/assets/icons/{{ each }}.svg"></svg-inline>
+                                        <svg-inline *ngIf="region != each" [routerLink]="['/type/story', each]" [ngClass]="modulesByRegion[each] ? 'clickable' : 'disabled'" src="/assets/icons/{{ each }}.svg"></svg-inline>
                                     </span>
                                 </div>
                             </div>
@@ -294,7 +295,8 @@ export class ContributeComponent {
                                  [routerLink]="['/type', each[0]]" [class.selected]="each[0] == type" [class.h3]="each[0] == type">{{ each[1] }}</a>
                                 <div *ngIf="type == 'story'" class="regions">
                                     <span *ngFor="let each of ['africa','latin-america-and-the-caribbean','north-america','asia','europe','middle-east','oceania']">
-                                        <svg-inline [routerLink]="['/type/story', each]" [ngClass]="{clickable:true, selected:region==each}" src="/assets/icons/{{ each }}.svg"></svg-inline>
+                                        <svg-inline *ngIf="region == each" [routerLink]="['/type/story']" [ngClass]="modulesByRegion[each] ? 'clickable' : 'disabled'" class="selected" src="/assets/icons/{{ each }}.svg"></svg-inline>
+                                        <svg-inline *ngIf="region != each" [routerLink]="['/type/story', each]" [ngClass]="modulesByRegion[each] ? 'clickable' : 'disabled'" src="/assets/icons/{{ each }}.svg"></svg-inline>
                                     </span>
                                 </div>
                             </div>
@@ -315,6 +317,7 @@ export class ModuleTypeComponent {
     @Input() type;
     @Input() region;
     @Input() textBySlug;
+    @Input() modulesByRegion;
     @Output() resized = new EventEmitter();
     expanded = true;
     types = [['story', 'stories'], 
@@ -354,7 +357,7 @@ export class ModuleTypeComponent {
                     <input [(ngModel)]="query" (ngModelChange)="filterModules()" class="search-box" 
                      placeholder="Search for keywords, ex: legislation, state repression, etc..." autofocus>
                 </div>
-                <module-types (resized)="marginTop = $event" [region]="region" [type]="type" [textBySlug]="textBySlug"></module-types>
+                <module-types (resized)="marginTop = $event" [region]="region" [type]="type" [textBySlug]="textBySlug" [modulesByRegion]="modulesByRegion"></module-types>
             </div>
         </div>
         <div class="container">
