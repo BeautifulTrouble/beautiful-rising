@@ -868,11 +868,11 @@ export class DetailComponent {
                             <div class="menu-section">
                                 <h3>Contact Us</h3>
                                 <p></p>
-                                <svg-inline class="clickable" src="/assets/icons/Twitter.svg"></svg-inline>
-                                <svg-inline class="clickable" src="/assets/icons/facebook.svg"></svg-inline>
+                                <a href="{{ textBySlug.ui.misc['twitter-link'] }}" target="_blank" style="color: white"><svg-inline src="/assets/icons/Twitter.svg"></svg-inline></a>
+                                <a href="{{ textBySlug.ui.misc['facebook-link'] }}" target="_blank" style="color: white"><svg-inline src="/assets/icons/facebook.svg"></svg-inline></a>
                                 <p class="subscribe-note">Subscribe to our newsletter</p>
                                 <div class="wrapper">
-                                    <input placeholder="name@example.com">
+                                    <input placeholder="{{ textBySlug.ui.misc['placeholder-email'] }}">
                                     <span class="submit clickable">Submit</span>
                                 </div>
                             </div>
