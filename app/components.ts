@@ -121,7 +121,7 @@ export class ModalComponent {
                     <div class="col-md-1"><svg-inline src="/assets/icons/{{ p }}.svg"></svg-inline></div>
                     <div class="col-md-4">
                         <h3 class="overline title">{{ textBySlug.platforms[p].title }}</h3> 
-                        <h4>{{ textBySlug.platforms[p].introduction }}</h4>
+                        <h4 class="subheading">{{ textBySlug.platforms[p].introduction }}</h4>
                         <div class="what">
                             <h4>{{ textBySlug.platforms.misc.what }}</h4>
                             <div [innerMarkdown]="textBySlug.platforms[p].what"></div>
@@ -457,8 +457,7 @@ export class ModuleTypeComponent {
         APP_DIRECTIVES,
         ROUTER_DIRECTIVES,
         ModuleTypeComponent,
-    ],
-    styles: []
+    ]
 })
 export class GalleryComponent {
     @LocalStorage() sortKey;
@@ -743,8 +742,7 @@ export class GalleryComponent {
     pipes: [
         NotagsPipe, 
         TrimPipe
-    ],
-    styles: []
+    ]
 })
 export class DetailComponent {
     _ = _;

@@ -1252,7 +1252,12 @@ modal {
         background-repeat: no-repeat;
         background-position: 50% 50%;
     }
-    h3.title { font-size: 48px; }
+    .subheading {
+        line-height: 22px;
+    }
+    .title { 
+        font-size: 48px; 
+    }
     svg-inline { 
         float: right;   //TODO: fix for bidirectional site
         position: relative;
