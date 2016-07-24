@@ -378,11 +378,11 @@ export class ModuleTypeComponent {
                         <div (click)="sortModules('timestamp')" [class.selected]="sortKey == 'timestamp'" class="col-xs-6 clickable">Newest</div>
                     </div>
                     <h3>Tags</h3>
-                    <div class="row border-top tag-list">
+                    <div class="row border-top">
                         <span *ngFor="let each of tags; let last=last">
-                            <a *ngIf="tag != each" [routerLink]="['/tag', each]" routerLinkActive="selected">{{ tagsBySlug[each] }}</a>
-                            <a *ngIf="tag == each" [routerLink]="['/']" routerLinkActive="selected">{{ tagsBySlug[each] }}</a>
-                            <span *ngIf="!last"> / </span>
+                            <a *ngIf="tag != each" [routerLink]="['/tag', each]" routerLinkActive="selected" class="tag">{{ tagsBySlug[each] }}</a>
+                            <a *ngIf="tag == each" [routerLink]="['/']" routerLinkActive="selected" class="tag">{{ tagsBySlug[each] }}</a>
+                            <strong *ngIf="!last"> / </strong>
                         </span>
                     </div>
                     <div *ngIf="tag" class="gallery-info gray">
@@ -600,7 +600,7 @@ export class GalleryComponent {
                         <div *ngIf="module.tags">
                             <h3 class="border-bottom">Tags</h3>
                             <span *ngFor="let tag of module.tags; let last=last">
-                                <a [routerLink]="['/tag', slugify(tag)]" class="tag">{{ tag }}</a><span *ngIf="!last"> / </span>
+                                <a [routerLink]="['/tag', slugify(tag)]" class="tag">{{ tag }}</a><strong *ngIf="!last"> / </strong>
                             </span>
                         </div>
                     </div>

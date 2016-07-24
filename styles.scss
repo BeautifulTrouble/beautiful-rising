@@ -688,12 +688,13 @@ $search-height: 50px;
 }
 .gallery-sort {
     text-align: center;
-    a {
-        color: $darkgray;
-        text-decoration: underline;
-    }
     .sort-by {
+        color: $gray;
+        font-weight: bold;
         text-transform: uppercase;
+    }
+    .sort-by .selected {
+        color: black;
     }
     .view-as, .sort-by {
         margin-bottom: 8 * $margin;
@@ -704,6 +705,9 @@ $search-height: 50px;
     .gallery-clear {
         padding-top: 6 * $margin;
         text-decoration: none;
+    }
+    .tag.selected {
+        color: black;
     }
 }
 .gallery-sort, .gallery-list, .gallery-info {
