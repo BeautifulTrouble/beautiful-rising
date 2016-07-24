@@ -876,10 +876,17 @@ detail {
         }
         .story-extra {
             position: absolute;
-            right: 0; top: -2*$margin;
+            top: -2*$margin;
+            right: 0; 
             text-align: right;
             font-weight: bold;
             text-transform: uppercase;
+            svg-inline {
+                height: 40px;
+                position: absolute;
+                right: 0;
+                svg { height: 100%; }
+            }
         }
     }
     .column-a, .column-b {
