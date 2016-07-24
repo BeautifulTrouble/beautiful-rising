@@ -124,12 +124,13 @@ body {
 a:link, a:visited, a:hover, a:active { 
     color: $gray; 
 } 
-h3 {
+h3, .h3, .module-title {
     font-family: 'KnockoutBantam';
     text-transform: uppercase;
     font-size: 30px;
     line-height: 1;
     letter-spacing: 1px;
+    font-weight: normal !important;
 }
 h4 {
     font-family: 'Avenir';
@@ -164,13 +165,6 @@ blockquote::before {
     text-transform: uppercase;
     font-size: 20px;
     line-height: 22px;
-}
-.module-title {
-    font-family: 'KnockoutBantam';
-    text-transform: uppercase;
-    font-size: 30px;
-    line-height: 1;
-    letter-spacing: 1px;
 }
 
 svg * {
@@ -441,7 +435,6 @@ menu {
         border-bottom: 2px solid black;
         background: white;
         z-index: 1550;
-        box-shadow: 0 2*$margin 0 0 white;
     }
     .menu-scroll {
         margin-top: $menu-top-size;
@@ -532,8 +525,10 @@ $search-height: 50px;
 
 // Types
 .type-representation {
-    padding-top: 4px;
     text-align: left;
+    > div {
+        padding-top: $margin;
+    }
     h3 {
         margin-top: 0;
         margin-bottom: 2px;
@@ -550,6 +545,22 @@ $search-height: 50px;
         p { padding-top: $margin; }
     }
 }
+.pattern-container-wrapper {
+    z-index: 0;
+    .outside-pattern {
+        height: 265px;
+    }
+    .pattern {
+        position: absolute;
+        opacity: .3;
+        bottom: 0;
+        width: 100%;
+        svg {
+            width: 100%;
+            height: auto;
+        }
+    }
+}
 .module-types {
     //@include prefix(transition, height $transition linear, webkit moz);
     border: 2px solid black;
@@ -558,7 +569,6 @@ $search-height: 50px;
     background: white;
     position: relative;
     padding: 2*$margin 0;
-    box-shadow: 0 2*$margin 0 0 white;
     > div {
         overflow: hidden;
         height: 100%;
@@ -576,9 +586,9 @@ $search-height: 50px;
     // Styles for selected 
     .type-list, .type-description {
         text-align: left;
-        padding: 2 * $margin 7 * $margin;
+        padding: 2 * $margin 22px;
         .expanded {
-            padding: 4 * $margin 7 * $margin;
+            padding: 4 * $margin 22px;
         }
         svg-inline {
             display: inline-block;
@@ -587,32 +597,15 @@ $search-height: 50px;
     .type-list {
         position: relative;
         z-index: 100;
+        .h3 {
+            color: black;
+            margin-top: -3px; //margin-top: 0; /* compensate for change in baseline */
+        }
         .type-link {
             font-weight: bold;
             text-transform: uppercase;
             display: inline-block;
             margin-right: 2 * $margin;
-            .selected {
-            }
-            h3.selected {
-                margin-top: 0;
-                font-weight: normal;
-                font-size: $margin * 7;
-            }
-            div { text-decoration: underline; }
-            .pattern {
-                position: absolute;
-                z-index: -50;
-                pointer-events: none;
-                bottom: 7 * $margin;
-                svg {
-                    position: relative;
-                    right: 10%;
-                }
-                svg * {
-                    fill: none;
-                }
-            }
         }
         .regions {
             display: inline-block;
@@ -627,12 +620,15 @@ $search-height: 50px;
                     @include prefix(transition, opacity $transition linear, webkit moz);
                     &.selected { opacity: 0; }
                 }
+                &.selected {
+                    opacity: 0;
+                }
             }
         }
     }
     .type-pattern {
         h3 {
-            font-size: 7 * $margin;
+            font-size: 50px;
             position: absolute;
             z-index: 50;
             right: 4px; top: 5 * $margin;
@@ -640,6 +636,12 @@ $search-height: 50px;
         svg-inline {
             position: absolute;
             right: 0; top: 3 * $margin;
+            width: 100%;
+            svg {
+                width: 100%;
+                height: auto;
+                opacity: .3;
+            }
         }
     }
     .type-description {
@@ -854,7 +856,7 @@ detail {
             }
         }
         .module-type {
-            font-size: 42px;
+            font-size: 40px;
         }
         .module-title {
             margin-top: 10px;
@@ -886,7 +888,7 @@ detail {
             padding-top: 0;
             padding-bottom: 0;
             color: black;
-            font-size: 42px;
+            font-size: 40px;
             margin-top: 0;
         }
         h4 {
@@ -1198,7 +1200,7 @@ modal {
     }
     #advisory-network, #team {
         .network-members { margin-top: 3 * $margin; }
-        h4 { 
+        .content h4 { 
             font-size: 19px; 
             margin-bottom: 0;
         }

@@ -264,49 +264,38 @@ export class ContributeComponent {
                         </div>
                     </div>
                     <div *ngIf="type">
-                        <div class="row">
-                            <div *ngIf="expanded">
-                                <div class="col-md-2 type-list">
-                                    <div class="expanded type-link clickable">
-                                        <div [routerLink]="['/']">All</div>
-                                    </div>
-                                    <div *ngFor="let each of types" [routerLink]="['/type', each[0]]" class="expanded type-link clickable">
-                                        <div [class.selected]="each[0] == type">{{ each[1] }}</div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 type-pattern">
-                                    <div *ngFor="let each of types" class="expanded">
-                                        <div *ngIf="each[0] == type">
-                                            <h3>{{ each[1] }}</h3>
-                                            <svg-inline class="pattern" src="/assets/patterns/3rows/{{ each[0] }}.svg"></svg-inline>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 type-description">
-                                    <p [innerHtml]="textBySlug.ui.definitions[type]"></p>
-                                    <div *ngIf="type == 'story'" class="regions">
-                                        <h3>Region</h3>
-                                        <span *ngFor="let each of ['africa','latin-america-and-the-caribbean','north-america','asia','europe','middle-east','oceania']">
-                                            <svg-inline [routerLink]="['/type/story', each]" [ngClass]="{clickable:true, selected:region==each}" src="/assets/icons/{{ each }}.svg"></svg-inline>
-                                        </span>
+                        <div *ngIf="expanded">
+                            <div class="col-md-2 type-list">
+                                <a class="expanded type-link" [routerLink]="['/']">All</a>
+                                <a *ngFor="let each of types" [routerLink]="['/type', each[0]]" [class.selected]="each[0] == type" class="expanded type-link">{{ each[1] }}</a>
+                            </div>
+                            <div class="col-md-4 type-pattern">
+                                <div *ngFor="let each of types" class="expanded">
+                                    <div *ngIf="each[0] == type">
+                                        <h3>{{ each[1] }}</h3>
+                                        <svg-inline class="pattern" src="/assets/patterns/3rows/{{ each[0] }}.svg"></svg-inline>
                                     </div>
                                 </div>
                             </div>
-                            <div *ngIf="!expanded">
-                                <div class="col-md-12 type-list">
-                                    <span class="type-link clickable">
-                                        <div [routerLink]="['/']">All</div>
+                            <div class="col-md-6 type-description">
+                                <p [innerHtml]="textBySlug.ui.definitions[type]"></p>
+                                <div *ngIf="type == 'story'" class="regions">
+                                    <h3>Region</h3>
+                                    <span *ngFor="let each of ['africa','latin-america-and-the-caribbean','north-america','asia','europe','middle-east','oceania']">
+                                        <svg-inline [routerLink]="['/type/story', each]" [ngClass]="{clickable:true, selected:region==each}" src="/assets/icons/{{ each }}.svg"></svg-inline>
                                     </span>
-                                    <span *ngFor="let each of types" [routerLink]="['/type', each[0]]" class="type-link clickable">
-                                        <div *ngIf="each[0] != type">{{ each[1] }}</div>
-                                        <h3 *ngIf="each[0] == type" class="selected">{{ each[1] }}</h3>
-                                        <svg-inline *ngIf="each[0] == type" class="pattern" src="/assets/patterns/1row/{{ each[0] }}.svg"></svg-inline>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="!expanded">
+                            <div class="col-md-12 type-list">
+                                <a [routerLink]="['/']" class="type-link">All</a>
+                                <a *ngFor="let each of types" class="type-link"
+                                 [routerLink]="['/type', each[0]]" [class.selected]="each[0] == type" [class.h3]="each[0] == type">{{ each[1] }}</a>
+                                <div *ngIf="type == 'story'" class="regions">
+                                    <span *ngFor="let each of ['africa','latin-america-and-the-caribbean','north-america','asia','europe','middle-east','oceania']">
+                                        <svg-inline [routerLink]="['/type/story', each]" [ngClass]="{clickable:true, selected:region==each}" src="/assets/icons/{{ each }}.svg"></svg-inline>
                                     </span>
-                                    <div *ngIf="type == 'story'" class="regions">
-                                        <span *ngFor="let each of ['africa','latin-america-and-the-caribbean','north-america','asia','europe','middle-east','oceania']">
-                                            <svg-inline [routerLink]="['/type/story', each]" [ngClass]="{clickable:true, selected:region==each}" src="/assets/icons/{{ each }}.svg"></svg-inline>
-                                        </span>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -350,6 +339,15 @@ export class ModuleTypeComponent {
 @Component({
     selector: 'gallery',
     template: `
+        <div *ngIf="type" class="fixed-container-wrapper pattern-container-wrapper">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4 outside-pattern">
+                        <svg-inline class="pattern" src="/assets/patterns/3rows/{{ type }}.svg"></svg-inline>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="fixed-container-wrapper">
             <div class="container">
                 <div class="row">
