@@ -19,9 +19,11 @@ $methodology: #b700c2;
 $principle: #166ce3;    
 $theory: #f93732;       
 $story: #08eb8c;        
-$gray: #606162;
+//$gray: #606162;
 //$gray: #b3b3b3;         
-$lightgray: #afafaf;
+//$lightgray: #afafaf;
+$gray: #828487;
+$lightgray: #959595;
 $lightergray: #f7f7f7;
 $darkgray: #333;
 .type-story { 
@@ -61,6 +63,7 @@ a:link, a:visited, a:hover, a:active {
 .principle { color: $principle; }
 .theory { color: $theory; }
 .story { color: $story; }
+.white { color: white; }
 .black { color: black; }
 .gray { color: $gray; }
 .pattern {
@@ -112,6 +115,7 @@ html {
     overflow-x: hidden;
 }
 body {
+    color: black;
     font-family: 'Avenir';
     font-size: 14px;
     line-height: 22px;
@@ -444,11 +448,14 @@ menu {
         div:first-of-type { border-top: none; }
     }
     .menu-section {
+        input {
+            outline: none;
+        }
         h3 {
             margin-top: 0;
         }
         em {
-            color: $gray;
+            color: $lightgray;
             font-size: 13px;
             display: inline-block;
         }
@@ -466,7 +473,7 @@ menu {
             font-weight: bold;
             text-transform: uppercase;
             text-decoration: underline;
-            color: gray;
+            color: $gray;
             margin-bottom: 18px;
         }
         svg-inline {
@@ -481,7 +488,7 @@ menu {
                 border: 2px solid black;
             }
             .submit {
-                color: gray;
+                color: $gray;
                 position: absolute;
                 font-weight: bold;
                 text-transform: uppercase;
@@ -1062,6 +1069,7 @@ modal {
         h3 { font-size: 48px; }
     }
     h4.heading { 
+        color: black;
         font-size: 19px;
         border-bottom: 2px solid black;
         padding: 3 * $margin 2 * $margin;
