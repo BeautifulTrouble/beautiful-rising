@@ -134,7 +134,7 @@ export class ContentService {
                         }
                         // Embed blockquotes into full-write-up
                         if (module['full-write-up'] && module['pull-quote']) {
-                            let blockquote = `<blockquote class="pull-quote"><p>${module['pull-quote']}</p></blockquote>`;
+                            let blockquote = `<blockquote class="pull-quote">${this.markdown.render(module['pull-quote'])}</blockquote>`;
                             let paragraphs = module['full-write-up'].split(/\n\n\n*/);
                             if (paragraphs.length > 1) {
                                 paragraphs.splice(Math.floor(paragraphs.length/2) - Math.floor(paragraphs.length/2)%2, 0, blockquote);

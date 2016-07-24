@@ -141,17 +141,26 @@ h4 {
 }
 blockquote {
     font-family: 'Painthand';
+    font-size: 20px;
     text-transform: uppercase;
     border-left: none;
     position: relative;
-    line-height: 1.75;
+    line-height: 30px;
     margin-bottom: 0;
+    margin-right: 12px;
     p {
         padding-top: 3 * $margin;
     }
     &.pull-quote {
         width: 50%;
         float: left;
+        quotes: "“ " " ”" "‘ " " ’";
+    }
+    &.pull-quote p::before {
+        content: open-quote;
+    }
+    &.pull-quote p::after {
+        content: close-quote;
     }
 }
 blockquote::before {
