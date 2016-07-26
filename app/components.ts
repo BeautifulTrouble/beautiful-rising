@@ -592,13 +592,19 @@ export class GalleryComponent {
                         <div *ngFor="let author of authors" >
                             <a [routerLink]="['/search', 'authors!' + author.slug]">
                                 <div class="contributor-image" [ngStyle]="{'background-image': author.image ? 'url('+config['asset-path']+'/'+author.image+')' : ''}"></div>
-                                <h4>{{ author.title }}</h4>
+                                <div class="contributor-name">
+                                    <h4 class="first">{{ author.firstname }}</h4>
+                                    <h4 class="last">{{ author.lastname }}</h4>
+                                </div>
                             </a>
                             <p *ngIf="author.bio" [innerHTML]="author.bio"></p>
                         </div>
                         <div *ngIf="!authors.length">
-                            <img class="contributor-image" src="/assets/icons/anon.png">
-                            <h4>It could be you</h4>
+                            <div class="contributor-image" style="background-image: url('/assets/icons/anon.png')"></div>
+                            <div class="contributor-name">
+                                <h4 class="first">It could <svg-inline class="your-arrow" src="/assets/icons/yourarrow.svg"></svg-inline></h4>
+                                <h4 class="last">be you</h4>
+                            </div>
                         </div>
                         <div *ngIf="module.tags">
                             <h3 class="border-bottom">Tags</h3>
@@ -608,30 +614,37 @@ export class GalleryComponent {
                         </div>
                     </div>
 
-                    <div class="hidden-md hidden-lg"><!-- small -->
-                        <div class="col-xs-12 column-a">
+                    <div class="hidden-md hidden-lg column-a"><!-- small -->
+                        <div class="col-xs-12">
                             <h3 class="border-bottom bigger">Contributed by</h3>
                         </div>
                         <div *ngFor="let author of authors">
-                            <div class="col-xs-12 col-sm-4 column-a">
+                            <div class="col-xs-12 col-sm-4">
                                 <a [routerLink]="['/search', 'authors!' + author.slug]">
                                     <div class="contributor-image" [ngStyle]="{'background-image': author.image ? 'url('+config['asset-path']+'/'+author.image+')' : ''}"></div>
                                 </a>
                             </div>
-                            <div class="col-xs-12 col-sm-8 column-a">
+                            <div class="col-xs-12 col-sm-8">
                                 <a [routerLink]="['/search', 'authors!' + author.slug]">
                                     <h4>{{ author.title }}</h4>
                                 </a>
                                 <p *ngIf="author.bio" [innerHTML]="author.bio"></p>
                             </div>
                             <div class="clearfix"></div>
-                            <div class="col-xs-12 hr"></div>
+                            <div class="hr"></div>
                         </div>
-                        <div *ngFor="let author of authors">
-                            <div *ngIf="!authors.length">
-                                <img class="contributor-image" src="/assets/icons/anon.png">
-                                <h4>It could be you</h4>
+                        <div *ngIf="!authors.length">
+                            <div class="col-xs-12 col-sm-4">
+                                <div class="contributor-image" style="background-image: url('/assets/icons/anon.png')"></div>
                             </div>
+                            <div class="col-xs-12 col-sm-8">
+                                <div class="contributor-name">
+                                    <h4 class="first">It could <svg-inline class="your-arrow" src="/assets/icons/yourarrow.svg"></svg-inline></h4>
+                                    <h4 class="last">be you</h4>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="hr"></div>
                         </div>
                     </div>
 
@@ -770,15 +783,15 @@ export class DetailComponent {
                 this.collapsed = true;
                 this.riskCollapsed = true;
 
-                // HACK: Fix a few accidental snapshots
-                if (/In a page .500 words. or less/.test(this.module['full-write-up'])) delete this.module['full-write-up'];
-
                 this.authors = this.getRelated('authors', this.peopleBySlug);
                 this.stories = this.getRelated('stories', this.modulesBySlug);
                 this.tactics = this.getRelated('tactics', this.modulesBySlug);
                 this.theories = this.getRelated('theories', this.modulesBySlug);
                 this.principles = this.getRelated('principles', this.modulesBySlug);
                 this.methodologies = this.getRelated('methodologies', this.modulesBySlug);
+
+                // Attempt to split author name into first and last (this assignment syntax is called destructuring)
+                this.authors.forEach(author => [, author.firstname, author.lastname] = author.title.split(/^([^\s]+)\s+/))
 
                 this.snapshot = !!(this.authors.length == 0 || (!this.module['full-write-up'] && !this.module['short-write-up']))
                 this.gallery = !!(!this.module['full-write-up'] && this.module['short-write-up'])

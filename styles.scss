@@ -22,7 +22,7 @@ $story: #08eb8c;
 //$gray: #606162;
 //$gray: #b3b3b3;         
 //$lightgray: #afafaf;
-$gray: #828487;
+$gray: #828486;
 $lightgray: #959595;
 $lightergray: #f7f7f7;
 $darkgray: #333;
@@ -124,6 +124,16 @@ body {
 a:link, a:visited, a:hover, a:active { 
     color: $gray; 
 } 
+.hr {
+    position: relative;
+    padding: 4*$margin 0;
+}
+.hr::after {
+    content: '';
+    border: 1px solid black;
+    left: 15px; right: 15px;
+    position: absolute;
+}
 h3, .h3, .module-title {
     font-family: 'KnockoutBantam';
     text-transform: uppercase;
@@ -471,16 +481,12 @@ menu {
         p:first-of-type {
             margin-top: 20px;
         }
-        p:last-of-type {
-            margin-top: 20px;
-            margin-bottom: 6px;
-        }
         p.clickable {
             font-weight: bold;
             text-transform: uppercase;
             text-decoration: underline;
             color: $gray;
-            margin-bottom: 18px;
+            margin-bottom: 12px;
         }
         svg-inline {
             margin-right: 20px;
@@ -692,7 +698,7 @@ $search-height: 50px;
 // Gallery
 .gallery {
     padding-top: $search-height;
-    @include prefix(transition, margin-top $transition linear, webkit moz);
+    //@include prefix(transition, margin-top $transition linear, webkit moz);
 }
 .gallery-sort {
     text-align: center;
@@ -910,15 +916,33 @@ detail {
         }
         h4 {
             padding: $margin 0;
-            color: $gray;
-            text-decoration: underline;
+            //color: $gray;
+            //text-decoration: underline;
+            font-size: 19px;
+            line-height: 22px;
         }
         .contributor-image {
             width: 100%;
-            height: 180px;
+            height: 165px;
             border: 2px solid black;
             background-size: cover;
             background-position: 50% 30%;
+        }
+        .contributor-name {
+            position: relative;
+            .first { 
+                margin-bottom: 0; 
+                padding-bottom: 0;
+            }
+            .last { 
+                margin-top: 0; 
+                padding-top: 0;
+            }
+        }
+        .your-arrow {
+            position: absolute;
+            margin-left: 10px;
+            top: -65%;
         }
         .tag {
             color: $gray;
@@ -1004,10 +1028,6 @@ detail {
                 text-decoration: underline;
             }
         }
-    }
-    .hr {
-        border: 1px solid black;
-        margin: 4*$margin 0;
     }
     .edit-link {
         position: fixed;
