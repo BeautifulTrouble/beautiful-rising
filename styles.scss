@@ -27,23 +27,18 @@ $lightgray: #959595;
 $lightergray: #f7f7f7;
 $darkgray: #333;
 .type-story { 
-    a:link, a:visited, a:hover, a:active { color: $story; } 
     svg * { fill: $story; }
 }
 .type-theory { 
-    a:link, a:visited, a:hover, a:active { color: $theory; } 
     svg * { fill: $theory; }
 }
 .type-tactic { 
-    a:link, a:visited, a:hover, a:active { color: $tactic; } 
     svg * { fill: $tactic; }
 }
 .type-principle { 
-    a:link, a:visited, a:hover, a:active { color: $principle; } 
     svg * { fill: $principle; }
 }
 .type-methodology { 
-    a:link, a:visited, a:hover, a:active { color: $methodology; } 
     svg * { fill: $methodology; }
 }
 a {
