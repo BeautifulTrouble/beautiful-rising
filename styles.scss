@@ -961,11 +961,11 @@ detail {
                 }
                 .arrow {
                     @include prefix(transition, transform $transition linear, webkit moz);
-                    transform: rotate(-90deg) scale(0.75);
+                    transform: rotate(180deg) scale(0.75);
                     svg * { fill: $lightgray; }
                 }
                 .arrow.selected {
-                    transform: rotate(90deg) scale(0.75);
+                    transform: rotate(270deg) scale(0.75);
                     svg * { fill: black; }
                 }
             }
