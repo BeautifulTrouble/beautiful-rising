@@ -511,12 +511,15 @@ menu {
 
 // Footer
 .footer {
-    margin: 16 * $margin 0 4 * $margin 0;
-    border-top: 2px solid black;
+    margin-top: 16*$margin;
     text-align: center;
     color: $gray;
     font-style: italic;
-    font-size: 13px;
+    font-size: 10px;
+    line-height: 1.75;
+    .hr {
+        padding-bottom: 0;
+    }
     img {
         padding: 2 * $margin;
     }
@@ -1022,6 +1025,9 @@ detail {
                 font-weight: bold;
                 text-decoration: underline;
             }
+        }
+        .key-heading {
+            margin-top: 6*$margin;
         }
     }
     .edit-link {
