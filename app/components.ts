@@ -793,8 +793,8 @@ export class DetailComponent {
                 // Attempt to split author name into first and last (this assignment syntax is called destructuring)
                 this.authors.forEach(author => [, author.firstname, author.lastname] = author.title.split(/^([^\s]+)\s+/))
 
-                this.snapshot = !!(this.authors.length == 0 || (!this.module['full-write-up'] && !this.module['short-write-up']))
-                this.gallery = !!(!this.module['full-write-up'] && this.module['short-write-up'])
+                this.snapshot = /SNAPSHOT/.test(this.module.document_title);
+                this.gallery = /GALLERY/.test(this.module.document_title);
 
                 // Compose the module's pattern
                 var types = {'tactics':'tactic', 'principles':'principle', 'theories':'theory', 'methodologies':'methodology'};
