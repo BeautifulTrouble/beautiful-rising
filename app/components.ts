@@ -570,7 +570,7 @@ export class GalleryComponent {
                                     <p *ngIf="module.where || module.when">{{ module.where }} {{ module.when }}</p>
                                     <svg-inline *ngIf="module.region" src="/assets/icons/{{ module.region }}.svg" class="region-icon"></svg-inline>
                                 </div>
-                                <div [ngClass]="['module-type', module.type]">{{ module.type }}</div>
+                                <div [routerLink]="['/type', module.type]" [ngClass]="['module-type', 'clickable', module.type]">{{ module.type }}</div>
                                 <div class="module-title">{{ module.title }}</div>
                                 <div (click)="savingService.toggleSaved(module)" [ngSwitch]="savingService.isSaved(module)" class="module-save clickable">
                                     <div *ngSwitchCase="true"><svg-inline src="/assets/icons/-_tileandmodule.svg"></svg-inline>Remove this module from your tools</div>
@@ -670,11 +670,15 @@ export class GalleryComponent {
                                 </div>
                                 <h5 (click)="collapsed = true">Read less</h5>
                             </div>
-                            <div *ngIf="module['why-it-worked']" class="why">
+                            <div *ngIf="module['how-to-use']" class="how-to-use">
+                                <h4>How to use</h4>
+                                <div [innerMarkdown]="module['how-to-use']"></div>
+                            </div>
+                            <div *ngIf="module['why-it-worked']" class="why-worked-or-failed">
                                 <h4>Why it worked</h4>
                                 <p [innerHTML]="module['why-it-worked']"></p>
                             </div>
-                            <div *ngIf="module['why-it-failed']" class="why">
+                            <div *ngIf="module['why-it-failed']" class="why-worked-or-failed">
                                 <h4>Why it failed</h4>
                                 <p [innerHTML]="module['why-it-failed']"></p>
                             </div>
@@ -685,8 +689,8 @@ export class GalleryComponent {
                                                   ['key-methodologies', 'methodology', 'methodologies']]">
                             <div *ngIf="module[type[0]]">
                                 <div *ngFor="let each of module[type[0]]; let first=first; let last=last;">
-                                    <div *ngIf="first && last" [ngClass]="['module-type', type[1]]">key {{ type[1] }}</div><!-- singular -->
-                                    <div *ngIf="first && !last" [ngClass]="['module-type', type[1]]">key {{ type[2] }}</div><!-- plural -->
+                                    <div *ngIf="first && last" [ngClass]="['module-type', 'key-heading', type[1]]">key {{ type[1] }}</div><!-- singular -->
+                                    <div *ngIf="first && !last" [ngClass]="['module-type', 'key-heading', type[1]]">key {{ type[2] }}</div><!-- plural -->
                                     <h3 [innerHTML]="each[0]"></h3><div [innerHTML]="each[1]"></div>
                                 </div>
                             </div>
@@ -1052,6 +1056,7 @@ export class ToolsComponent {
                     <div class="container">
                         <div class="row">
                             <div class="footer">
+                                <div class="hr"></div>
                                 <div class="col-md-8 col-md-offset-2">
                                     <img src="/assets/icons/Creative_Commons.svg">
                                     <p>Beautiful Rising by Beautiful Rising, various authors is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License. Permissions beyond the scope of this license may be available at beautifulrising.org.</p>
