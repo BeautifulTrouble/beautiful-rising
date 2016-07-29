@@ -63,112 +63,109 @@ export class MarkdownService {
 // Content Service (for fetching and transforming API content)
 @Injectable()
 export class ContentService {
+    static cacheByLanguage = {};
     language = 'en';
     contentUrl = 'https://api.beautifulrising.org/api/v1/all';
-    contentSource = new Subject();
-    contentStream = this.contentSource.asObservable();
-    contentCacheByLanguage = {};
 
     constructor(
         private cachedHttp: CachedHttpService,
         private markdown: MarkdownService) {
     }
 
-    // Returns an object containing several sorted and ordered forms of the API content
+    // Returns a cached observable containing processed API content
     getContent(callback) {
-        // Subscribe the callback to a single message
-        this.contentStream.first().subscribe(callback);
-        
-        // Use cached content when possible
-        if (this.contentCacheByLanguage[this.language]) {
-            this.contentSource.next(this.contentCacheByLanguage[this.language]);
+        if (ContentService.cacheByLanguage[this.language]) {
+            var observable = ContentService.cacheByLanguage[this.language];
         } else {
-            var params = new URLSearchParams(`lang=${this.language}`);
-            this.cachedHttp.get(this.contentUrl, {search: params})
-                .map(res => res.json())
-                .catch(err => Observable.throw("Couldn't fetch API content!"))
-                .subscribe(content => {
-                    // Prepare the content for easy consumption by components
-                    let output:any = {}
-                    output.content = content;
-                    output.config = _.find(content, {'type': 'config', 'slug': 'api'});
-                    // Bundle content into types
-                    output.contentByType = _.groupBy(content, 'type');
-                    // Mappings by slug are useful for grabbing related content
-                    output.contentBySlug = _.keyBy(content, 'slug');
-                    output.textBySlug = _.keyBy(output.contentByType.text, 'slug');
-                    output.peopleBySlug = _.keyBy(output.contentByType.person, 'slug');
-                    // Prepare a few more useful representations of modules
-                    output.moduleTypes = _.map(output.config['types-modules'], t => t.one);
-                    output.modulesByType = _.pick(output.contentByType, output.moduleTypes);
-                    output.modules = _.flatten(_.values(output.modulesByType)); // XXX: does this result in copied data?
-                    output.modulesBySlug = _.keyBy(output.modules, 'slug');
-                    output.modulesByRegion = _.mapKeys(_.groupBy(output.modules, 'region'), (v,k) => slugify(k || 'all'));
-                    // Collect and slugify tags & regions
-                    output.modulesByTag = {};
-                    output.tagsBySlug = {}
-                    for (let module of output.modules) {
-                        for (let tag of module['tags'] || []) {
-                            let slugTag = slugify(tag);
-                            output.modulesByTag[slugTag] = output.modulesByTag[slugTag] || [];
-                            output.modulesByTag[slugTag].push(module);
-                            output.tagsBySlug[slugTag] = tag;
+            var observable = ContentService.cacheByLanguage[this.language] = Observable.create(observer => {
+                var params = new URLSearchParams(`lang=${this.language}`);
+                this.cachedHttp.get(this.contentUrl, {search: params})
+                    .map(res => res.json())
+                    .catch(err => Observable.throw("Couldn't fetch API content!"))
+                    .subscribe(content => {
+                        // Prepare the content for easy consumption by components
+                        let output:any = {}
+                        output.content = content;
+                        output.config = _.find(content, {'type': 'config', 'slug': 'api'});
+                        // Bundle content into types
+                        output.contentByType = _.groupBy(content, 'type');
+                        // Mappings by slug are useful for grabbing related content
+                        output.contentBySlug = _.keyBy(content, 'slug');
+                        output.textBySlug = _.keyBy(output.contentByType.text, 'slug');
+                        output.peopleBySlug = _.keyBy(output.contentByType.person, 'slug');
+                        // Prepare a few more useful representations of modules
+                        output.moduleTypes = _.map(output.config['types-modules'], t => t.one);
+                        output.modulesByType = _.pick(output.contentByType, output.moduleTypes);
+                        output.modules = _.flatten(_.values(output.modulesByType)); // XXX: does this result in copied data?
+                        output.modulesBySlug = _.keyBy(output.modules, 'slug');
+                        output.modulesByRegion = _.mapKeys(_.groupBy(output.modules, 'region'), (v,k) => slugify(k || 'all'));
+                        // Collect and slugify tags & regions
+                        output.modulesByTag = {};
+                        output.tagsBySlug = {}
+                        for (let module of output.modules) {
+                            for (let tag of module['tags'] || []) {
+                                let slugTag = slugify(tag);
+                                output.modulesByTag[slugTag] = output.modulesByTag[slugTag] || [];
+                                output.modulesByTag[slugTag].push(module);
+                                output.tagsBySlug[slugTag] = tag;
+                            }
+                            if (module.region) module.region = slugify(module.region);
                         }
-                        if (module.region) module.region = slugify(module.region);
-                    }
-                    output.tags = _.keys(output.tagsBySlug).sort();
+                        output.tags = _.keys(output.tagsBySlug).sort();
 
-                    // Preprocess content before passing to markdown processor (90% of these tasks belong in the contentloader)
-                    output.config.markdown.push('potential-risks-short');
-                    output.config.markdown.push('key-modules');
-                    for (let module of output.modules) {
-                        // Prepare -short version of potential risks
-                        if (module['potential-risks'] && module['potential-risks'].length > 470) {
-                            module['potential-risks-short'] = _.truncate(module['potential-risks'], {length: 470, separator: /\s+ /});
-                        }
-                        // Split epigraphs from attributions
-                        module.epigraphs = _.map(module.epigraphs || [], (text) => text.split(/\s+[—–―]([^\s].+)/, 2));
-                        // Split key-module names from descriptions
-                        for (let type of ['key-tactics', 'key-principles', 'key-theories', 'key-methodologies']) {
-                            if (module[type]) module[type] = _.map(module[type], text => [text.split(/\s+[-]\s+/, 1)[0], text.replace(/^.+\s+[-]\s+/, '')]);
-                        }
-                        // Embed blockquotes into full-write-up
-                        if (module['full-write-up'] && module['pull-quote']) {
-                            let blockquote = `<blockquote class="pull-quote">${this.markdown.render(module['pull-quote'])}</blockquote>`;
-                            let paragraphs = module['full-write-up'].split(/\n\n\n*/);
-                            if (paragraphs.length > 1) {
-                                paragraphs.splice(Math.floor(paragraphs.length/2) - Math.floor(paragraphs.length/2)%2, 0, blockquote);
-                                module['full-write-up'] = paragraphs.join('\n\n');
+                        // Preprocess content before passing to markdown processor (90% of these tasks belong in the contentloader)
+                        output.config.markdown.push('potential-risks-short');
+                        output.config.markdown.push('key-modules');
+                        for (let module of output.modules) {
+                            // Prepare -short version of potential risks
+                            if (module['potential-risks'] && module['potential-risks'].length > 470) {
+                                module['potential-risks-short'] = _.truncate(module['potential-risks'], {length: 470, separator: /\s+ /});
+                            }
+                            // Split epigraphs from attributions
+                            module.epigraphs = _.map(module.epigraphs || [], (text) => text.split(/\s+[—–―]([^\s].+)/, 2));
+                            // Split key-module names from descriptions
+                            for (let type of ['key-tactics', 'key-principles', 'key-theories', 'key-methodologies']) {
+                                if (module[type]) module[type] = _.map(module[type], text => [text.split(/\s+[-]\s+/, 1)[0], text.replace(/^.+\s+[-]\s+/, '')]);
+                            }
+                            // Embed blockquotes into full-write-up
+                            if (module['full-write-up'] && module['pull-quote']) {
+                                let blockquote = `<blockquote class="pull-quote">${this.markdown.render(module['pull-quote'])}</blockquote>`;
+                                let paragraphs = module['full-write-up'].split(/\n\n\n*/);
+                                if (paragraphs.length > 1) {
+                                    paragraphs.splice(Math.floor(paragraphs.length/2) - Math.floor(paragraphs.length/2)%2, 0, blockquote);
+                                    module['full-write-up'] = paragraphs.join('\n\n');
+                                }
                             }
                         }
-                    }
 
-                    // Prerender markdown
-                    for (let collection of [output.contentByType.person, output.contentByType.text, output.modules]) {
-                        for (let module of collection) {
-                            for (let field of output.config.markdown) {
-                                if (module[field]) module[field] = this.markdown.renderTrusted(module[field]);
+                        // Prerender markdown
+                        for (let collection of [output.contentByType.person, output.contentByType.text, output.modules]) {
+                            for (let module of collection) {
+                                for (let field of output.config.markdown) {
+                                    if (module[field]) module[field] = this.markdown.renderTrusted(module[field]);
+                                }
                             }
                         }
-                    }
 
-                    // Prepare search index
-                    ElasticLunr.tokenizer.setSeperator(/[-\s]+/);
-                    output.index = ElasticLunr();
-                    output.index.setRef('slug');
-                    output.config.search.forEach(field => output.index.addField(field));
-                    output.modules.forEach(module => output.index.addDoc(module)); 
+                        // Prepare search index
+                        ElasticLunr.tokenizer.setSeperator(/[-\s]+/);
+                        output.index = ElasticLunr();
+                        output.index.setRef('slug');
+                        output.config.search.forEach(field => output.index.addField(field));
+                        output.modules.forEach(module => output.index.addDoc(module)); 
 
-                    // Cache the prepared content and emit it to subscribers
-                    this.contentCacheByLanguage[this.language] = output;
-                    this.contentSource.next(output);
-                });
+                        // Emit the prepared content
+                        observer.next(output);
+                        observer.complete();
+                    });
+                }).publishLast().refCount();
         }
+        return observable;
     }
     // For the simple case where you want to populate ~this~ with content variables
     injectContent(target: Scope, then) {
-        this.getContent(content => {
-            _.merge(target, content)
+        this.getContent().first().subscribe(content => {
+            _.merge(target, content);
             if (then /* har */) then(content);
         });
     }
