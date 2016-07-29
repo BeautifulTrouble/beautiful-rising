@@ -66,7 +66,7 @@ export class AboutComponent {
                     <div class="upper row">
                         <div class="banner"></div>
                         <div class="col-md-5">
-                            <img class="logo" src="/assets/icons/logo-reverse.png">
+                            <img class="logo" src="/assets/icons/logo-reverse-en.png">
                             <h3>{{ textBySlug.about.modal.welcome }}</h3>
                             <p>{{ textBySlug.about.modal.introduction }}</p>
                         </div>
@@ -1045,7 +1045,7 @@ export class ToolsComponent {
                         </div>
                         <menu [textBySlug]="textBySlug"></menu>
                         <a [routerLink]="['']">
-                            <img class="logo" src="/assets/icons/logo.png">
+                            <img class="logo" src="/assets/icons/logo-en.png">
                         </a>
                     </div><!-- .container -->
                 </div>
