@@ -1,6 +1,6 @@
 // Define all site components here.
 
-import { Component, Input, Output, Inject, EventEmitter, ElementRef, ViewChild, NgZone, isDevMode } from '@angular/core';
+import { Component, Input, Output, Inject, EventEmitter, ElementRef, ViewChild, isDevMode } from '@angular/core';
 import { Router, ActivatedRoute, provideRouter, ROUTER_DIRECTIVES, NavigationEnd } from '@angular/router';
 import { Title, DomSanitizationService } from '@angular/platform-browser';
 
@@ -34,9 +34,9 @@ export class AboutInnerComponent {
 @Component({
     selector: 'about',
     template: `
-        <div class="container page" addSectionToRoute="/about" thresholdElement="#fixed-nav">
+        <div *ngIf="textBySlug" class="container page" addSectionToRoute="/about" thresholdElement="#fixed-nav" thresholdOffset="10">
             <div class="row">
-                <div *ngIf="textBySlug" class="page-heading">
+                <div class="page-heading">
                     <h3>{{ textBySlug.about.misc.heading }}</h3>
                     <p>{{ textBySlug.about.heading.introduction }}</p>
                 </div>
@@ -112,12 +112,12 @@ export class ModalComponent {
 @Component({
     selector: 'platforms',
     template: `
-        <div *ngIf="textBySlug" addSectionToRoute="/platforms" thresholdElement="#fixed-nav" class="container page platforms">
+        <div *ngIf="textBySlug" addSectionToRoute="/platforms" thresholdElement="#fixed-nav" thresholdOffset="10" class="container page platforms">
             <div class="row">
                 <div class="col-xs-12 page-heading">
                     <h3 class="heading">{{ textBySlug.platforms.misc.heading }}</h3>
                 </div>
-                <section *ngFor="let p of ['chatbot', 'game', 'pdf']" id="{{ p }}">
+                <section *ngFor="let p of ['chatbot', 'game', 'pdf']" class="{{ p }}" name="{{ p }}">
                     <div class="col-md-1"><svg-inline src="/assets/icons/{{ p }}.svg"></svg-inline></div>
                     <div class="col-md-4">
                         <h3 class="overline title">{{ textBySlug.platforms[p].title }}</h3> 
@@ -177,12 +177,12 @@ export class ResourcesComponent {
 @Component({
     selector: 'contribute',
     template: `
-        <div *ngIf="textBySlug" addSectionToRoute="/contribute" thresholdElement="#fixed-nav" class="container page contribute">
+        <div *ngIf="textBySlug" addSectionToRoute="/contribute" thresholdElement="#fixed-nav" thresholdOffset="10" class="container page contribute">
             <div class="row">
                 <div class="col-xs-12 page-heading">
                     <h3 class="heading">{{ textBySlug.contribute.misc.heading }}</h3>
                 </div>
-                <section id="how-it-works">
+                <section name="how-it-works" class="how-it-works">
                     <div class="col-xs-12">
                         <h4 class="heading">{{ textBySlug.contribute.misc.subheading }}</h4>
                         <div [innerMarkdown]="textBySlug.contribute.misc.introduction"></div>
@@ -207,7 +207,10 @@ export class ResourcesComponent {
             </div>
         </div>
     `,
-    directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES ]
+    directives: [ 
+        APP_DIRECTIVES,
+        ROUTER_DIRECTIVES
+    ]
 })
 export class ContributeComponent {
     activeType = 'story';
@@ -1044,9 +1047,7 @@ export class ToolsComponent {
                             <span *ngFor="let lang of languages" (click)="language=lang" [class.selected]="language===lang">{{ lang|uppercase }}</span>
                         </div>
                         <menu [textBySlug]="textBySlug"></menu>
-                        <a [routerLink]="['']">
-                            <img class="logo" src="/assets/icons/logo-en.png">
-                        </a>
+                        <a [routerLink]="['']"><img class="logo" src="/assets/icons/logo-en.png"></a>
                     </div><!-- .container -->
                 </div>
                 <tools class="bottom" [modulesBySlug]="modulesBySlug" [opened]="toolsOpened" 
@@ -1125,7 +1126,6 @@ export const APP_ROUTER_PROVIDERS = [provideRouter([
 
     {path: 'module/:slug',          component: DetailComponent},
 
-    //{path: 'about', pathMatch: 'full', redirectTo: '/about/beautiful-rising'},
     {path: 'about',                 component: AboutComponent},
     {path: 'about/:section',        component: AboutComponent},
     {path: 'platforms',             component: PlatformsComponent},

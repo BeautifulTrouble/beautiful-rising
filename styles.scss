@@ -1183,7 +1183,7 @@ modal {
         background-size: cover;
         margin-bottom: 6 * $margin;
     }
-    #process {
+    .process {
         .subheading {
             margin-top: 6 * $margin;
             margin-bottom: 4 * $margin;
@@ -1229,7 +1229,7 @@ modal {
             content: initial;
         }
     }
-    #values, #faq {
+    .values, .faq {
         p { padding-left: 10%; }
         .content h4 { 
             font-size: 19px;
@@ -1238,21 +1238,21 @@ modal {
         .disclaimer { margin-top: 10 * $margin; }
         .disclaimer-text { color: gray; }
     }
-    #advisory-network, #team {
+    .advisory-network, .team {
         .network-members { margin-top: 3 * $margin; }
         .content h4 { 
             font-size: 19px; 
             margin-bottom: 0;
         }
     }
-    #beautiful-trouble-and-action-aid {
+    .beautiful-trouble-and-action-aid {
         .blurb { min-height: 12 * $margin; }
         .introduction { 
             padding-bottom: 6 * $margin; 
             text-align: center; 
         }
     }
-    #partners {
+    .partners {
         .partner {
             padding-bottom: 48px;
         }
@@ -1264,7 +1264,7 @@ modal {
             margin-bottom: 10px;
         }
     }
-    #faq {
+    .faq {
         .question { padding-bottom: 3 * $margin; }
     }
 }
@@ -1298,7 +1298,7 @@ modal {
     }
 }
 .contribute {
-    #how-it-works {
+    .how-it-works {
         text-align: center;
     }
     .instructions-heading {

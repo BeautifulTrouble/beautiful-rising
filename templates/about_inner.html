@@ -1,5 +1,5 @@
 <div *ngIf="textBySlug" [accordion]="useAccordion" class="about" [class.accordion]="useAccordion">
-    <section id="whats-inside">
+    <section class="whats-inside" name="whats-inside">
         <h4 accordionToggle class="heading" [class.clickable]="useAccordion">
             {{ textBySlug.about.misc['whats-inside'] }}
             <svg-inline src="/assets/icons/arrow.svg"></svg-inline>
@@ -31,7 +31,7 @@
             </div>
         </div>
     </section>
-    <section id="process">
+    <section class="process" name="process">
         <h4 accordionToggle class="heading" [class.clickable]="useAccordion">
             {{ textBySlug.about.misc.process }}
             <svg-inline src="/assets/icons/arrow.svg"></svg-inline>
@@ -60,7 +60,7 @@
             </div>
         </div>
     </section>
-    <section id="values">
+    <section class="values" name="values">
         <h4 accordionToggle class="heading" [class.clickable]="useAccordion">
             {{ textBySlug.about.misc.values }}
             <svg-inline src="/assets/icons/arrow.svg"></svg-inline>
@@ -79,7 +79,7 @@
             </div>
         </div>
     </section>
-    <section id="advisory-network">
+    <section class="advisory-network" name="advisory-network">
         <h4 accordionToggle class="heading" [class.clickable]="useAccordion">
             {{ textBySlug.about.misc['advisory-network'] }}
             <svg-inline src="/assets/icons/arrow.svg"></svg-inline>
@@ -100,7 +100,7 @@
             </div>
         </div>
     </section>
-    <section id="team">
+    <section class="team" name="team">
         <h4 accordionToggle class="heading" [class.clickable]="useAccordion">
             {{ textBySlug.about.misc.team }}
             <svg-inline src="/assets/icons/arrow.svg"></svg-inline>
@@ -118,7 +118,7 @@
             </div>
         </div>
     </section>
-    <section id="beautiful-trouble-and-action-aid">
+    <section class="beautiful-trouble-and-action-aid" name="beautiful-trouble-and-action-aid">
         <h4 accordionToggle class="heading" [class.clickable]="useAccordion">
             {{ textBySlug.about.misc['beautiful-trouble-and-action-aid'] }}
             <svg-inline src="/assets/icons/arrow.svg"></svg-inline>
@@ -139,7 +139,7 @@
             </div>
         </div>
     </section>
-    <section id="partners">
+    <section class="partners" name="partners">
         <h4 accordionToggle class="heading" [class.clickable]="useAccordion">
             {{ textBySlug.about.misc.partners }}
             <svg-inline src="/assets/icons/arrow.svg"></svg-inline>
@@ -163,7 +163,7 @@
             </div>
         </div>
     </section>
-    <section id="faq">
+    <section class="faq" name="faq">
         <h4 accordionToggle class="heading" [class.clickable]="useAccordion">
             {{ textBySlug.about.misc.faq }}
             <svg-inline src="/assets/icons/arrow.svg"></svg-inline>

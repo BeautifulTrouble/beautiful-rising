@@ -1,7 +1,7 @@
 
 import { Http } from '@angular/http';
-import { Directive, OnInit, Input, Output, EventEmitter, ElementRef, HostBinding, HostListener } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Directive, OnInit, Input, Output, Optional, EventEmitter, ElementRef, HostBinding, HostListener } from '@angular/core';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 
 import _ = require('lodash');
 import MarkdownIt = require('markdown-it');
@@ -118,8 +118,12 @@ export class LazyBackgroundDirective {
 export class MarkdownDirective {
     @Input() innerMarkdown;
     constructor(private el: ElementRef, private md: MarkdownService) { }
-    ngOnChanges() { this.updateContent(); }
-    updateContent() { this.el.nativeElement.innerHTML = this.md.render(this.innerMarkdown); }
+    ngOnChanges() { 
+        this.updateContent(); 
+    }
+    updateContent() { 
+        this.el.nativeElement.innerHTML = this.md.render(this.innerMarkdown); 
+    }
 }
 
 
@@ -127,69 +131,78 @@ export class MarkdownDirective {
  * and also handles scrolling to that section when the route param changes
  *
  *  <div addSectionToRoute="/basepath" thresholdElement="#fixed-div">
- *      <section id="one"><!-- /basepath/one --></section>
- *      <section id="two"><!-- /basepath/two --></section>
+ *      <section name="one"><!-- /basepath/one --></section>
+ *      <section name="two"><!-- /basepath/two --></section>
  *      ...
  */
-@Directive({ selector: '[addSectionToRoute]' })
+@Directive({ selector: '[addSectionToRoute],[thresholdElement],[thresholdOffset]' })
 export class SectionRouteDirective {
+    @Input() addSectionToRoute;
+    @Input() thresholdElement;
+    @Input() thresholdOffset;
+    sections = {};
+    currentlyNavigating = false;
     constructor(
-        private outside: OutsideAngularService,
         private router: Router, 
-        private route: ActivatedRoute, 
-        private el: ElementRef) {
-        this.basePath = el.nativeElement.getAttribute('addSectionToRoute') || '/';
-        this.thresholdElement = el.nativeElement.getAttribute('thresholdElement');
-        this.thresholdOffset = parseInt(el.nativeElement.getAttribute('thresholdOffset') || '0');
+        private route: ActivatedRoute) {
     }
     ngOnInit() {
-        this.lastSection = null;
-        this.sub = this.route.params.subscribe(this.onRoute);
-        this.outside.addEventListener(window, 'scroll', this.onScroll);
-    }
-    ngAfterViewChecked() {
-        if (this.lastSection === null) {
-            this.onRoute(this.route.snapshot.params);
-        }
+        this.thresholdOffset = parseInt(this.thresholdOffset || 0);
+        this.sub = this.router.events.subscribe(event => {
+            if (event instanceof NavigationEnd) {
+                if (this.currentlyNavigating) return this.currentlyNavigating = false;
+                this.setSection(this.route.snapshot.params.section)
+            }
+        });
     }
     ngOnDestroy() {
         this.sub && this.sub.unsubscribe();
-        this.outside.removeEventListener(window, 'scroll', this.onScroll);
     }
-    getThreshold() {
+    ngAfterViewInit() {
+        this.setSection(this.route.snapshot.params.section);
+    }
+    add(section, el) {
+        this.sections[section] = el;
+    }
+    remove(section) {
+        delete this.sections[section];
+    }
+    setSection(section) {
+        var sectionEl = this.sections[section];
+        if (sectionEl) {
+            this.currentlyNavigating = true;
+            window.scrollTo(0, sectionEl.offsetTop - this.thresholdOffset);
+        }
+    }
+    @HostListener('window:scroll') onScroll() {
+        if (this.currentlyNavigating) return this.currentlyNavigating = false;
+        var visibleSection;
+        var threshold = this.thresholdOffset;
         if (this.thresholdElement) {
             var tEl = document.querySelector(this.thresholdElement);
-            if (tEl) return tEl.getBoundingClientRect().bottom + this.thresholdOffset;
+            if (tEl) threshold = tEl.getBoundingClientRect().bottom + this.thresholdOffset;
         }
-        return this.thresholdOffset;
-    }
-    onRoute = (params) => {
-        // TODO: handle !params.section specially to avoid delay as component is re-loaded
-        if (this.reNavigating) return this.reNavigating = false;
-        if (params.section) {
-            var sectionEl = document.getElementById(params.section);
-            if (sectionEl) {
-                window.scrollTo(0, sectionEl.offsetTop)
-                this.lastSection = params.section;
-            }
-        }
-    }
-    onScroll = () => {
-        var visibleSection;
-        var sections = document.querySelectorAll('section[id]');
-        var threshold = this.getThreshold();
-        for (let section of sections) { // Find the lowest visible section
-            if (section.getBoundingClientRect().top <= threshold) {
-                visibleSection = section.id;
-            }
+        for (let section in this.sections) {
+            if (this.sections[section].getBoundingClientRect().top < threshold) visibleSection = section;
         }
         if (visibleSection) {
-            if (visibleSection != this.lastSection) {
-                this.reNavigating = true;
-                this.router.navigate([this.basePath, visibleSection]);
-            }
-            this.lastSection = visibleSection;
+            this.currentlyNavigating = true;
+            this.router.navigate([this.addSectionToRoute, visibleSection]);
         }
+    };
+}
+@Directive({ selector: 'section[name]' })
+export class SectionDirective {
+    @Input() name;
+    constructor(
+        private el: ElementRef,
+        @Optional() private routeDirective: SectionRouteDirective) {
+    }
+    ngOnInit() {
+        if (this.routeDirective) this.routeDirective.add(this.name, this.el.nativeElement);
+    }
+    ngOnDestroy() {
+        if (this.routeDirective) this.routeDirective.remove(this.name);
     }
 }
 
@@ -242,12 +255,14 @@ export class SizePollingDirective {
     }
 }
 
+
 export var APP_DIRECTIVES = [
     AccordionDirective,
     AccordionToggleDirective,
     InlineSVGDirective,
     MarkdownDirective,
     SectionRouteDirective,
+    SectionDirective,
     SizePollingDirective,
     LazyBackgroundDirective
 ];
