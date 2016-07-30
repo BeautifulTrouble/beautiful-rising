@@ -147,13 +147,17 @@
         <div class="content">
             <div class="row">
                 <div *ngFor="let partner of textBySlug.about['network-partners']" class="col-md-4">
-                    <a *ngIf="partner.link" href="{{ partner.link }}" target="_blank">
-                        <div class="img-wrapper"><img *ngIf="partner.logo" src="{{ config['asset-path'] }}/{{ partner.logo }}"></div>
-                        <h5 class="overline">{{ partner.name }}</h5>
-                    </a>
-                    <div *ngIf="!partner.link">
-                        <div class="img-wrapper"><img *ngIf="partner.logo" src="{{ config['asset-path'] }}/{{ partner.logo }}"></div>
-                        <h5 class="overline">{{ partner.name }}</h5>
+                    <div class="partner">
+                        <a *ngIf="partner.link" href="{{ partner.link }}" target="_blank">
+                            <div class="partner-logo" [style.background-image]="'url(' + config['asset-path'] + '/' + partner.logo + ')'"></div>
+                        </a>
+                        <div *ngIf="!partner.link" class="img-wrapper">
+                            <div class="partner-logo" [style.background-image]="'url(' + config['asset-path'] + '/' + partner.logo + ')'"></div>
+                        </div>
+                        <a *ngIf="partner.link" href="{{ partner.link }}" target="_blank">
+                            <h5 class="overline">{{ partner.name }}</h5>
+                        </a>
+                        <h5 *ngIf="!partner.link" class="overline">{{ partner.name }}</h5>
                     </div>
                 </div>
             </div>

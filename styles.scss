@@ -1253,11 +1253,15 @@ modal {
         }
     }
     #partners {
-        h5 { padding-bottom: 48px; }
-        .img-wrapper { 
-            width: 100%;
-            height: 140px;
-            img { max-height: 120px; }
+        .partner {
+            padding-bottom: 48px;
+        }
+        .partner-logo {
+            height: 160px;
+            background-size: 160px;
+            background-repeat: no-repeat;
+            background-position-y: 50%;
+            margin-bottom: 10px;
         }
     }
     #faq {
