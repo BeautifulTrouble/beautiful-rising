@@ -408,12 +408,12 @@ export class ModuleTypeComponent {
                         </div>
                     </div>
 
-                    <div lazyBackgroundGroup *ngIf="viewStyle == 'grid'" class="row">
-                        <div *ngFor="let module of selectedModules" (click)="router.navigate(['/module', module.slug])" class="col-sm-6 col-md-4 gallery-module-grid">
+                    <div *ngIf="viewStyle == 'grid'" class="row">
+                        <div lazyBackgroundGroup *ngFor="let module of selectedModules" (click)="router.navigate(['/module', module.slug])" class="col-sm-6 col-md-4 gallery-module-grid">
                             <!-- Rethink the structure of this whole section -->
 
                             <div class="make-it-square"></div>
-                            <div *ngIf="module.image" [lazyBackground]="config['asset-path'] +'/'+ module.image" class="module-image"></div>
+                            <div *ngIf="module.image" [lazyBackground]="config['asset-path'] +'/medium-'+ module.image" class="module-image"></div>
                             <div class="module-overlay"></div>
 
                             <div class="module-content clickable">
