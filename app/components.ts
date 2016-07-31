@@ -10,6 +10,7 @@ import { ContentService, ClientStorageService, ModuleSavingService, LocalStorage
 
 import '../styles.scss';
 import _ = require('lodash');
+import ElasticLunr = require('elasticlunr');
 
 
 @Component({
@@ -530,14 +531,21 @@ export class GalleryComponent {
         }
         if (this.query) {
             history.replaceState(null, null, '/search/' + this.query);
-            this.viewStyle = 'list';
             this.tag = null;
+            this.viewStyle = 'list';
             // Allow queries like "authors!andrew-boyd" which search a specific field
             var prefix = this.query.split(/\s*!\s*/)[0];
             var query = this.query.replace(/[^@]+!\s*/, '');
             var config = { bool: /\s/.test(query) ? 'AND' : 'OR', expand: true };
             if (prefix != query && _.includes(this.config.search, prefix)) {
                 config.fields = {}; config.fields[prefix] = {boost: 5};
+            }
+            if (!this.index) {
+                ElasticLunr.tokenizer.setSeperator(/[-\s]+/);
+                this.index = ElasticLunr();
+                this.index.setRef('slug');
+                this.config.search.forEach(field => this.index.addField(field));
+                this.modules.forEach(module => this.index.addDoc(module)); 
             }
             this.selectedModules = _.map(this.index.search(query, config), obj => this.modulesBySlug[obj.ref]);
         } else if (this.type) {

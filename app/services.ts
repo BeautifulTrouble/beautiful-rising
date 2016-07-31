@@ -7,7 +7,6 @@ import { DomSanitizationService } from '@angular/platform-browser/src/security/d
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import _ = require('lodash');
-import ElasticLunr = require('elasticlunr');
 import MarkdownIt = require('markdown-it');
 import markdownitFootnote = require('markdown-it-footnote');
 
@@ -146,13 +145,6 @@ export class ContentService {
                                 }
                             }
                         }
-
-                        // Prepare search index
-                        ElasticLunr.tokenizer.setSeperator(/[-\s]+/);
-                        output.index = ElasticLunr();
-                        output.index.setRef('slug');
-                        output.config.search.forEach(field => output.index.addField(field));
-                        output.modules.forEach(module => output.index.addDoc(module)); 
 
                         // Emit the prepared content
                         observer.next(output);
