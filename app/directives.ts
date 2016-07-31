@@ -81,17 +81,7 @@ export class AccordionToggleDirective {
 @Directive({ selector: '[lazyBackgroundGroup]'})
 export class LazyBackgroundGroupDirective {
     elements = [];
-    constructor(private outside: OutsideAngularService) { }
-    ngOnInit() {
-        this.outside.addEventListener(window, 'scroll', this.lazyLoad);
-        this.outside.addEventListener(window, 'resize', this.lazyLoad);
-    }
-    ngOnDestroy() {
-        this.finished = true;
-        this.outside.removeEventListener(window, 'scroll', this.lazyLoad);
-        this.outside.removeEventListener(window, 'resize', this.lazyLoad);
-    }
-    ngDoCheck() {
+    ngAfterViewChecked() {
         this.finished || this.lazyLoad();
     }
     add(element, url) {
@@ -99,9 +89,10 @@ export class LazyBackgroundGroupDirective {
     }
     remove(element) {
         _.remove(this.elements, value => value[0] === element);
-        this.elements.length || this.ngOnDestroy();
+        if (!this.elements.length) this.finished = true;
     }
-    lazyLoad = () => {
+    @HostListener('window:scroll') lazyLoad() {
+        if (this.finished) return;
         let threshold = window.innerHeight + 500;
         for (let [el, url] of this.elements) {
             if (el.getBoundingClientRect().top < threshold) {
