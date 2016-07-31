@@ -137,6 +137,14 @@ body {
     font-size: 14px;
     line-height: 22px;
     height: 100%;
+    @include xs {
+        font-size: 11px;
+        line-height: 16px;
+    }
+    @include sm {
+        font-size: 12px;
+        line-height: 18px;
+    }
 }
 a:link, a:visited, a:hover, a:active { 
     color: $gray; 
@@ -158,6 +166,10 @@ h3, .h3, .module-title {
     line-height: 1;
     letter-spacing: 1px;
     font-weight: normal !important;
+    @include xs {
+        font-size: 22px;
+        line-height: 19px;
+    }
 }
 h4 {
     font-family: 'Avenir';
@@ -189,6 +201,9 @@ blockquote {
     &.pull-quote p::after {
         content: close-quote;
     }
+    @include xs {
+        padding-left: 0;
+    }
 }
 blockquote::before {
     position: absolute;
@@ -201,6 +216,9 @@ blockquote::before {
     text-transform: uppercase;
     font-size: 20px;
     line-height: 22px;
+    @include xs {
+        font-size: 16px
+    }
 }
 
 svg * {
@@ -601,6 +619,10 @@ $search-height: 50px;
     }
     .definition {
         p { padding-top: $margin; }
+        @include xs {
+            font-size: 12px;
+            line-height: 18px;
+        }
     }
 }
 .pattern-container-wrapper {
@@ -627,6 +649,9 @@ $search-height: 50px;
     background: white;
     position: relative;
     padding: 2*$margin 0;
+    @include sm {
+        padding: 2*$margin;
+    }
     > div {
         overflow: hidden;
         height: 100%;
@@ -685,6 +710,12 @@ $search-height: 50px;
                     display: inline-block;
                 }
             }
+        }
+    }
+    .regions {
+        @include xs {
+            svg { width: 36px; }
+            padding: 0 !important;
         }
     }
     .type-pattern {
@@ -752,25 +783,35 @@ $search-height: 50px;
         font-weight: bold;
         text-transform: uppercase;
     }
+    .sort-by div {
+        text-decoration: underline;
+    }
     .sort-by .selected {
         color: black;
     }
     .view-as, .sort-by {
         margin-bottom: 8 * $margin;
     }
-    .clickable {
-        text-decoration: underline;
-    }
     .gallery-clear {
         padding-top: 6 * $margin;
-        text-decoration: none;
     }
     .tag.selected {
         color: black;
     }
     @include sm-down {
         text-align: initial;
-        h3 { display: inline-block; }
+        h3 { 
+            display: inline-block; 
+        }
+        h3, span {
+            padding-right: 6px;
+        }
+        svg {
+            width: 18px;
+            position: relative;
+            top: 6px;
+            margin-right: 6px;
+        }
     }
 }
 .gallery-sort, .gallery-list, .gallery-info {
@@ -887,13 +928,19 @@ detail {
         background-position: 50% 35%;
         position: relative;
         margin-bottom: 32px;
+        @include xs {
+            min-height: 200px;
+        }
         .pattern {
             position: relative;
             svg-inline {
                 position: absolute;
                 z-index: 100;
                 margin: -25% 0 0 0;
-                left: -197px;
+                right: 95%;
+            }
+            @include sm-down {
+                svg { height: 100px; width: auto; }
             }
         }
         .pattern-snapshot {
@@ -928,10 +975,22 @@ detail {
         }
         .module-type {
             font-size: 40px;
+            @include md { font-size: 30px; }
+            @include sm-down { font-size: 22px; }
         }
         .module-title {
             margin-top: 10px;
             font-size: 80px;
+            @include xs { 
+                margin-top: 0;
+                font-size: 30px;
+                line-height: 28px;
+            }
+            @include sm { 
+                margin-top: 6px;
+                font-size: 42px; 
+            }
+            @include md { font-size: 60px; }
         }
         .module-save, .module-share {
             display: inline-block;
@@ -944,6 +1003,7 @@ detail {
                 width: 35px;
             }
             svg * { fill: white; }
+            @include xs { font-size: 10px; }
         }
         .story-extra {
             position: absolute;
@@ -967,14 +1027,28 @@ detail {
             padding-bottom: 0;
             color: black;
             font-size: 40px;
+            line-height: 42px;
             margin-top: 0;
+            @include sm-down {
+                margin-top: 36px;
+                font-size: 30px;
+                line-height: 36px;
+            }
         }
         h4 {
             padding: $margin 0;
-            //color: $gray;
-            //text-decoration: underline;
             font-size: 19px;
             line-height: 22px;
+            @include sm-down {
+                font-size: 16px;
+                line-height: 18px;
+            }
+        }
+        .contributed-by {
+            @include sm-down {
+                margin-bottom: 24px;
+                margin-top: 0 !important;
+            }
         }
         .contributor-image {
             width: 100%;
@@ -993,11 +1067,24 @@ detail {
                 margin-top: 0; 
                 padding-top: 0;
             }
+            @include sm {
+                h4 { 
+                    margin-top: 0;
+                    padding-top: 0; 
+                }
+            }
+
+
         }
         .your-arrow {
             position: absolute;
             margin-left: 10px;
             top: -65%;
+            @include sm {
+                transform: rotate(230deg);
+                left: -75px;
+                top: 0;
+            }
         }
         .tag {
             color: $gray;
@@ -1028,6 +1115,9 @@ detail {
                     transform: rotate(270deg) scale(0.75);
                     svg * { fill: black; }
                 }
+            }
+            @include sm {
+                p { padding-left: 50px }
             }
         }
         .related {
@@ -1337,11 +1427,17 @@ modal {
     }
 }
 .platforms {
+    .platform {
+        padding-right: 24px;
+    }
     .platform-image {
         padding-top: 40%;
         background-size: contain;
         background-repeat: no-repeat;
         background-position: 50% 50%;
+        @include xs {
+            padding-top: 80%;
+        }
     }
     .subheading {
         line-height: 22px;
@@ -1354,10 +1450,17 @@ modal {
         position: relative;
         top: 28px;
         svg * { fill: $darkgray !important; }
+        @include xs {
+            float: none;
+            top: -6px;
+        }
     }
     .what, .how, .links {
         padding-top: 2 * $margin;
         h4 { padding-bottom: $margin; }
+    }
+    .overline::before {
+        margin-top: -20px;
     }
 }
 .contribute {

@@ -120,7 +120,7 @@ export class ModalComponent {
                 </div>
                 <section *ngFor="let p of ['chatbot', 'game', 'pdf']" class="{{ p }}" name="{{ p }}">
                     <div class="col-md-1"><svg-inline src="/assets/icons/{{ p }}.svg"></svg-inline></div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 platform">
                         <h3 class="overline title">{{ textBySlug.platforms[p].title }}</h3> 
                         <h4 class="subheading">{{ textBySlug.platforms[p].introduction }}</h4>
                         <div class="what">
@@ -265,7 +265,7 @@ export class ContributeComponent {
                                         <div class="visible-xs type-representation" [class.expanded]="expanded" [class.clearfix]="expanded">
                                             <div [class.col-xs-6]="expanded">
                                                 <h3>{{ each[1] }}</h3>
-                                                <svg-inline class="2rows pattern" src="/assets/patterns/2rows/{{ each[0] }}.svg"></svg-inline>
+                                                <svg-inline *ngIf="expanded" class="2rows pattern" src="/assets/patterns/2rows/{{ each[0] }}.svg"></svg-inline>
                                             </div>
                                             <div [class.col-xs-6]="expanded">
                                                 <p *ngIf="expanded" class="definition" [innerHTML]="textBySlug.ui.definitions[each[0] + '-short']"></p>
@@ -282,7 +282,7 @@ export class ContributeComponent {
                                 <a class="expanded type-link" [routerLink]="['/']">All</a>
                                 <a *ngFor="let each of types" [routerLink]="['/type', each[0]]" [class.selected]="each[0] == type" class="expanded type-link">{{ each[1] }}</a>
                             </div>
-                            <div class="col-sm-2 col-md-3 col-lg-4 type-pattern">
+                            <div class="hidden-xs col-sm-2 col-md-3 col-lg-4 type-pattern">
                                 <div *ngFor="let each of types" class="expanded">
                                     <div *ngIf="each[0] == type">
                                         <h3>{{ each[1] }}</h3>
@@ -290,9 +290,9 @@ export class ContributeComponent {
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-xs-6 col-sm-7 col-md-7 col-lg-6 type-description">
+                            <div class="col-xs-12 col-sm-7 col-md-7 col-lg-6 type-description">
                                 <div [innerHtml]="textBySlug.ui.definitions[type]"></div>
-                                <div *ngIf="type == 'story'" class="regions">
+                                <div *ngIf="type == 'story'" class="expanded regions">
                                     <h3>Region</h3>
                                     <span *ngFor="let each of ['africa','latin-america-and-the-caribbean','north-america','asia','europe','middle-east','oceania']">
                                         <svg-inline *ngIf="region == each" [routerLink]="['/type/story']" [ngClass]="modulesByRegion[each] ? 'clickable' : 'disabled'" class="selected" src="/assets/icons/{{ each }}.svg"></svg-inline>
@@ -405,7 +405,7 @@ export class ModuleTypeComponent {
                         <span [routerLink]="['/']" class="gallery-clear clickable"><span class="icon">&#9746;</span> Clear Selection</span>
                     </div>
                 </div>
-                <div class="gallery-sort visible-xs visible-sm">
+                <div class="gallery-sort clearfix visible-xs visible-sm col-xs-12">
                     <h3>View As</h3>
                     <span class="view-as">
                         <svg-inline (click)="viewStyle='grid'" [class.selected]="viewStyle == 'grid'" class="clickable" src="/assets/icons/grid.svg"></svg-inline>
@@ -417,11 +417,11 @@ export class ModuleTypeComponent {
                         <span (click)="sortModules('timestamp')" [class.selected]="sortKey == 'timestamp'" class="clickable">Newest</span>
                     </span>
                 </div>
-                <div *ngIf="selectedModules" class="gallery-list col-md-9">
+                <div *ngIf="selectedModules" class="gallery-list col-xs-12 col-md-9">
 
-                    <div class="row">
+                    <div *ngIf="query" class="row">
                         <div class="col-sm-12">
-                            <div *ngIf="query" class="col-md-11 col-md-offset-1 gallery-info gray">
+                            <div class="col-md-11 col-md-offset-1 gallery-info gray">
                                 <span (click)="query = ''; filterModules()" class="gallery-clear clickable"><span class="icon">&#9746;</span> Clear</span>
                                 <span>Search Results for "{{ query }}" ({{ selectedModules.length }} results found)</span>
                             </div>
@@ -609,7 +609,7 @@ export class GalleryComponent {
                                 </div><br>
                                 <div class="module-share clickable"><svg-inline src="/assets/icons/share_in_module.svg"></svg-inline>Share this module</div>
                             </div>
-                            <div class="module-image-caption" [innerHTML]="module['image-caption']"></div>
+                            <div class="hidden-xs module-image-caption" [innerHTML]="module['image-caption']"></div>
                         </div>
                     </div>
                 </div>
@@ -619,7 +619,7 @@ export class GalleryComponent {
                 <div [ngClass]="['row', 'type-' + module.type]">
 
                     <div class="hidden-xs hidden-sm col-md-3 col-lg-2 column-a"><!-- large -->
-                        <h3 class="border-bottom bigger">Contributed by</h3>
+                        <h3 class="border-bottom bigger contributed-by">Contributed by</h3>
                         <div *ngFor="let author of authors" >
                             <a [routerLink]="['/search', 'authors!' + author.slug]">
                                 <div class="contributor-image" [ngStyle]="{'background-image': author.image ? 'url('+config['asset-path']+'/'+author.image+')' : ''}"></div>
@@ -647,7 +647,7 @@ export class GalleryComponent {
 
                     <div class="hidden-md hidden-lg column-a"><!-- small -->
                         <div class="col-xs-12">
-                            <h3 class="border-bottom bigger">Contributed by</h3>
+                            <h3 class="border-bottom bigger contributed-by">Contributed by</h3>
                         </div>
                         <div *ngFor="let author of authors">
                             <div class="col-xs-12 col-sm-4">
@@ -657,7 +657,9 @@ export class GalleryComponent {
                             </div>
                             <div class="col-xs-12 col-sm-8">
                                 <a [routerLink]="['/search', 'authors!' + author.slug]">
-                                    <h4>{{ author.title }}</h4>
+                                    <div class="contributor-name">
+                                        <h4>{{ author.title }}</h4>
+                                    </div>
                                 </a>
                                 <p *ngIf="author.bio" [innerHTML]="author.bio"></p>
                             </div>
@@ -679,7 +681,7 @@ export class GalleryComponent {
                         </div>
                     </div>
 
-                    <div class="col-xs-12 col-md-5 col-lg-offset-1 content">
+                    <div class="col-xs-12 col-sm-8 col-sm-offset-4 col-md-5 col-lg-offset-1 content">
                         <div *ngIf="snapshot">
                             <p [innerHTML]="module.snapshot"></p>
                             <p><strong>Hey, this isn't written yet but people like you are likely using it in all kinds of ways. Do you have insights to share on how to use this theory? Go ahead and share them through the form below...</strong></p>
@@ -796,8 +798,6 @@ export class DetailComponent {
     _ = _;
     slugify = slugify;
     plainString = plainString;
-    module;
-    patternTypes;
 
     constructor(
         private el: ElementRef,
