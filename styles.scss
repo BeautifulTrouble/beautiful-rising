@@ -13,6 +13,26 @@
 }
 
 
+// Media Queries (use by nesting like "@include md { some-style: only-applies-at-medium-size }")
+$xs-width: 480px;
+$sm-width: 768px;
+$md-width: 992px;
+$lg-width: 1200px;
+@mixin xs { @media (max-width: #{$sm-width - 1px}) { @content; } }
+@mixin sm { @media (min-width: $sm-width) and (max-width: #{$md-width - 1px}) { @content; } }
+@mixin md { @media (min-width: $md-width) and (max-width: #{$lg-width - 1px}) { @content; } }
+@mixin lg { @media (min-width: $lg-width) { @content; } }
+@mixin sm-up { @media (min-width: $sm-width) { @content; } }
+@mixin md-up { @media (min-width: $md-width) { @content; } }
+@mixin sm-down { @media (max-width: #{$md-width - 1px}) { @content; } }
+@mixin md-down { @media (max-width: #{$lg-width - 1px}) { @content; } }
+
+@include xs { // A specialized clearfix which only affects xs layout
+    .clearfix-xs::before { display: table; content: " "; }
+    .clearfix-xs::after { display: table; content: " "; clear: both; }
+}
+
+
 // Colors
 $tactic: #ff9200;       
 $methodology: #b700c2; 
@@ -229,6 +249,7 @@ svg-inline.selected * {
 
 // Fixed header
 $nav-height: 96px;
+$nav-height-small: 72px;
 .fixed-container-wrapper {
     position: fixed;
     z-index: 1000; // XXX: How high is necessary?
@@ -239,6 +260,7 @@ $nav-height: 96px;
     background: white;
     z-index: 1050;
     height: $nav-height;
+    @include xs { height: $nav-height-small; }
 }
 .overlay {
     opacity: 0;
@@ -260,6 +282,7 @@ $nav-height: 96px;
     @include prefix(transition, right $transition linear, webkit moz);
     right: 0;
     margin-top: $nav-height;
+    @include xs { margin-top: $nav-height-small; }
 }
 .logo {
     position: relative;
@@ -267,6 +290,12 @@ $nav-height: 96px;
     top: 8px;
     z-index: 1550;
     display: inline-block;
+    @include xs { 
+        position: absolute;
+        max-width: 200px;
+        left: 78px;
+        top: 10px;
+    }
 }
 
 
@@ -540,6 +569,11 @@ $search-height: 50px;
     @include placeholder {
         font-style: italic;
     }
+    @include xs {
+        height: initial;
+        padding: 6px 12px;
+        padding-top: 12px;
+    }
 }
 
 // Types
@@ -557,8 +591,13 @@ $search-height: 50px;
         padding-top: 7*$margin;
     }
     &.expanded {
-        h3 { padding-top: 3*$margin; }
-        svg { border-right: 0; }
+        h3 { 
+            padding-top: 3*$margin; 
+            @include xs {
+                padding-top: 0;
+            }
+        }
+        //svg { border-right: 0; }
     }
     .definition {
         p { padding-top: $margin; }
@@ -642,6 +681,9 @@ $search-height: 50px;
                 &.selected {
                     opacity: 0;
                 }
+                @include xs {
+                    display: inline-block;
+                }
             }
         }
     }
@@ -656,6 +698,9 @@ $search-height: 50px;
             position: absolute;
             right: 0; top: 3 * $margin;
             width: 100%;
+            @include sm {
+                width: 200%;
+            }
             svg {
                 width: 100%;
                 height: auto;
@@ -723,6 +768,10 @@ $search-height: 50px;
     .tag.selected {
         color: black;
     }
+    @include sm-down {
+        text-align: initial;
+        h3 { display: inline-block; }
+    }
 }
 .gallery-sort, .gallery-list, .gallery-info {
     padding-top: 2 * $margin;
@@ -775,7 +824,7 @@ $search-height: 50px;
         background-size: cover;
         background-position: 50% 50%;
         opacity: 0;
-        @include prefix(transition, opacity .75s ease-in, webkit moz);
+        @include prefix(transition, opacity .5s ease-in, webkit moz);
     }
     .module-overlay {
         background: black;
@@ -786,6 +835,10 @@ $search-height: 50px;
         position: absolute;
         top: 4 * $margin; bottom: 0;
         left: 4 * $margin; right: 0;
+        @include sm-down {
+            top: 2*$margin;
+            left: $margin; right: $margin;
+        }
     }
     .module-snapshot {
         position: absolute;
@@ -808,7 +861,9 @@ $search-height: 50px;
         border-bottom: 2px solid black;
     }
     .module-content {
-        height: 36 * $margin;
+        height: 40 * $margin;
+        @include lg { height: 36*$margin; }
+        @include xs { height: initial; }
     }
     .module-snapshot {
         padding-top: 3 * $margin;
@@ -1066,7 +1121,12 @@ modal {
         border: 2px solid black;
         position: relative;
     }
-    .upper, .lower { padding: 30px 60px; }
+    .upper, .lower { 
+        padding: 30px 60px; 
+        @include sm-down {
+            padding: 20px;
+        }
+    }
     .lower { padding-bottom: 12*$margin; }
     .upper {
         color: white;
@@ -1092,6 +1152,9 @@ modal {
     .close-icon {
         position: absolute;
         right: -25px; top: 25px;
+        @include sm-down {
+            right: 25px;
+        }
     }
     .dismiss p {
         position: relative;

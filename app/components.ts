@@ -246,18 +246,27 @@ export class ContributeComponent {
                             <div class="row">
                                 <div *ngFor="let each of types; let first=first">
                                     <div [routerLink]="['/type', each[0]]" class="clickable">
-                                        <div *ngIf="first" class="type-representation first" [class.expanded]="expanded">
-                                            <div [ngClass]="[expanded ? 'col-xs-3 col-xs-offset-3' : 'col-xs-2 col-xs-offset-1']">
+                                        <div *ngIf="first" class="hidden-xs type-representation first" [class.expanded]="expanded">
+                                            <div [ngClass]="[expanded ? 'col-xs-6 col-sm-3 col-sm-offset-3' : 'col-xs-2 col-xs-offset-1']">
                                                 <h3>{{ each[1] }}</h3>
                                                 <svg-inline class="2rows pattern" src="/assets/patterns/2rows/{{ each[0] }}.svg"></svg-inline>
                                             </div>
-                                            <div *ngIf="expanded" class="col-xs-3"><p class="definition" [innerHTML]="textBySlug.ui.definitions[each[0] + '-short']"></p></div>
+                                            <div *ngIf="expanded" class="col-xs-6 col-sm-3"><p class="definition" [innerHTML]="textBySlug.ui.definitions[each[0] + '-short']"></p></div>
                                             <div *ngIf="expanded" class="clearfix"></div>
                                         </div>
-                                        <div *ngIf="!first" class="type-representation" [class.expanded]="expanded">
-                                            <div [ngClass]="[expanded ? 'col-xs-3' : 'col-xs-2']">
+                                        <div *ngIf="!first" class="hidden-xs type-representation" [class.expanded]="expanded">
+                                            <div [ngClass]="[expanded ? 'col-sm-3' : 'col-sm-2']">
                                                 <h3>{{ each[1] }}</h3>
                                                 <svg-inline class="2rows pattern" src="/assets/patterns/2rows/{{ each[0] }}.svg"></svg-inline>
+                                                <p *ngIf="expanded" class="definition" [innerHTML]="textBySlug.ui.definitions[each[0] + '-short']"></p>
+                                            </div>
+                                        </div>
+                                        <div class="visible-xs type-representation" [class.expanded]="expanded" [class.clearfix]="expanded">
+                                            <div [class.col-xs-6]="expanded">
+                                                <h3>{{ each[1] }}</h3>
+                                                <svg-inline class="2rows pattern" src="/assets/patterns/2rows/{{ each[0] }}.svg"></svg-inline>
+                                            </div>
+                                            <div [class.col-xs-6]="expanded">
                                                 <p *ngIf="expanded" class="definition" [innerHTML]="textBySlug.ui.definitions[each[0] + '-short']"></p>
                                             </div>
                                         </div>
@@ -268,11 +277,11 @@ export class ContributeComponent {
                     </div>
                     <div *ngIf="type">
                         <div *ngIf="expanded">
-                            <div class="col-md-2 type-list">
+                            <div class="col-sm-3 col-md-2 type-list">
                                 <a class="expanded type-link" [routerLink]="['/']">All</a>
                                 <a *ngFor="let each of types" [routerLink]="['/type', each[0]]" [class.selected]="each[0] == type" class="expanded type-link">{{ each[1] }}</a>
                             </div>
-                            <div class="col-md-4 type-pattern">
+                            <div class="col-sm-2 col-md-3 col-lg-4 type-pattern">
                                 <div *ngFor="let each of types" class="expanded">
                                     <div *ngIf="each[0] == type">
                                         <h3>{{ each[1] }}</h3>
@@ -280,8 +289,8 @@ export class ContributeComponent {
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6 type-description">
-                                <p [innerHtml]="textBySlug.ui.definitions[type]"></p>
+                            <div class="col-xs-6 col-sm-7 col-md-7 col-lg-6 type-description">
+                                <div [innerHtml]="textBySlug.ui.definitions[type]"></div>
                                 <div *ngIf="type == 'story'" class="regions">
                                     <h3>Region</h3>
                                     <span *ngFor="let each of ['africa','latin-america-and-the-caribbean','north-america','asia','europe','middle-east','oceania']">
@@ -306,7 +315,7 @@ export class ContributeComponent {
                         </div>
                     </div>
                     <svg-inline *ngIf="!expanded || overrideExpanded" (click)="expanded = overrideExpanded = !expanded" 
-                     [ngClass]="{arrow:true, clickable:true, selected:expanded}" src="/assets/icons/arrow.svg"></svg-inline>
+                     class="hidden-xs arrow clickable" [class.selected]="expanded" src="/assets/icons/arrow.svg"></svg-inline>
                 </div>
             </div>
         </div>
@@ -368,8 +377,7 @@ export class ModuleTypeComponent {
         </div>
         <div class="container">
             <div class="row gallery" [style.margin-top.px]="marginTop">
-                <div [style.position]="sortPosition" class="gallery-sort col-md-3">
-                <div class="gallery-sort-container">
+                <div class="gallery-sort visible-md visible-lg col-md-3">
                     <h3>View As</h3>
                     <div class="row border-top border-bottom view-as">
                         <div class="col-xs-6">
@@ -396,6 +404,17 @@ export class ModuleTypeComponent {
                         <span [routerLink]="['/']" class="gallery-clear clickable"><span class="icon">&#9746;</span> Clear Selection</span>
                     </div>
                 </div>
+                <div class="gallery-sort visible-xs visible-sm">
+                    <h3>View As</h3>
+                    <span class="view-as">
+                        <svg-inline (click)="viewStyle='grid'" [class.selected]="viewStyle == 'grid'" class="clickable" src="/assets/icons/grid.svg"></svg-inline>
+                        <svg-inline (click)="viewStyle='list'" [class.selected]="viewStyle == 'list'" class="clickable" src="/assets/icons/list.svg"></svg-inline>
+                    </span>
+                    <h3>Sort By</h3>
+                    <span class="sort-by">
+                        <span (click)="sortModules('title')" [class.selected]="sortKey == 'title'" class="clickable">Alphabetical</span>
+                        <span (click)="sortModules('timestamp')" [class.selected]="sortKey == 'timestamp'" class="clickable">Newest</span>
+                    </span>
                 </div>
                 <div *ngIf="selectedModules" class="gallery-list col-md-9">
 
@@ -408,8 +427,8 @@ export class ModuleTypeComponent {
                         </div>
                     </div>
 
-                    <div *ngIf="viewStyle == 'grid'" class="row">
-                        <div lazyBackgroundGroup *ngFor="let module of selectedModules" (click)="router.navigate(['/module', module.slug])" class="col-sm-6 col-md-4 gallery-module-grid">
+                    <div lazyBackgroundGroup *ngIf="viewStyle == 'grid'" class="row">
+                        <div *ngFor="let module of selectedModules" (click)="router.navigate(['/module', module.slug])" class="col-xs-6 col-sm-4 gallery-module-grid">
                             <!-- Rethink the structure of this whole section -->
 
                             <div class="make-it-square"></div>
