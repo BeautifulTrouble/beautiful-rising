@@ -73,38 +73,57 @@ export class AccordionToggleDirective {
 
 /* Directive which lazy-loads background images once they've scrolled onscreen
  *
- *  <div lazyBackgroundImages="lazybg">
- *      <div [attr.data-lazybg]="/some/url.png">
+ *  <div lazyBackgroundGroup>
+ *      <div lazyBackground="/some/url.png"></div>
+ *      <div [lazyBackground]="someVariable"></div>
  *      ...
  */
-@Directive({ selector: '[lazyBackgroundImages]'})
-export class LazyBackgroundDirective {
-    constructor(
-        private el: ElementRef,
-        private outside: OutsideAngularService) {
-        this.dataName = 'data-' + (el.nativeElement.getAttribute('lazyBackgroundImages') || 'lazy-background');
-        this.dataSelector = `[${this.dataName}]`;
-    }
+@Directive({ selector: '[lazyBackgroundGroup]'})
+export class LazyBackgroundGroupDirective {
+    elements = [];
+    constructor(private outside: OutsideAngularService) { }
     ngOnInit() {
         this.outside.addEventListener(window, 'scroll', this.lazyLoad);
         this.outside.addEventListener(window, 'resize', this.lazyLoad);
     }
     ngOnDestroy() {
+        this.finished = true;
         this.outside.removeEventListener(window, 'scroll', this.lazyLoad);
         this.outside.removeEventListener(window, 'resize', this.lazyLoad);
     }
-    ngDoCheck() { this.lazyLoad(); }
+    ngDoCheck() {
+        this.finished || this.lazyLoad();
+    }
+    add(element, url) {
+        this.elements.push([element, url]);
+    }
+    remove(element) {
+        _.remove(this.elements, value => value[0] === element);
+        this.elements.length || this.ngOnDestroy();
+    }
     lazyLoad = () => {
-        let elements = this.el.nativeElement.querySelectorAll(this.dataSelector);
-        elements.length || this.ngOnDestroy();
         let threshold = window.innerHeight + 500;
-        for (let el of elements) {
+        for (let [el, url] of this.elements) {
             if (el.getBoundingClientRect().top < threshold) {
                 el.style.opacity = 1;   // Use CSS3 transition to fade in
-                el.style.backgroundImage = `url(${el.getAttribute(this.dataName)})`;
-                el.removeAttribute(this.dataName);
+                el.style.backgroundImage = `url(${url})`;
+                this.remove(el);
             }
         }
+    }
+}
+@Directive({ selector: '[lazyBackground]'})
+export class LazyBackgroundDirective {
+    @Input('lazyBackground') url;
+    constructor(
+        private el: ElementRef,
+        private lazyBackground: LazyBackgroundGroupDirective) {
+    }
+    ngOnInit() {
+        this.lazyBackground.add(this.el.nativeElement, this.url);
+    }
+    ngOnDestroy() {
+        this.lazyBackground.remove(this.el.nativeElement);
     }
 }
 
@@ -264,6 +283,7 @@ export var APP_DIRECTIVES = [
     SectionRouteDirective,
     SectionDirective,
     SizePollingDirective,
+    LazyBackgroundGroupDirective,
     LazyBackgroundDirective
 ];
 
