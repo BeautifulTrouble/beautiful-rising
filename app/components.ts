@@ -948,7 +948,7 @@ export class DetailComponent {
                             -->
                             <div class="menu-section">
                                 <h3>Contact Us</h3>
-                                <p></p>
+                                <a class="email" href="mailto:{{ textBySlug.ui.misc['contact-email'] }}">{{ textBySlug.ui.misc['contact-email'] }}</a>
                                 <a href="{{ textBySlug.ui.misc['twitter-link'] }}" target="_blank" style="color: white"><svg-inline src="/assets/icons/Twitter.svg"></svg-inline></a>
                                 <a href="{{ textBySlug.ui.misc['facebook-link'] }}" target="_blank" style="color: white"><svg-inline src="/assets/icons/facebook.svg"></svg-inline></a>
 

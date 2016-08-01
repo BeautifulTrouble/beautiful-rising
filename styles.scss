@@ -547,6 +547,10 @@ menu {
                 right: 8px; top: 8px;
             }
         }
+        .email {
+            display: block;
+            padding: 12px 0;
+        }
         width: $menu-width;
         padding: 3 * $margin;
         border-top: 2px solid black;
