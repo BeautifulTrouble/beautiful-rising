@@ -1,0 +1,15 @@
+{
+  "port": 7070,
+  "path": "/webhook",
+  "secret": "SECRET",
+  "log": "/home/beautifulrising/beautiful-rising/webhook.log",
+  "rules": [{
+    "event": "push",
+    "match": "ref == \"refs/heads/master\" && repository.name == \"beautiful-rising\"",
+    "exec": "touch /tmp/ok"
+  },{
+    "event": "push",
+    "match": "ref == \"refs/heads/develop\" && repository.name == \"beautiful-rising\"",
+    "exec": "cd ~/beautiful-rising && npm run develop"
+  }]
+}
