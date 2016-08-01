@@ -177,7 +177,7 @@ export class SectionRouteDirective {
     }
     ngAfterViewInit() {
         // TODO: replace with something more elegant than a timeout
-        setTimeout(() => this.setSection(this.route.snapshot.params.section), 2000);
+        setTimeout(() => this.setSection(this.route.snapshot.params.section), 1000);
     }
     add(section, el) {
         this.sections[section] = el;
