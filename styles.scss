@@ -27,11 +27,6 @@ $lg-width: 1200px;
 @mixin sm-down { @media (max-width: #{$md-width - 1px}) { @content; } }
 @mixin md-down { @media (max-width: #{$lg-width - 1px}) { @content; } }
 
-@include xs { // A specialized clearfix which only affects xs layout
-    .clearfix-xs::before { display: table; content: " "; }
-    .clearfix-xs::after { display: table; content: " "; clear: both; }
-}
-
 
 // Colors
 $tactic: #ff9200;       
@@ -1499,6 +1494,10 @@ modal {
         @include xs {
             margin-top: -18px;
         }
+    }
+    .pdf {
+        pointer-events: none;
+        opacity: .25;
     }
 }
 .contribute {
