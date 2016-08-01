@@ -3,8 +3,12 @@
   "version": "0.0.1",
   "scripts": {
     "start": "webpack-dev-server --watch-poll --inline --progress --port 8080",
-    "build": "rimraf dist && webpack --config config/webpack.prod.js --progress --profile --bail && ln -s ../assets dist/assets",
-    "postinstall": "typings install"
+    "postinstall": "typings install",
+
+    "master": "env BRANCH=master npm run _build",
+    "develop": "env BRANCH=develop npm run _build",
+    "_build": "git checkout $BRANCH && git pull && npm run _webpack && ln -s ../assets dist/assets && rm -rf $BRANCH && mv dist $BRANCH",
+    "_webpack": "webpack --config config/webpack.prod.js --progress --profile --bail"
   },
   "license": "ISC",
   "dependencies": {
