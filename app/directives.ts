@@ -87,19 +87,17 @@ export class LazyBackgroundGroupDirective {
         this.outside.addEventListener(window, 'resize', this.lazyLoad);
     }
     ngOnDestroy() {
-        this.finished = true;
         this.outside.removeEventListener(window, 'scroll', this.lazyLoad);
         this.outside.removeEventListener(window, 'resize', this.lazyLoad);
     }
     ngDoCheck() {
-        this.finished || this.lazyLoad();
+        this.lazyLoad();
     }
     add(element, url) {
         this.elements.push([element, url]);
     }
     remove(element) {
         _.remove(this.elements, value => value[0] === element);
-        this.elements.length || this.ngOnDestroy();
     }
     lazyLoad = () => {
         let threshold = window.innerHeight + 500;
