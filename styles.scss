@@ -597,31 +597,44 @@ $search-height: 50px;
 // Types
 .type-representation {
     text-align: left;
-    > div {
-        padding-top: $margin;
+    > div { 
+        padding-top: $margin; 
+    }
+    svg { 
+        max-width: 100%; 
+    }
+    &.first p.definition { 
+        padding-top: 7*$margin; 
+    }
+    &.expanded h3 { 
+        padding-top: 3*$margin; 
     }
     h3 {
         margin-top: 0;
         margin-bottom: 2px;
     }
-    svg { max-width: 100%; }
-    &.first p.definition {
-        padding-top: 7*$margin;
-    }
-    &.expanded {
-        h3 { 
-            padding-top: 3*$margin; 
-            @include xs {
-                padding-top: 0;
-            }
-        }
-        //svg { border-right: 0; }
-    }
     .definition {
         p { padding-top: $margin; }
-        @include xs {
-            font-size: 12px;
-            line-height: 18px;
+    }
+    @include xs {
+        > div { 
+            padding-top: 0; 
+        }
+        svg-inline.onerow { 
+            position: absolute;
+        }
+        svg-inline.tworows svg { 
+            height: 40px;
+        }
+        h3 { 
+            padding-top: 6px; 
+        }
+        .definition p { 
+            font-size: 10px;
+            line-height: 15px;
+            margin-left: -6px;
+            margin-right: -12px;
+            padding-top: 12px;
         }
     }
 }
@@ -713,7 +726,7 @@ $search-height: 50px;
         }
     }
     .regions {
-        @include xs {
+        @include sm-down {
             svg { width: 36px; }
             padding: 0 !important;
         }
@@ -746,6 +759,9 @@ $search-height: 50px;
             padding-bottom: 4px;
             margin-bottom: 36px;
             width: 50%;
+            @include sm-down {
+                margin-bottom: 12px;
+            }
         }
         h3::before {
             content: '';
@@ -1323,6 +1339,10 @@ modal {
     }
     .person {
         height: 500px;  // TODO: make responsive;
+        @include xs { 
+            height: initial; 
+            margin-bottom: 36px;
+        }
         p {
             margin-top: 4 * $margin;
             margin-right: 4 * $margin;
@@ -1372,6 +1392,7 @@ modal {
             }
         }
         .step-circle::after {
+            @include sm-down { display: none; }
             content: "";
             border: 1px solid black;
             position: absolute;
@@ -1399,9 +1420,12 @@ modal {
         }
     }
     .beautiful-trouble-and-action-aid {
-        .blurb { min-height: 12 * $margin; }
+        .blurb { 
+            min-height: 12 * $margin; 
+            margin-top: 36px;
+        }
         .introduction { 
-            padding-bottom: 6 * $margin; 
+            margin-bottom: 36px;
             text-align: center; 
         }
     }
@@ -1435,7 +1459,7 @@ modal {
         background-size: contain;
         background-repeat: no-repeat;
         background-position: 50% 50%;
-        @include xs {
+        @include sm-down {
             padding-top: 80%;
         }
     }
@@ -1450,7 +1474,7 @@ modal {
         position: relative;
         top: 28px;
         svg * { fill: $darkgray !important; }
-        @include xs {
+        @include sm-down {
             float: none;
             top: -6px;
         }

@@ -36,13 +36,13 @@ export class AboutInnerComponent {
     selector: 'about',
     template: `
         <div *ngIf="textBySlug" class="container page" addSectionToRoute="/about" thresholdElement="#fixed-nav" thresholdOffset="10">
-            <div class="row">
-                <div class="page-heading">
+            <div class="row page-heading">
+                <div class="col-xs-12">
                     <h3>{{ textBySlug.about.misc.heading }}</h3>
                     <p>{{ textBySlug.about.heading.introduction }}</p>
                 </div>
-                <about-inner [config]="config" [textBySlug]="textBySlug" [peopleBySlug]="peopleBySlug" [useAccordion]="false"></about-inner>
             </div>
+            <about-inner [config]="config" [textBySlug]="textBySlug" [peopleBySlug]="peopleBySlug" [useAccordion]="false"></about-inner>
         </div>
     `,
     directives: [ AboutInnerComponent, APP_DIRECTIVES, ROUTER_DIRECTIVES ]
@@ -115,27 +115,31 @@ export class ModalComponent {
     template: `
         <div *ngIf="textBySlug" addSectionToRoute="/platforms" thresholdElement="#fixed-nav" thresholdOffset="10" class="container page platforms">
             <div class="row">
-                <div class="col-xs-12 page-heading">
-                    <h3 class="heading">{{ textBySlug.platforms.misc.heading }}</h3>
-                </div>
-                <section *ngFor="let p of ['chatbot', 'game', 'pdf']" class="{{ p }}" name="{{ p }}">
-                    <div class="col-md-1"><svg-inline src="/assets/icons/{{ p }}.svg"></svg-inline></div>
-                    <div class="col-md-4 platform">
-                        <h3 class="overline title">{{ textBySlug.platforms[p].title }}</h3> 
-                        <h4 class="subheading">{{ textBySlug.platforms[p].introduction }}</h4>
-                        <div class="what">
-                            <h4>{{ textBySlug.platforms.misc.what }}</h4>
-                            <div [innerMarkdown]="textBySlug.platforms[p].what"></div>
-                        </div>
-                        <div class="how">
-                            <h4>{{ textBySlug.platforms.misc.how }}</h4>
-                            <div [innerMarkdown]="textBySlug.platforms[p].how"></div>
-                        </div>
-                        <div class="links" [innerMarkdown]="textBySlug.platforms[p].get"></div>
+                <div class="col-xs-12">
+                    <div class="page-heading">
+                        <h3 class="heading">{{ textBySlug.platforms.misc.heading }}</h3>
                     </div>
-                    <div class="col-md-7 platform-image" [style.background-image]="sanitizer.bypassSecurityTrustStyle('url(/' + textBySlug.platforms[p].image + ')')"></div>
-                    <div class="clearfix"></div>
-                </section>
+                    <section *ngFor="let p of ['chatbot', 'game', 'pdf']" class="{{ p }}" name="{{ p }}">
+                        <div class="row">
+                            <div class="col-md-1"><svg-inline src="/assets/icons/{{ p }}.svg"></svg-inline></div>
+                            <div class="col-md-4 platform">
+                                <h3 class="overline title">{{ textBySlug.platforms[p].title }}</h3> 
+                                <h4 class="subheading">{{ textBySlug.platforms[p].introduction }}</h4>
+                                <div class="what">
+                                    <h4>{{ textBySlug.platforms.misc.what }}</h4>
+                                    <div [innerMarkdown]="textBySlug.platforms[p].what"></div>
+                                </div>
+                                <div class="how">
+                                    <h4>{{ textBySlug.platforms.misc.how }}</h4>
+                                    <div [innerMarkdown]="textBySlug.platforms[p].how"></div>
+                                </div>
+                                <div class="links" [innerMarkdown]="textBySlug.platforms[p].get"></div>
+                            </div>
+                            <div class="col-md-7 platform-image" [style.background-image]="sanitizer.bypassSecurityTrustStyle('url(/' + textBySlug.platforms[p].image + ')')"></div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </section>
+                </div>
             </div>
         </div>
     `,
@@ -197,10 +201,10 @@ export class ResourcesComponent {
                     <div class="clickable types" *ngFor="let each of types; let first=first" (click)="activeType = each[0]">
                         <div [ngClass]="first ? 'col-xs-2 col-md-offset-1' : 'col-xs-2'">
                             <h3>{{ textBySlug.ui.types[each[1]] }}</h3>
-                            <svg-inline class="2rows pattern" src="/assets/patterns/2rows/{{ each[0] }}.svg"></svg-inline>
+                            <svg-inline class="tworows pattern" src="/assets/patterns/2rows/{{ each[0] }}.svg"></svg-inline>
                             <div class="description" [class.active]="activeType == each[0]">
                                 <div [innerHTML]="textBySlug.ui.definitions[each[0] + '-short']"></div>
-                                <div class="links">Go to form</div>
+                                <div class="links"><a href="{{ textBySlug.ui.forms[each[0]] }}" target="_blank">Go to form</a></div>
                             </div>
                         </div>
                     </div>
@@ -247,10 +251,12 @@ export class ContributeComponent {
                             <div class="row">
                                 <div *ngFor="let each of types; let first=first">
                                     <div [routerLink]="['/type', each[0]]" class="clickable">
+
+                                        <!-- larger -->
                                         <div *ngIf="first" class="hidden-xs type-representation first" [class.expanded]="expanded">
                                             <div [ngClass]="[expanded ? 'col-xs-6 col-sm-3 col-sm-offset-3' : 'col-xs-2 col-xs-offset-1']">
                                                 <h3>{{ each[1] }}</h3>
-                                                <svg-inline class="2rows pattern" src="/assets/patterns/2rows/{{ each[0] }}.svg"></svg-inline>
+                                                <svg-inline class="tworows pattern" src="/assets/patterns/2rows/{{ each[0] }}.svg"></svg-inline>
                                             </div>
                                             <div *ngIf="expanded" class="col-xs-6 col-sm-3"><p class="definition" [innerHTML]="textBySlug.ui.definitions[each[0] + '-short']"></p></div>
                                             <div *ngIf="expanded" class="clearfix"></div>
@@ -258,19 +264,23 @@ export class ContributeComponent {
                                         <div *ngIf="!first" class="hidden-xs type-representation" [class.expanded]="expanded">
                                             <div [ngClass]="[expanded ? 'col-sm-3' : 'col-sm-2']">
                                                 <h3>{{ each[1] }}</h3>
-                                                <svg-inline class="2rows pattern" src="/assets/patterns/2rows/{{ each[0] }}.svg"></svg-inline>
+                                                <svg-inline class="tworows pattern" src="/assets/patterns/2rows/{{ each[0] }}.svg"></svg-inline>
                                                 <p *ngIf="expanded" class="definition" [innerHTML]="textBySlug.ui.definitions[each[0] + '-short']"></p>
                                             </div>
                                         </div>
-                                        <div class="visible-xs type-representation" [class.expanded]="expanded" [class.clearfix]="expanded">
-                                            <div [class.col-xs-6]="expanded">
+
+                                        <!-- smaller -->
+                                        <div class="visible-xs type-representation" [class.expanded]="expanded" [class.clearfix]="true">
+                                            <div [ngClass]="[expanded ? 'col-xs-5 col-xs-offset-1' : 'col-xs-5 col-xs-offset-1']">
                                                 <h3>{{ each[1] }}</h3>
-                                                <svg-inline *ngIf="expanded" class="2rows pattern" src="/assets/patterns/2rows/{{ each[0] }}.svg"></svg-inline>
+                                                <svg-inline *ngIf="expanded" class="tworows pattern" src="/assets/patterns/2rows/{{ each[0] }}.svg"></svg-inline>
                                             </div>
-                                            <div [class.col-xs-6]="expanded">
+                                            <div [ngClass]="[expanded ? 'col-xs-5' : 'col-xs-4']">
                                                 <p *ngIf="expanded" class="definition" [innerHTML]="textBySlug.ui.definitions[each[0] + '-short']"></p>
+                                                <svg-inline *ngIf="!expanded" class="onerow pattern" src="/assets/patterns/1row/{{ each[0] }}.svg"></svg-inline>
                                             </div>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -681,12 +691,13 @@ export class GalleryComponent {
                         </div>
                     </div>
 
-                    <div class="col-xs-12 col-sm-8 col-sm-offset-4 col-md-5 col-lg-offset-1 content">
+                    <div class="col-xs-12 col-sm-8 col-sm-offset-4 col-md-5 col-md-offset-0 col-lg-offset-1 content">
                         <div *ngIf="snapshot">
                             <p [innerHTML]="module.snapshot"></p>
                             <p><strong>Hey, this isn't written yet but people like you are likely using it in all kinds of ways. Do you have insights to share on how to use this theory? Go ahead and share them through the form below...</strong></p>
                             <div class="row">
-                                <div *ngIf="module['bt-link']" class="col-sm-6"><a href="{{ module['bt-link'] }}" target="_blank"><h4>See &rdquo;{{ module.title }}&ldquo; in <em>Beautiful Trouble</em></h4></a></div>
+                                <div class="col-xs-6"><a href="{{ textBySlug.ui.forms[module.type] }}" target="_blank"><h4>Go to form</h4></a></div>
+                                <div *ngIf="module['bt-link']" class="col-xs-6"><a href="{{ module['bt-link'] }}" target="_blank"><h4>See &rdquo;{{ module.title }}&ldquo; in <em>Beautiful Trouble</em></h4></a></div>
                             </div>
                         </div>
                         <div *ngIf="!snapshot">
@@ -910,11 +921,13 @@ export class DetailComponent {
                                 <h3 class="clickable" (click)="nav(['/contribute'])">Contribute</h3>
                                 <p class="clickable" (click)="nav(['/contribute', 'how-it-works'])">How does it work?</p>
                             </div>
+                            <!--
                             <div class="menu-section">
                                 <h3 class="clickable" (click)="nav(['/resources'])">Training + Resources</h3>
                                 <p class="clickable" (click)="nav(['/resources', 'training'])">Request a Training</p>
                                 <p class="clickable" (click)="nav(['/resources', 'other'])">Other Resources</p>
                             </div>
+                            -->
                             <div class="menu-section">
                                 <h3>Contact Us</h3>
                                 <p></p>
