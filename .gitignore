@@ -4,5 +4,7 @@ app/**/*.js
 app/**/*.map
 assets/content
 dist/
+develop/
+master/
 *.swp
 *.log
