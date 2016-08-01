@@ -951,11 +951,14 @@ export class DetailComponent {
                                 <p></p>
                                 <a href="{{ textBySlug.ui.misc['twitter-link'] }}" target="_blank" style="color: white"><svg-inline src="/assets/icons/Twitter.svg"></svg-inline></a>
                                 <a href="{{ textBySlug.ui.misc['facebook-link'] }}" target="_blank" style="color: white"><svg-inline src="/assets/icons/facebook.svg"></svg-inline></a>
+
+                                <!--
                                 <p class="subscribe-note">Subscribe to our newsletter</p>
-                                <div class="wrapper">
+                                <div class="form-wrapper">
                                     <input placeholder="{{ textBySlug.ui.misc['placeholder-email'] }}">
                                     <span class="submit clickable">Submit</span>
                                 </div>
+                                -->
                             </div>
                         </div>
                     </div>
