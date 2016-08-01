@@ -869,7 +869,7 @@ export class DetailComponent {
                 this.title.setTitle(this.module['title']);
                 window.scrollTo(0,0);
 
-                console.log(this.module);
+                isDevMode() && console.log(this.module);
             });
         });
     }
