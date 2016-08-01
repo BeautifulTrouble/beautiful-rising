@@ -6,5 +6,6 @@ assets/content
 dist/
 develop/
 master/
+webhook.json
 *.swp
 *.log
