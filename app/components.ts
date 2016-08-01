@@ -56,7 +56,7 @@ export class AboutComponent {
 @Component({
     selector: 'modal',
     template: `
-        <div class="fixed-container-wrapper"
+        <div class="hidden-xs fixed-container-wrapper"
          *ngIf="textBySlug && !(dismissedExplicitly || dismissedImplicitly)"
          #wrapper
          [style.margin-right.px]="-50" 
@@ -199,12 +199,20 @@ export class ResourcesComponent {
                         <h4 class="heading">{{ textBySlug.contribute.misc.prompt }}</h4>
                     </div>
                     <div class="clickable types" *ngFor="let each of types; let first=first" (click)="activeType = each[0]">
-                        <div [ngClass]="first ? 'col-xs-2 col-md-offset-1' : 'col-xs-2'">
+                        <div [ngClass]="first ? 'col-xs-6 col-sm-4 col-md-2 col-md-offset-1' : 'col-xs-6 col-sm-4 col-md-2'">
                             <h3>{{ textBySlug.ui.types[each[1]] }}</h3>
                             <svg-inline class="tworows pattern" src="/assets/patterns/2rows/{{ each[0] }}.svg"></svg-inline>
-                            <div class="description" [class.active]="activeType == each[0]">
-                                <div [innerHTML]="textBySlug.ui.definitions[each[0] + '-short']"></div>
-                                <div class="links"><a href="{{ textBySlug.ui.forms[each[0]] }}" target="_blank">Go to form</a></div>
+                            <div class="visible-md visible-lg">
+                                <div [class.active]="activeType == each[0]" class="description">
+                                    <div [innerHTML]="textBySlug.ui.definitions[each[0] + '-short']"></div>
+                                    <div class="links"><a href="{{ textBySlug.ui.forms[each[0]] }}" target="_blank">Go to form</a></div>
+                                </div>
+                            </div>
+                            <div class="visible-xs visible-sm">
+                                <div class="description active">
+                                    <div [innerHTML]="textBySlug.ui.definitions[each[0] + '-short']"></div>
+                                    <div class="links"><a href="{{ textBySlug.ui.forms[each[0]] }}" target="_blank">Go to form</a></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -380,7 +388,9 @@ export class ModuleTypeComponent {
         <div class="fixed-container-wrapper">
             <div class="container">
                 <div class="row">
-                    <input [(ngModel)]="query" (ngModelChange)="filterModules()" class="search-box" 
+                    <input [(ngModel)]="query" (ngModelChange)="filterModules()" class="search-box visible-xs visible-sm" 
+                     placeholder="Search for keywords, ex: legislation, state repression, etc...">
+                    <input [(ngModel)]="query" (ngModelChange)="filterModules()" class="search-box visible-md visible-lg" 
                      placeholder="Search for keywords, ex: legislation, state repression, etc..." autofocus>
                 </div>
                 <module-types (resized)="marginTop = $event" [region]="region" [type]="type" [textBySlug]="textBySlug" [modulesByRegion]="modulesByRegion"></module-types>
@@ -541,7 +551,7 @@ export class GalleryComponent {
         }
         if (this.query) {
             history.replaceState(null, null, '/search/' + this.query);
-            this.tag = null;
+            this.type = this.tag = null;
             this.viewStyle = 'list';
             // Allow queries like "authors!andrew-boyd" which search a specific field
             var prefix = this.query.split(/\s*!\s*/)[0];
@@ -749,7 +759,7 @@ export class GalleryComponent {
                             </div>
                         </div>
                     </div>
-                    <div class="col-xs-12 col-md-4 column-b">
+                    <div class="col-xs-12 col-sm-5 col-md-4 column-b">
                         <div *ngIf="module['potential-risks']" (click)="riskCollapsed = !riskCollapsed" [ngClass]="{risks:true, clickable:module['potential-risks-short']}">
                             <div class="heading">
                                 <svg-inline src="/assets/icons/pr.svg" [ngClass]="'type-' + module.type"></svg-inline>
@@ -788,6 +798,14 @@ export class GalleryComponent {
                                     </li></ul>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-sm-offset-1 col-md-4 col-md-offset-0 column-b visible-xs visible-sm">
+                        <div *ngIf="module.tags">
+                            <h3 class="border-bottom">Tags</h3>
+                            <span *ngFor="let tag of module.tags; let last=last">
+                                <a [routerLink]="['/tag', slugify(tag)]" class="tag">{{ tag }}</a><strong *ngIf="!last"> / </strong>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -892,7 +910,7 @@ export class DetailComponent {
             <h4>Menu</h4>
         </div>
         <div *ngIf="visible">
-            <div (click)="visible = false" class="overlay" [class.visible]="visible"></div>
+            <div (click)="visible = !visible" class="overlay" [class.visible]="visible"></div>
             <div class="menu-outer">
                 <div class="menu">
                     <div #menu class="menu-inner">
@@ -958,8 +976,8 @@ export class MenuComponent {
 
     constructor(private router: Router) { }
     nav(linkParam) {
-        this.visible = false;
         this.router.navigate(linkParam);
+        this.visible = false;
     }
     onScroll() {
         var scrollTop = document.body.scrollTop;

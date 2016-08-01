@@ -41,22 +41,23 @@
                 <div class="content">
                     <div *ngFor="let item of textBySlug.about.process" [ngSwitch]="item.type">
                         <div *ngSwitchCase="'steps'" class="row">
-                            <div *ngFor="let step of item.value; let last=last" class="col-sm-6 col-md-3 steps">
-                                <div class="step-circle" [class.last]="last">
+                            <div *ngFor="let step of item.value; let first=first; let last=last" class="col-sm-6 col-md-3 steps">
+                                <div class="step-circle" [class.first]="first" [class.last]="last">
                                     <svg-inline src="{{ config['asset-path'] + '/' + step.image }}"></svg-inline>
                                 </div>
                                 <h3>{{ step.title }}</h3>
-                                <div [innerMarkdown]="step.description"></div>
+                                <div class="description" [innerMarkdown]="step.description"></div>
                             </div>
                         </div>
                         <h4 *ngSwitchCase="'subheading'" class="subheading">{{ item.value }}</h4>
                         <div *ngSwitchCase="'workshops'" class="row">
-                            <div *ngFor="let workshop of textBySlug['workshop-participants'].groups; let index=index" 
-                             [class.col-md-offset-3]="index == 4" class="col-sm-6 col-md-3 workshop-list">
-                                <div class="img-wrapper"><img src="/assets/icons/{{ workshop.name }}.png"></div>
-                                <h3 class="overline">{{ item.value[workshop.name] }}</h3>
-                                <ul><li *ngFor="let participant of workshop.participants">{{ participant }}</li></ul>
-                                <!--<div *ngIf="index && index % 2" class="clearfix"></div> TODO: this is awkward -->
+                            <div *ngFor="let workshop of textBySlug['workshop-participants'].groups; let index=index">
+                                <div [class.col-md-offset-3]="index == 4" class="col-sm-6 col-md-3 workshop-list">
+                                    <div class="img-wrapper"><img src="/assets/icons/{{ workshop.name }}.png"></div>
+                                    <h3 class="overline">{{ item.value[workshop.name] }}</h3>
+                                    <ul><li *ngFor="let participant of workshop.participants">{{ participant }}</li></ul>
+                                </div>
+                                <div *ngIf="index && index % 2" class="clearfix visible-sm"></div>
                             </div>
                         </div>
                     </div>

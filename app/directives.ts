@@ -176,7 +176,8 @@ export class SectionRouteDirective {
         this.sub && this.sub.unsubscribe();
     }
     ngAfterViewInit() {
-        this.setSection(this.route.snapshot.params.section);
+        // TODO: replace with something more elegant than a timeout
+        setTimeout(() => this.setSection(this.route.snapshot.params.section), 2000);
     }
     add(section, el) {
         this.sections[section] = el;
@@ -186,10 +187,16 @@ export class SectionRouteDirective {
     }
     setSection(section) {
         var sectionEl = this.sections[section];
+        var position = 0;
         if (sectionEl) {
-            this.currentlyNavigating = true;
-            window.scrollTo(0, sectionEl.offsetTop - this.thresholdOffset);
+            position = document.body.scrollTop + sectionEl.getBoundingClientRect().top - this.thresholdOffset;
+            if (this.thresholdElement) {
+                var tEl = document.querySelector(this.thresholdElement);
+                if (tEl) position -= tEl.getBoundingClientRect().bottom;
+            }
         }
+        this.currentlyNavigating = true;
+        window.scrollTo(0, position);
     }
     @HostListener('window:scroll') onScroll() {
         if (this.currentlyNavigating) return this.currentlyNavigating = false;

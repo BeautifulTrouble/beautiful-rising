@@ -14,6 +14,7 @@ import { slugify } from './utilities';
 
 
 // Cache and share the results of Http requests to the same url
+// XXX: Doesn't currently check options; use {reload: true} to force reload
 @Injectable()
 export class CachedHttpService {
     static cache = {};
@@ -22,8 +23,11 @@ export class CachedHttpService {
     get(url, options) {
         var observable;
         options = options || {};
-        if (options.reload) { delete options.reload; }
-        else { observable = CachedHttpService.cache[url]; }
+        if (options.reload) {
+            delete options.reload;
+        } else {
+            observable = CachedHttpService.cache[url];
+        }
         if (!observable) {
             observable = CachedHttpService.cache[url] = this.http.get(url, options)
                 .publishLast()

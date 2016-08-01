@@ -675,7 +675,7 @@ $search-height: 50px;
     &.expanded::before {
         content: '';
         position: absolute;
-        border: 1px solid black;
+        border-left: 1px solid black;
         height: 40px; width: 0;
         left: 51%; top: 95%;
     }
@@ -1137,7 +1137,7 @@ detail {
             }
         }
         .related {
-            padding: 4 * $margin;
+            padding: 24px;
             padding-top: $margin;
             background: $lightergray;
             h3 {
@@ -1150,6 +1150,9 @@ detail {
             li {
                 font-weight: bold;
                 padding: 2px 0;
+            }
+            @include xs {
+                padding: 6px 24px 24px 0;
             }
         }
     }
@@ -1377,6 +1380,7 @@ modal {
             padding: 12px 0;
             margin-bottom: 40px;
             img { max-height: 120px; }
+            @include sm-down { margin-top: 36px; }
         }
         .step-circle {
             width: 65%; padding-top: 65%;
@@ -1390,6 +1394,10 @@ modal {
                 z-index: 1;
                 svg * { fill: black; }
             }
+            @include sm-down {
+                margin-right: 17.5%;
+                margin-left: 17.5%;
+            }
         }
         .step-circle::after {
             @include sm-down { display: none; }
@@ -1401,6 +1409,9 @@ modal {
         }
         .step-circle.last::after {
             content: initial;
+        }
+        .steps .description {
+            margin-bottom: 36px;
         }
     }
     .values, .faq {
@@ -1431,7 +1442,7 @@ modal {
     }
     .partners {
         .partner {
-            padding-bottom: 48px;
+            padding-bottom: 36px;
         }
         .partner-logo {
             height: 160px;
@@ -1484,7 +1495,10 @@ modal {
         h4 { padding-bottom: $margin; }
     }
     .overline::before {
-        margin-top: -20px;
+        margin-top: -6px;
+        @include xs {
+            margin-top: -18px;
+        }
     }
 }
 .contribute {
@@ -1511,10 +1525,14 @@ modal {
             top: -8 * $margin;
             left: 50%;
             height: 6 * $margin;
-            border: 1px solid black;
+            border-left: 1px solid black;
         }
         .active.description { 
             display: inline-block; 
+        }
+        @include sm-down {
+            >div { height: 250px; }
+            //.description::before { display: none; }
         }
     }
 }
@@ -1527,7 +1545,7 @@ modal {
     position: absolute;
     bottom: 0; top: 0;
     left: 50%;
-    border: 1px solid black;
+    border-left: 1px solid black;
 }
 
 
