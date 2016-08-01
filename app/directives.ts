@@ -176,8 +176,8 @@ export class SectionRouteDirective {
         this.sub && this.sub.unsubscribe();
     }
     ngAfterViewInit() {
-        // TODO: replace with something more elegant than a timeout
-        setTimeout(() => this.setSection(this.route.snapshot.params.section), 1000);
+        // TODO: If this is called before the page is ready, the positioning is slightly off
+        this.setSection(this.route.snapshot.params.section);
     }
     add(section, el) {
         this.sections[section] = el;
