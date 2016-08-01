@@ -28,6 +28,12 @@ $lg-width: 1200px;
 @mixin md-down { @media (max-width: #{$lg-width - 1px}) { @content; } }
 
 
+body {
+    @include xs { background: lightblue; }
+    @include sm { background: lightgreen; }
+    @include md { background: pink; }
+}
+
 // Colors
 $tactic: #ff9200;       
 $methodology: #b700c2; 
