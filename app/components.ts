@@ -543,6 +543,7 @@ export class GalleryComponent {
         this.sub && this.sub.unsubscribe();
     }
     filterModules() {
+        if (!this.ready) return;
         // Detect the blank (as opposed to null) query
         if (!this.query && this.query !== null) {
             history.replaceState(null, null, '');
@@ -582,6 +583,7 @@ export class GalleryComponent {
         this.sortModules();
     }
     sortModules(key) {
+        // Mutates selectedModules, which is what is directly displayed
         if (key) this.sortKey = key;
         this.selectedModules = _.orderBy(this.selectedModules, this.sortKey, this.sortKey == 'timestamp' ? 'desc' : 'asc');
     }

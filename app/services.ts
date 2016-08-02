@@ -87,7 +87,7 @@ export class ContentService {
                     .catch(err => Observable.throw("Couldn't fetch API content!"))
                     .subscribe(content => {
                         // Prepare the content for easy consumption by components
-                        let output:any = {}
+                        let output:any = {ready: true}
                         output.content = content;
                         output.config = _.find(content, {'type': 'config', 'slug': 'api'});
                         // Bundle content into types
