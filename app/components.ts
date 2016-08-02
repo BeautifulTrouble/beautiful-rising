@@ -642,7 +642,7 @@ export class GalleryComponent {
                         <h3 class="border-bottom bigger contributed-by">Contributed by</h3>
                         <div *ngFor="let author of authors" >
                             <a [routerLink]="['/search', 'authors!' + author.slug]">
-                                <div class="contributor-image" [ngStyle]="{'background-image': author.image ? 'url('+config['asset-path']+'/'+author.image+')' : ''}"></div>
+                                <div class="contributor-image" [ngStyle]="{'background-image': author.image ? 'url('+config['asset-path']+'/small-'+author.image+')' : ''}"></div>
                                 <div class="contributor-name">
                                     <h4 class="first">{{ author.firstname }}</h4>
                                     <h4 class="last">{{ author.lastname }}</h4>
@@ -672,7 +672,7 @@ export class GalleryComponent {
                         <div *ngFor="let author of authors">
                             <div class="col-xs-12 col-sm-4">
                                 <a [routerLink]="['/search', 'authors!' + author.slug]">
-                                    <div class="contributor-image" [ngStyle]="{'background-image': author.image ? 'url('+config['asset-path']+'/'+author.image+')' : ''}"></div>
+                                    <div class="contributor-image" [ngStyle]="{'background-image': author.image ? 'url('+config['asset-path']+'/small-'+author.image+')' : ''}"></div>
                                 </a>
                             </div>
                             <div class="col-xs-12 col-sm-8">

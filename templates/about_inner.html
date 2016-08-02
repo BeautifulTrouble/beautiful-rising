@@ -94,7 +94,7 @@
                     <div class="row network-members">
                         <div *ngFor="let member of textBySlug.about['network-members']" class="col-xs-12 col-sm-6 col-md-4 person">
                             <div *ngIf="peopleBySlug[member]">
-                                <div class="person-image" [style.background-image]="'url('+config['asset-path']+'/'+peopleBySlug[member].image+')'"></div>
+                                <div class="person-image" [style.background-image]="'url('+config['asset-path']+'/small-'+peopleBySlug[member].image+')'"></div>
                                 <h4>{{ peopleBySlug[member].title }}</h4>
                                 <h5 *ngIf="peopleBySlug[member]['team-title']" class="team-title">{{ peopleBySlug[member]['team-title'] }}</h5>
                                 <div *ngIf="peopleBySlug[member]['team-bio']" [innerMarkdown]="peopleBySlug[member]['team-bio']" class="team-bio"></div>
@@ -112,7 +112,7 @@
                     <div class="row team-members">
                         <div *ngFor="let member of textBySlug.about['team-members']" class="col-xs-12 col-sm-6 col-md-4 person">
                             <div *ngIf="peopleBySlug[member]">
-                                <div class="person-image" [style.background-image]="'url('+config['asset-path']+'/'+peopleBySlug[member].image+')'"></div>
+                                <div class="person-image" [style.background-image]="'url('+config['asset-path']+'/small-'+peopleBySlug[member].image+')'"></div>
                                 <h4>{{ peopleBySlug[member].title }}</h4>
                                 <h5 *ngIf="peopleBySlug[member]['team-title']" class="team-title">{{ peopleBySlug[member]['team-title'] }}</h5>
                                 <div *ngIf="peopleBySlug[member]['team-bio']" [innerMarkdown]="peopleBySlug[member]['team-bio']" class="team-bio"></div>
@@ -152,10 +152,10 @@
                         <div *ngFor="let partner of textBySlug.about['network-partners']" class="col-xs-12 col-sm-4">
                             <div class="partner">
                                 <a *ngIf="partner.link" href="{{ partner.link }}" target="_blank">
-                                    <div class="partner-logo" [style.background-image]="'url(' + config['asset-path'] + '/' + partner.logo + ')'"></div>
+                                    <div class="partner-logo" [style.background-image]="'url(' + config['asset-path'] + '/small-' + partner.logo + ')'"></div>
                                 </a>
                                 <div *ngIf="!partner.link" class="img-wrapper">
-                                    <div class="partner-logo" [style.background-image]="'url(' + config['asset-path'] + '/' + partner.logo + ')'"></div>
+                                    <div class="partner-logo" [style.background-image]="'url(' + config['asset-path'] + '/small-' + partner.logo + ')'"></div>
                                 </div>
                                 <a *ngIf="partner.link" href="{{ partner.link }}" target="_blank">
                                     <h5 class="overline">{{ partner.name }}</h5>
