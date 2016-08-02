@@ -1124,7 +1124,7 @@ export class ToolsComponent {
                                 <div class="hr"></div>
                                 <div class="col-md-8 col-md-offset-2">
                                     <img src="/assets/icons/Creative_Commons.svg">
-                                    <p>Beautiful Rising by Beautiful Rising, various authors is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License. Permissions beyond the scope of this license may be available at beautifulrising.org.</p>
+                                    <div *ngIf="textBySlug" [innerMarkdown]="textBySlug.ui.footer"></div>
                                 </div>
                             </div>
                         </div>
@@ -1164,8 +1164,8 @@ export class AppComponent {
         this.contentService.language = this.language;
         // Get the content
         this.contentService.injectContent(this);
-        this.setToolsOffset = _.throttle(this.setToolsOffset, 100);
-        this.setToolsOffset();
+        //this.setToolsOffset = _.throttle(this.setToolsOffset, 100);
+        //this.setToolsOffset();
     }
     setToolsOffset() {
         return;
