@@ -86,10 +86,7 @@ export class AboutComponent {
     directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES, AboutInnerComponent ]
 })
 export class ModalComponent {
-    // Uncomment this when we're ready to have the modal *really* show up only once. 
-    // Maybe set a timestamp value each time the site is visited and re-show if some time has passed?
-    //@LocalStorage() dismissedExplicitly;
-    dismissedExplicitly;
+    @LocalStorage() dismissedExplicitly;
     dismissedImplicitly;
     constructor(
         private router: Router,
