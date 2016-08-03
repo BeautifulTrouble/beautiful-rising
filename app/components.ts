@@ -709,6 +709,9 @@ export class GalleryComponent {
                             <div *ngIf="collapsed">
                                 <div class="short-write-up" [innerHTML]="module['short-write-up']"></div>
                                 <h5 *ngIf="!gallery" (click)="collapsed = false">{{ textBySlug.ui.module['read-more'] }}</h5>
+                                <div>
+                                    <strong [innerMarkdown]="template(textBySlug.ui.module.gallery, {form: textBySlug.ui.forms[module.type]})"></strong>
+                                </div>
                             </div>
                             <div *ngIf="!collapsed">
                                 <div *ngFor="let epigraph of module.epigraphs" class="epigraphs">
@@ -1114,13 +1117,13 @@ export class ToolsComponent {
                 (open)="toolsOpened = true" (close)="toolsOpened = false"></tools>
             <div class="content-area" (window:resize)="setToolsOffset()" [ngStyle]="{'right': toolsOpened ? toolsOffset : '0'}">
                 <router-outlet></router-outlet>
-                <div class="container">
+                <div *ngIf="textBySlug" class="container">
                     <div class="row">
                         <div class="footer">
                             <div class="hr"></div>
                             <div class="col-md-8 col-md-offset-2">
                                 <img src="/assets/icons/Creative_Commons.svg">
-                                <div *ngIf="textBySlug" [innerMarkdown]="textBySlug.ui.footer"></div>
+                                <div [innerMarkdown]="textBySlug.ui.footer"></div>
                             </div>
                         </div>
                     </div>
