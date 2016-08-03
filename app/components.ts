@@ -621,12 +621,13 @@ export class GalleryComponent {
 
             <div class="container">
                 <div [ngClass]="['row', 'type-' + module.type]">
+
                     <div class="hidden-xs hidden-sm col-md-3 col-lg-2 column-a"><!-- large -->
                         <h3 class="border-bottom bigger contributed-by">{{ textBySlug.ui.module['contributed-by'] }}</h3>
                         <div *ngFor="let author of authors" >
                             <a [routerLink]="['/search', 'authors!' + author.slug]">
                                 <div class="contributor-image" 
-                                    [ngStyle]="{'background-image': author.image ? 'url('+config['asset-path']+'/small-'+author.image+')' : ''}"></div>
+                                    [ngStyle]="{'background-image': author.image ? 'url('+config['asset-path']+'/small-'+author.image+')' : 'url(/assets/icons/anon.png)'}"></div>
                                 <div class="contributor-name">
                                     <h4 class="first">{{ author.firstname }}</h4>
                                     <h4 class="last">{{ author.lastname }}</h4>
@@ -661,7 +662,7 @@ export class GalleryComponent {
                             <div class="col-xs-12 col-sm-4">
                                 <a [routerLink]="['/search', 'authors!' + author.slug]">
                                     <div class="contributor-image" 
-                                        [ngStyle]="{'background-image': author.image ? 'url('+config['asset-path']+'/small-'+author.image+')' : ''}"></div>
+                                        [ngStyle]="{'background-image': author.image ? 'url('+config['asset-path']+'/small-'+author.image+')' : 'url(/assets/icons/anon.png)'}"></div>
                                 </a>
                             </div>
                             <div class="col-xs-12 col-sm-8">
