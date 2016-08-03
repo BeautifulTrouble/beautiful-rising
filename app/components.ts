@@ -410,7 +410,7 @@ export class ModuleTypeComponent {
                         </span>
                     </div>
                     <div *ngIf="tag" class="gallery-info gray">
-                        <span [routerLink]="['/']" class="gallery-clear clickable"><span class="icon">&#9746;</span> {{ textBySlug.ui['tags-clear'] }}</span>
+                        <span [routerLink]="['/']" class="gallery-clear clickable"><span class="icon">&#9746;</span> {{ textBySlug.ui.list['tags-clear'] }}</span>
                     </div>
                 </div>
                 <div class="gallery-sort clearfix visible-xs visible-sm col-xs-12">
@@ -652,6 +652,8 @@ export class GalleryComponent {
                                 <a [routerLink]="['/tag', slugify(tag)]" class="tag">{{ tag }}</a><strong *ngIf="!last"> / </strong>
                             </span>
                         </div>
+                        <h3 class="border-bottom">{{ textBySlug.ui.module.training }}</h3>
+                        <div [innerMarkdown]="template(textBySlug.ui.module['training-request'], {form: textBySlug.ui.forms.training})"></div>
                     </div>
 
                     <div class="hidden-md hidden-lg column-a"><!-- small -->
@@ -814,6 +816,8 @@ export class GalleryComponent {
                                 <a [routerLink]="['/tag', slugify(tag)]" class="tag">{{ tag }}</a><strong *ngIf="!last"> / </strong>
                             </span>
                         </div>
+                        <h3 class="border-bottom">{{ textBySlug.ui.module.training }}</h3>
+                        <div [innerMarkdown]="template(textBySlug.ui.module['training-request'], {form: textBySlug.ui.forms.training})"></div>
                     </div>
                 </div>
             </div><!-- .container -->
