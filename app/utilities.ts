@@ -41,9 +41,10 @@ export class TrimPipe implements PipeTransform {
 }
 
 
+export var template = (text, values) => _.template(text, { interpolate: /{{([\s\S]+?)}}/g })(values);
 @Pipe({'name': 'template'})
 export class TemplatePipe implements PipeTransform {
-    transform = (text, values) => _.template(text, { interpolate: /{{([\s\S]+?)}}/g })(values);
+    transform = template;
 }
 
 
