@@ -5,7 +5,7 @@ import { Router, ActivatedRoute, provideRouter, ROUTER_DIRECTIVES, NavigationEnd
 import { Title, DomSanitizationService } from '@angular/platform-browser';
 
 import { APP_DIRECTIVES } from './directives';
-import { APP_PIPES, plainString, slugify } from './utilities';
+import { APP_PIPES, plainString, slugify, template } from './utilities';
 import { ContentService, ClientStorageService, ModuleSavingService, LocalStorage, SessionStorage } from './services';
 
 import '../styles.scss';
@@ -377,17 +377,17 @@ export class ModuleTypeComponent {
             <div class="container">
                 <div class="row">
                     <input [(ngModel)]="query" (ngModelChange)="filterModules()" class="search-box visible-xs visible-sm" 
-                     placeholder="Search for keywords, ex: legislation, state repression, etc...">
+                     placeholder="{{ textBySlug && textBySlug.ui.list['search-text'] }}">
                     <input [(ngModel)]="query" (ngModelChange)="filterModules()" class="search-box visible-md visible-lg" 
-                     placeholder="Search for keywords, ex: legislation, state repression, etc..." autofocus>
+                     placeholder="{{ textBySlug && textBySlug.ui.list['search-text'] }}" autofocus>
                 </div>
                 <module-types (resized)="marginTop = $event" [region]="region" [type]="type" [textBySlug]="textBySlug" [modulesByRegion]="modulesByRegion"></module-types>
             </div>
         </div>
-        <div class="container">
+        <div *ngIf="textBySlug" class="container">
             <div class="row gallery" [style.margin-top.px]="marginTop">
                 <div class="gallery-sort visible-md visible-lg col-md-3">
-                    <h3>View As</h3>
+                    <h3>{{ textBySlug.ui.list.view }}</h3>
                     <div class="row border-top border-bottom view-as">
                         <div class="col-xs-6">
                             <svg-inline (click)="viewStyle='grid'" [class.selected]="viewStyle == 'grid'" class="clickable" src="/assets/icons/grid.svg"></svg-inline>
@@ -396,12 +396,12 @@ export class ModuleTypeComponent {
                             <svg-inline (click)="viewStyle='list'" [class.selected]="viewStyle == 'list'" class="clickable" src="/assets/icons/list.svg"></svg-inline>
                         </div>
                     </div>
-                    <h3>Sort By</h3>
+                    <h3>{{ textBySlug.ui.list.sort }}</h3>
                     <div class="row border-top border-bottom sort-by">
-                        <div (click)="sortModules('title')" [class.selected]="sortKey == 'title'" class="col-xs-6 clickable">Alphabetical</div>
-                        <div (click)="sortModules('timestamp')" [class.selected]="sortKey == 'timestamp'" class="col-xs-6 clickable">Newest</div>
+                        <div (click)="sortModules('title')" [class.selected]="sortKey == 'title'" class="col-xs-6 clickable">{{ textBySlug.ui.list.alphabetical }}</div>
+                        <div (click)="sortModules('timestamp')" [class.selected]="sortKey == 'timestamp'" class="col-xs-6 clickable">{{ textBySlug.ui.list.newest }}</div>
                     </div>
-                    <h3>Tags</h3>
+                    <h3>{{ textBySlug.ui.list.tags }}</h3>
                     <div class="row border-top">
                         <span *ngFor="let each of tags; let last=last">
                             <a *ngIf="tag != each" [routerLink]="['/tag', each]" class="tag">{{ tagsBySlug[each] }}</a>
@@ -410,19 +410,19 @@ export class ModuleTypeComponent {
                         </span>
                     </div>
                     <div *ngIf="tag" class="gallery-info gray">
-                        <span [routerLink]="['/']" class="gallery-clear clickable"><span class="icon">&#9746;</span> Clear Selection</span>
+                        <span [routerLink]="['/']" class="gallery-clear clickable"><span class="icon">&#9746;</span> {{ textBySlug.ui['tags-clear'] }}</span>
                     </div>
                 </div>
                 <div class="gallery-sort clearfix visible-xs visible-sm col-xs-12">
-                    <h3>View As</h3>
+                    <h3>{{ textBySlug.ui.list.view }}</h3>
                     <span class="view-as">
                         <svg-inline (click)="viewStyle='grid'" [class.selected]="viewStyle == 'grid'" class="clickable" src="/assets/icons/grid.svg"></svg-inline>
                         <svg-inline (click)="viewStyle='list'" [class.selected]="viewStyle == 'list'" class="clickable" src="/assets/icons/list.svg"></svg-inline>
                     </span>
-                    <h3>Sort By</h3>
+                    <h3>{{ textBySlug.ui.list.sort }}</h3>
                     <span class="sort-by">
-                        <span (click)="sortModules('title')" [class.selected]="sortKey == 'title'" class="clickable">Alphabetical</span>
-                        <span (click)="sortModules('timestamp')" [class.selected]="sortKey == 'timestamp'" class="clickable">Newest</span>
+                        <span (click)="sortModules('title')" [class.selected]="sortKey == 'title'" class="clickable">{{ textBySlug.ui.list.alphabetical }}</span>
+                        <span (click)="sortModules('timestamp')" [class.selected]="sortKey == 'timestamp'" class="clickable">{{ textBySlug.ui.list.newest }}</span>
                     </span>
                 </div>
                 <div *ngIf="selectedModules" class="gallery-list col-xs-12 col-md-9">
@@ -430,8 +430,8 @@ export class ModuleTypeComponent {
                     <div *ngIf="query" class="row">
                         <div class="col-sm-12">
                             <div class="col-md-11 col-md-offset-1 gallery-info gray">
-                                <span (click)="query = ''; filterModules()" class="gallery-clear clickable"><span class="icon">&#9746;</span> Clear</span>
-                                <span>Search Results for "{{ query }}" ({{ selectedModules.length }} results found)</span>
+                                <span (click)="query = ''; filterModules()" class="gallery-clear clickable"><span class="icon">&#9746;</span> {{ textBySlug.ui.list['search-clear'] }}</span>
+                                <span>{{ textBySlug.ui.list.results | template:{query: query, count: selectedModules.length} }}</span>
                             </div>
                         </div>
                     </div>
@@ -448,11 +448,8 @@ export class ModuleTypeComponent {
                                 <div class="module-hide-on-hover">
                                     <svg-inline *ngIf="module.region" src="/assets/icons/{{ module.region }}.svg" class="region-icon"></svg-inline>
                                     <div class="offset" [style.justify-content]="['center','flex-start','flex-end'][module.timestamp%3]">
-                                        <!--<div (mouseenter)="crazyHover($event,0,1,0.75)" (mouseleave)="crazyHover($event,1,0,0.5)">-->
-                                        <div>
-                                            <div [ngClass]="['module-type', module.type]">{{ module.type }}</div>
-                                            <div [class.story]="module.type == 'story'" class="module-title">{{ module.title }}</div>
-                                        </div>
+                                        <div [ngClass]="['module-type', module.type]">{{ module.type }}</div>
+                                        <div [class.story]="module.type == 'story'" class="module-title">{{ module.title }}</div>
                                         <div (click)="savingService.toggleSaved(module); $event.stopPropagation()" [ngSwitch]="savingService.isSaved(module)" class="module-save">
                                             <svg-inline *ngSwitchCase="true" src="/assets/icons/-_tileandmodule.svg"></svg-inline>
                                             <svg-inline *ngSwitchCase="false" src="/assets/icons/+_tileandmodule.svg"></svg-inline>
@@ -484,11 +481,13 @@ export class ModuleTypeComponent {
             </div>
         </div>
     `,
-    directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES, ModuleTypeComponent ]
+    directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES, ModuleTypeComponent ],
+    pipes: [ APP_PIPES ]
 })
 export class GalleryComponent {
     @LocalStorage() sortKey;
     @LocalStorage() viewStyle;
+    template = template;
     textBySlug;
     marginTop = 0;
 
@@ -767,7 +766,7 @@ export class GalleryComponent {
                         </div>
                     </div>
 
-                    <div class="col-xs-12 col-sm-5 col-md-4 column-b">
+                    <div class="col-xs-12 col-sm-6 col-md-4 column-b">
                         <div *ngIf="module['potential-risks']" (click)="riskCollapsed = !riskCollapsed" class="risks hidden-sm" [class.clickable]="module['potential-risks-short']">
                             <div class="heading">
                                 <svg-inline src="/assets/icons/pr.svg" [ngClass]="'type-' + module.type"></svg-inline>
@@ -828,6 +827,7 @@ export class GalleryComponent {
 export class DetailComponent {
     _ = _;
     slugify = slugify;
+    template = template;
     plainString = plainString;
 
     constructor(
@@ -1096,35 +1096,36 @@ export class ToolsComponent {
 @Component({
     selector: 'beautiful-rising',
     template: `
-            <div class="background" data-background="true" (click)="closeToolsOnBackgroundClick($event)" 
-             [ngStyle]="{'direction': contentService.language==='ar' ? 'rtl' : 'ltr'}">
-                <modal></modal>
-                <div id="fixed-nav" class="fixed-container-wrapper">
-                    <div class="container" data-background="true">
-                        <div class="language-selection">
-                            <span *ngFor="let lang of languages" (click)="language=lang" [class.selected]="language===lang">{{ lang|uppercase }}</span>
-                        </div>
-                        <menu [textBySlug]="textBySlug"></menu>
-                        <a [routerLink]="['']"><img class="logo" src="/assets/icons/logo-en.png"></a>
-                    </div><!-- .container -->
-                </div>
-                <tools class="bottom" [modulesBySlug]="modulesBySlug" [opened]="toolsOpened" 
-                 (open)="toolsOpened = true" (close)="toolsOpened = false"></tools>
-                <div class="content-area" (window:resize)="setToolsOffset()" [ngStyle]="{'right': toolsOpened ? toolsOffset : '0'}">
-                    <router-outlet></router-outlet>
-                    <div class="container">
-                        <div class="row">
-                            <div class="footer">
-                                <div class="hr"></div>
-                                <div class="col-md-8 col-md-offset-2">
-                                    <img src="/assets/icons/Creative_Commons.svg">
-                                    <div *ngIf="textBySlug" [innerMarkdown]="textBySlug.ui.footer"></div>
-                                </div>
+        <div class="background" data-background="true" 
+            (click)="closeToolsOnBackgroundClick($event)" 
+            [ngStyle]="{'direction': contentService.language==='ar' ? 'rtl' : 'ltr'}">
+            <modal></modal>
+            <div id="fixed-nav" class="fixed-container-wrapper">
+                <div class="container" data-background="true">
+                    <div class="language-selection">
+                        <span *ngFor="let lang of languages" (click)="language=lang" [class.selected]="language===lang">{{ lang|uppercase }}</span>
+                    </div>
+                    <menu [textBySlug]="textBySlug"></menu>
+                    <a [routerLink]="['']"><img class="logo" src="/assets/icons/logo-en.png"></a>
+                </div><!-- .container -->
+            </div>
+            <tools class="bottom" [modulesBySlug]="modulesBySlug" [opened]="toolsOpened" 
+                (open)="toolsOpened = true" (close)="toolsOpened = false"></tools>
+            <div class="content-area" (window:resize)="setToolsOffset()" [ngStyle]="{'right': toolsOpened ? toolsOffset : '0'}">
+                <router-outlet></router-outlet>
+                <div class="container">
+                    <div class="row">
+                        <div class="footer">
+                            <div class="hr"></div>
+                            <div class="col-md-8 col-md-offset-2">
+                                <img src="/assets/icons/Creative_Commons.svg">
+                                <div *ngIf="textBySlug" [innerMarkdown]="textBySlug.ui.footer"></div>
                             </div>
                         </div>
-                    </div><!-- .container -->
-                </div>
+                    </div>
+                </div><!-- .container -->
             </div>
+        </div>
     `,
     directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES, ModalComponent, MenuComponent, ToolsComponent ]
 })

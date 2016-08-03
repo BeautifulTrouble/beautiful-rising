@@ -1096,7 +1096,7 @@ detail {
             position: relative;
             @include xs { 
                 max-width: 100px;
-                width: 25%; 
+                width: 30%; 
             }
             @include sm { width: 20%; }
             @include md { width: 50%; }
