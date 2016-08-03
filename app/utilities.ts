@@ -19,23 +19,37 @@ export class CapitalizePipe implements PipeTransform {
     transform = v => _.capitalize(v || '');
 }
 
+
 export var plainString = v => {
     if (v && 'changingThisBreaksApplicationSecurity' in v) return v.changingThisBreaksApplicationSecurity;
     return (v || '').toString();
 }
-export var noTags = v => {
-    v = plainString(v);
-    let el = document.createElement('div');
-    el.innerHTML = v;
-    return el.textContent;
-};
 @Pipe({'name': 'notags'})
 export class NotagsPipe implements PipeTransform {
-    transform = noTags;
+    transform(text) {
+        text = plainString(text);
+        let el = document.createElement('div');
+        el.innerHTML = text;
+        return el.textContent;
+    }
 }
+
 
 @Pipe({'name': 'trim'})
 export class TrimPipe implements PipeTransform {
     transform = v => (v || '').trim();
 }
 
+
+@Pipe({'name': 'template'})
+export class TemplatePipe implements PipeTransform {
+    transform = (text, values) => _.template(text, { interpolate: /{{([\s\S]+?)}}/g })(values);
+}
+
+
+export var APP_PIPES = [
+    CapitalizePipe,
+    NotagsPipe,
+    TrimPipe,
+    TemplatePipe
+];
