@@ -244,8 +244,8 @@ svg-inline.selected * {
 }
 .border-bottom {
     border-bottom: 2px solid black;
-    padding-top: 2 * $margin;
-    padding-bottom: 2 * $margin;
+    padding-top: 12px;
+    padding-bottom: 6px;
 }
 .nop > p { // For [innerHTML] bindings where you don't want markdown's surrounding <p> tag
     display: inline;

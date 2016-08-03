@@ -709,7 +709,7 @@ export class GalleryComponent {
                             <div *ngIf="collapsed">
                                 <div class="short-write-up" [innerHTML]="module['short-write-up']"></div>
                                 <h5 *ngIf="!gallery" (click)="collapsed = false">{{ textBySlug.ui.module['read-more'] }}</h5>
-                                <div>
+                                <div *ngIf="gallery">
                                     <strong [innerMarkdown]="template(textBySlug.ui.module.gallery, {form: textBySlug.ui.forms[module.type]})"></strong>
                                 </div>
                             </div>
