@@ -587,7 +587,6 @@ export class GalleryComponent {
     selector: 'detail',
     template: `
         <div *ngIf="module">
-
             <div class="container">
                 <div [ngClass]="['row', 'type-' + module.type]">
                     <div class="col-sm-12">

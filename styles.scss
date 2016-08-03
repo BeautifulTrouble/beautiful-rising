@@ -1091,14 +1091,24 @@ detail {
 
 
         }
+        .anon {
+            width: 60%;
+            position: relative;
+            @include xs { 
+                max-width: 100px;
+                width: 25%; 
+            }
+            @include sm { width: 20%; }
+            @include md { width: 50%; }
+        }
         .your-arrow {
             position: absolute;
-            margin-left: 10px;
+            left: 100%;
             top: -65%;
             @include sm {
-                transform: rotate(230deg);
-                left: -75px;
-                top: 0;
+                transform: rotateY(180deg) rotateZ(90deg);
+                left: 0; right: 100%;
+                top: 50%;
             }
         }
         .tag {
@@ -1106,35 +1116,6 @@ detail {
         }
     }
     .column-b {
-        .risks {
-            margin-bottom: 32px;
-            &.clickable {
-                text-decoration: none;
-            }
-            .heading {
-                border-bottom: $margin solid black;
-                margin-bottom: $margin * 2;
-                svg-inline, h3 {
-                    display: inline-block;
-                }
-                h3 {
-                    margin-left: $margin;
-                    margin-bottom: 4px;
-                }
-                .arrow {
-                    @include prefix(transition, transform $transition linear, webkit moz);
-                    transform: rotate(180deg) scale(0.75);
-                    svg * { fill: $lightgray; }
-                }
-                .arrow.selected {
-                    transform: rotate(270deg) scale(0.75);
-                    svg * { fill: black; }
-                }
-            }
-            @include sm {
-                p { padding-left: 50px }
-            }
-        }
         .related {
             padding: 24px;
             padding-top: $margin;
@@ -1193,6 +1174,35 @@ detail {
         }
         .key-heading, .how-to-use, .why-worked-or-failed {
             margin-top: 6*$margin;
+        }
+    }
+    .risks {
+        margin-bottom: 32px;
+        &.clickable {
+            text-decoration: none;
+        }
+        .heading {
+            border-bottom: $margin solid black;
+            margin-bottom: $margin * 2;
+            svg-inline, h3 {
+                display: inline-block;
+            }
+            h3 {
+                margin-left: $margin;
+                margin-bottom: 4px;
+            }
+            .arrow {
+                @include prefix(transition, transform $transition linear, webkit moz);
+                transform: rotate(180deg) scale(0.75);
+                svg * { fill: $lightgray; }
+            }
+            .arrow.selected {
+                transform: rotate(270deg) scale(0.75);
+                svg * { fill: black; }
+            }
+        }
+        @include sm {
+            p { padding-left: 50px }
         }
     }
     .edit-link {
