@@ -5,7 +5,7 @@ import { Router, ActivatedRoute, provideRouter, ROUTER_DIRECTIVES, NavigationEnd
 import { Title, DomSanitizationService } from '@angular/platform-browser';
 
 import { APP_DIRECTIVES } from './directives';
-import { CapitalizePipe, NotagsPipe, TrimPipe, plainString, noTags, slugify } from './utilities';
+import { APP_PIPES, plainString, slugify } from './utilities';
 import { ContentService, ClientStorageService, ModuleSavingService, LocalStorage, SessionStorage } from './services';
 
 import '../styles.scss';
@@ -45,7 +45,7 @@ export class AboutInnerComponent {
             <about-inner [config]="config" [textBySlug]="textBySlug" [peopleBySlug]="peopleBySlug" [useAccordion]="false"></about-inner>
         </div>
     `,
-    directives: [ AboutInnerComponent, APP_DIRECTIVES, ROUTER_DIRECTIVES ]
+    directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES, AboutInnerComponent ]
 })
 export class AboutComponent {
     constructor(private contentService: ContentService) { }
@@ -83,7 +83,7 @@ export class AboutComponent {
             </div>
         </div>
     `,
-    directives: [ AboutInnerComponent, APP_DIRECTIVES, ROUTER_DIRECTIVES ]
+    directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES, AboutInnerComponent ]
 })
 export class ModalComponent {
     // Uncomment this when we're ready to have the modal *really* show up only once. 
@@ -143,10 +143,7 @@ export class ModalComponent {
             </div>
         </div>
     `,
-    directives: [
-        APP_DIRECTIVES,
-        ROUTER_DIRECTIVES
-    ]
+    directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES ]
 })
 export class PlatformsComponent {
     constructor(
@@ -163,10 +160,7 @@ export class PlatformsComponent {
 @Component({
     selector: 'resources',
     template: require('../templates/resources.html'),
-    directives: [
-        APP_DIRECTIVES,
-        ROUTER_DIRECTIVES
-    ]
+    directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES ]
 })
 export class ResourcesComponent {
     constructor(
@@ -205,13 +199,13 @@ export class ResourcesComponent {
                             <div class="visible-md visible-lg">
                                 <div [class.active]="activeType == each[0]" class="description">
                                     <div [innerHTML]="textBySlug.ui.definitions[each[0] + '-short']"></div>
-                                    <div class="links"><a href="{{ textBySlug.ui.forms[each[0]] }}" target="_blank">Go to form</a></div>
+                                    <div class="links"><a href="{{ textBySlug.ui.forms[each[0]] }}" target="_blank">{{ textBySlug.ui.module.form }}</a></div>
                                 </div>
                             </div>
                             <div class="visible-xs visible-sm">
                                 <div class="description active">
                                     <div [innerHTML]="textBySlug.ui.definitions[each[0] + '-short']"></div>
-                                    <div class="links"><a href="{{ textBySlug.ui.forms[each[0]] }}" target="_blank">Go to form</a></div>
+                                    <div class="links"><a href="{{ textBySlug.ui.forms[each[0]] }}" target="_blank">{{ textBySlug.ui.module.form }}</a></div>
                                 </div>
                             </div>
                         </div>
@@ -220,10 +214,7 @@ export class ResourcesComponent {
             </div>
         </div>
     `,
-    directives: [ 
-        APP_DIRECTIVES,
-        ROUTER_DIRECTIVES
-    ]
+    directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES ]
 })
 export class ContributeComponent {
     activeType = 'story';
@@ -339,10 +330,7 @@ export class ContributeComponent {
             </div>
         </div>
     `,
-    directives: [
-        APP_DIRECTIVES,
-        ROUTER_DIRECTIVES
-    ],
+    directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES ]
 })
 export class ModuleTypeComponent {
     @Input() type;
@@ -496,11 +484,7 @@ export class ModuleTypeComponent {
             </div>
         </div>
     `,
-    directives: [
-        APP_DIRECTIVES,
-        ROUTER_DIRECTIVES,
-        ModuleTypeComponent,
-    ]
+    directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES, ModuleTypeComponent ]
 })
 export class GalleryComponent {
     @LocalStorage() sortKey;
@@ -616,7 +600,8 @@ export class GalleryComponent {
                                 </div>
                                 <svg-inline *ngFor="let type of patternTypes" src="/assets/patterns/3rowsoverlay/{{ type }}.svg"></svg-inline>
                             </div>
-                            <div *ngIf="snapshot" [ngClass]="['pattern', 'pattern-snapshot', module.type]" 
+                            <div *ngIf="snapshot" 
+                                [ngClass]="['pattern', 'pattern-snapshot', module.type]" 
                                 [ngStyle]="{'background-image': 'url(/assets/patterns/snapshotoverlay/'+module.type+'.svg)'}"></div>
                             <div class="module-header">
                                 <div *ngIf="module.type == 'story'" class="story-extra">
@@ -626,10 +611,12 @@ export class GalleryComponent {
                                 <div [routerLink]="['/type', module.type]" [ngClass]="['module-type', 'clickable', module.type]">{{ module.type }}</div>
                                 <div class="module-title">{{ module.title }}</div>
                                 <div (click)="savingService.toggleSaved(module)" [ngSwitch]="savingService.isSaved(module)" class="module-save clickable">
-                                    <div *ngSwitchCase="true"><svg-inline src="/assets/icons/-_tileandmodule.svg"></svg-inline>Remove this module from your tools</div>
-                                    <div *ngSwitchCase="false"><svg-inline src="/assets/icons/+_tileandmodule.svg"></svg-inline>Save this module</div>
+                                    <div *ngSwitchCase="true"><svg-inline src="/assets/icons/-_tileandmodule.svg"></svg-inline>{{ textBySlug.ui.module.remove }}</div>
+                                    <div *ngSwitchCase="false"><svg-inline src="/assets/icons/+_tileandmodule.svg"></svg-inline>{{ textBySlug.ui.module.save }}</div>
                                 </div><br>
-                                <div class="module-share clickable"><svg-inline src="/assets/icons/share_in_module.svg"></svg-inline>Share this module</div>
+                                <div class="module-share clickable">
+                                    <svg-inline src="/assets/icons/share_in_module.svg"></svg-inline>{{ textBySlug.ui.module.share }}
+                                </div>
                             </div>
                             <div class="hidden-xs module-image-caption" [innerHTML]="module['image-caption']"></div>
                         </div>
@@ -639,12 +626,12 @@ export class GalleryComponent {
 
             <div class="container">
                 <div [ngClass]="['row', 'type-' + module.type]">
-
                     <div class="hidden-xs hidden-sm col-md-3 col-lg-2 column-a"><!-- large -->
-                        <h3 class="border-bottom bigger contributed-by">Contributed by</h3>
+                        <h3 class="border-bottom bigger contributed-by">{{ textBySlug.ui.module['contributed-by'] }}</h3>
                         <div *ngFor="let author of authors" >
                             <a [routerLink]="['/search', 'authors!' + author.slug]">
-                                <div class="contributor-image" [ngStyle]="{'background-image': author.image ? 'url('+config['asset-path']+'/small-'+author.image+')' : ''}"></div>
+                                <div class="contributor-image" 
+                                    [ngStyle]="{'background-image': author.image ? 'url('+config['asset-path']+'/small-'+author.image+')' : ''}"></div>
                                 <div class="contributor-name">
                                     <h4 class="first">{{ author.firstname }}</h4>
                                     <h4 class="last">{{ author.lastname }}</h4>
@@ -655,12 +642,14 @@ export class GalleryComponent {
                         <div *ngIf="!authors.length">
                             <div class="contributor-image" style="background-image: url('/assets/icons/anon.png')"></div>
                             <div class="contributor-name">
-                                <h4 class="first">It could <svg-inline class="your-arrow" src="/assets/icons/yourarrow.svg"></svg-inline></h4>
-                                <h4 class="last">be you</h4>
+                                <div class="anon">
+                                    <svg-inline class="your-arrow" src="/assets/icons/yourarrow.svg"></svg-inline>
+                                    <h4 class="first">{{ textBySlug.ui.module['no-name'] }}</h4> 
+                                </div>
                             </div>
                         </div>
                         <div *ngIf="module.tags">
-                            <h3 class="border-bottom">Tags</h3>
+                            <h3 class="border-bottom">{{ textBySlug.ui.module.tags }}</h3>
                             <span *ngFor="let tag of module.tags; let last=last">
                                 <a [routerLink]="['/tag', slugify(tag)]" class="tag">{{ tag }}</a><strong *ngIf="!last"> / </strong>
                             </span>
@@ -669,12 +658,13 @@ export class GalleryComponent {
 
                     <div class="hidden-md hidden-lg column-a"><!-- small -->
                         <div class="col-xs-12">
-                            <h3 class="border-bottom bigger contributed-by">Contributed by</h3>
+                            <h3 class="border-bottom bigger contributed-by">{{ textBySlug.ui.module['contributed-by'] }}</h3>
                         </div>
                         <div *ngFor="let author of authors">
                             <div class="col-xs-12 col-sm-4">
                                 <a [routerLink]="['/search', 'authors!' + author.slug]">
-                                    <div class="contributor-image" [ngStyle]="{'background-image': author.image ? 'url('+config['asset-path']+'/small-'+author.image+')' : ''}"></div>
+                                    <div class="contributor-image" 
+                                        [ngStyle]="{'background-image': author.image ? 'url('+config['asset-path']+'/small-'+author.image+')' : ''}"></div>
                                 </a>
                             </div>
                             <div class="col-xs-12 col-sm-8">
@@ -694,8 +684,10 @@ export class GalleryComponent {
                             </div>
                             <div class="col-xs-12 col-sm-8">
                                 <div class="contributor-name">
-                                    <h4 class="first">It could <svg-inline class="your-arrow" src="/assets/icons/yourarrow.svg"></svg-inline></h4>
-                                    <h4 class="last">be you</h4>
+                                    <div class="anon">
+                                        <svg-inline class="your-arrow" src="/assets/icons/yourarrow.svg"></svg-inline>
+                                        <h4 class="first">{{ textBySlug.ui.module['no-name'] }}</h4> 
+                                    </div>
                                 </div>
                             </div>
                             <div class="clearfix"></div>
@@ -706,54 +698,55 @@ export class GalleryComponent {
                     <div class="col-xs-12 col-sm-8 col-sm-offset-4 col-md-5 col-md-offset-0 col-lg-offset-1 content">
                         <div *ngIf="snapshot">
                             <p [innerHTML]="module.snapshot"></p>
-                            <p><strong>Hey, this isn't written yet but people like you are likely using it in all kinds of ways. Do you have insights to share on how to use this theory? Go ahead and share them through the form below...</strong></p>
+                            <p><strong>{{ textBySlug.ui.module.snapshot | template: {type: textBySlug.ui.types[module.type].toLowerCase()} }}</strong></p>
                             <div class="row">
-                                <div class="col-xs-6"><a href="{{ textBySlug.ui.forms[module.type] }}" target="_blank"><h4>Go to form</h4></a></div>
-                                <div *ngIf="module['bt-link']" class="col-xs-6"><a href="{{ module['bt-link'] }}" target="_blank"><h4>See &rdquo;{{ module.title }}&ldquo; in <em>Beautiful Trouble</em></h4></a></div>
+                                <div class="col-xs-6">
+                                    <a href="{{ textBySlug.ui.forms[module.type] }}" target="_blank"><h4>{{ textBySlug.ui.module.form }}</h4></a>
+                                </div>
+                                <div *ngIf="module['bt-link']" class="col-xs-6">
+                                    <a href="{{ module['bt-link'] }}" target="_blank"><h4>{{ textBySlug.ui.module.bt | template: {title: module.title} }}</h4></a>
+                                </div>
                             </div>
                         </div>
                         <div *ngIf="!snapshot">
                             <div *ngIf="collapsed">
                                 <div class="short-write-up" [innerHTML]="module['short-write-up']"></div>
-                                <h5 *ngIf="!gallery" (click)="collapsed = false">Read more</h5>
+                                <h5 *ngIf="!gallery" (click)="collapsed = false">{{ textBySlug.ui.module['read-more'] }}</h5>
                             </div>
                             <div *ngIf="!collapsed">
                                 <div *ngFor="let epigraph of module.epigraphs" class="epigraphs">
                                     <div class="epigraph" [innerHTML]="epigraph[0]"></div>
                                     <div class="attribution" [innerHTML]="epigraph[1]"></div>
                                 </div>
-                                <div *ngIf="!gallery" [innerHTML]="module['full-write-up']">
-                                </div>
-                                <h5 (click)="collapsed = true">Read less</h5>
+                                <div *ngIf="!gallery" [innerHTML]="module['full-write-up']"></div>
+                                <h5 (click)="collapsed = true">{{ textBySlug.ui.module['read-less'] }}</h5>
                             </div>
                             <div *ngIf="module['how-to-use']" class="how-to-use">
-                                <h4>How to use</h4>
+                                <h4>{{ textBySlug.ui.module['how-to-use'] }}</h4>
                                 <div [innerMarkdown]="module['how-to-use']"></div>
                             </div>
                             <div *ngIf="module['why-it-worked']" class="why-worked-or-failed">
-                                <h4>Why it worked</h4>
+                                <h4>{{ textBySlug.ui.module['why-it-worked'] }}</h4>
                                 <p [innerHTML]="module['why-it-worked']"></p>
                             </div>
                             <div *ngIf="module['why-it-failed']" class="why-worked-or-failed">
-                                <h4>Why it failed</h4>
+                                <h4>{{ textBySlug.ui.module['why-it-failed'] }}</h4>
                                 <p [innerHTML]="module['why-it-failed']"></p>
                             </div>
                         </div>
-                        <div *ngFor="let type of [['key-tactics', 'tactic', 'tactics'],
-                                                  ['key-principles', 'principle', 'principles'],
-                                                  ['key-theories', 'theory', 'theories'],
-                                                  ['key-methodologies', 'methodology', 'methodologies']]">
-                            <div *ngIf="module[type[0]]">
-                                <div *ngFor="let each of module[type[0]]; let first=first; let last=last;">
-                                    <div *ngIf="first && last" [ngClass]="['module-type', 'key-heading', type[1]]">key {{ type[1] }}</div><!-- singular -->
-                                    <div *ngIf="first && !last" [ngClass]="['module-type', 'key-heading', type[1]]">key {{ type[2] }}</div><!-- plural -->
-                                    <h3 [innerHTML]="each[0]"></h3><div [innerHTML]="each[1]"></div>
-                                </div>
+                        <div *ngFor="let type of [['key-tactics', 'key-tactic', 'tactic'],
+                                                  ['key-principles', 'key-principle', 'principle'],
+                                                  ['key-theories', 'key-theory', 'theory'],
+                                                  ['key-methodologies', 'key-methodology', 'methodology']]">
+                            <div *ngFor="let each of module[type[0]]; let first=first; let last=last;">
+                                <div *ngIf="first && last" [ngClass]="['module-type', 'key-heading', type[2]]">{{ textBySlug.ui.module[type[1]] }}</div><!-- singular -->
+                                <div *ngIf="first && !last" [ngClass]="['module-type', 'key-heading', type[2]]">{{ textBySlug.ui.module[type[0]] }}</div><!-- plural -->
+                                <h3 [innerHTML]="each[0]"></h3><div [innerHTML]="each[1]"></div>
                             </div>
                         </div>
                         <div *ngIf="module['learn-more']" class="learn-more">
                             <div *ngFor="let learn of module['learn-more']; let first=first;">
-                                <h4 *ngIf="first">Learn more</h4>
+                                <h4 *ngIf="first">{{ textBySlug.ui.module['learn-more'] }}</h4>
                                 <p>
                                     <a target="_blank" href="{{ learn.link | notags | trim }}">{{ learn.title | notags | trim }}</a>
                                     <span *ngIf="plainString(learn.source)"> / {{ learn.source | notags }}</span><span *ngIf="plainString(learn.year)">, {{ learn.year | notags }}</span>
@@ -761,40 +754,54 @@ export class GalleryComponent {
                             </div>
                         </div>
                     </div>
-                    <div class="col-xs-12 col-sm-5 col-md-4 column-b">
-                        <div *ngIf="module['potential-risks']" (click)="riskCollapsed = !riskCollapsed" [ngClass]="{risks:true, clickable:module['potential-risks-short']}">
+
+                    <div class="col-sm-12 visible-sm"><!-- small only full width content -->
+                        <div *ngIf="module['potential-risks']" (click)="riskCollapsed = !riskCollapsed" class="risks" [class.clickable]="module['potential-risks-short']">
                             <div class="heading">
                                 <svg-inline src="/assets/icons/pr.svg" [ngClass]="'type-' + module.type"></svg-inline>
-                                <h3 class="bigger">Potential risks</h3>
-                                <svg-inline *ngIf="module['potential-risks-short']" [ngClass]="{arrow:true, selected:!riskCollapsed}" src="/assets/icons/arrow.svg"></svg-inline>
+                                <h3 class="bigger">{{ textBySlug.ui.module['potential-risks'] }}</h3>
+                                <svg-inline *ngIf="module['potential-risks-short']" class="arrow" [class.selected]="!riskCollapsed" src="/assets/icons/arrow.svg"></svg-inline>
+                            </div>
+                            <div *ngIf="riskCollapsed && module['potential-risks-short']" [innerHTML]="module['potential-risks-short']"></div>
+                            <div *ngIf="riskCollapsed && !module['potential-risks-short']" [innerHTML]="module['potential-risks']"></div>
+                            <div *ngIf="!riskCollapsed" [innerHTML]="module['potential-risks']"></div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-5 col-md-4 column-b">
+                        <div *ngIf="module['potential-risks']" (click)="riskCollapsed = !riskCollapsed" class="risks hidden-sm" [class.clickable]="module['potential-risks-short']">
+                            <div class="heading">
+                                <svg-inline src="/assets/icons/pr.svg" [ngClass]="'type-' + module.type"></svg-inline>
+                                <h3 class="bigger">{{ textBySlug.ui.module['potential-risks'] }}</h3>
+                                <svg-inline *ngIf="module['potential-risks-short']" class="arrow" [class.selected]="!riskCollapsed" src="/assets/icons/arrow.svg"></svg-inline>
                             </div>
                             <div *ngIf="riskCollapsed && module['potential-risks-short']" [innerHTML]="module['potential-risks-short']"></div>
                             <div *ngIf="riskCollapsed && !module['potential-risks-short']" [innerHTML]="module['potential-risks']"></div>
                             <div *ngIf="!riskCollapsed" [innerHTML]="module['potential-risks']"></div>
                         </div>
                         <div *ngIf="tactics.length || principles.length || theories.length || methodologies.length">
-                            <h3 class="bigger related">Related Modules</h3>
+                            <h3 class="bigger related">{{ textBySlug.ui.module['related-modules'] }}</h3>
                             <div class="related">
                                 <div *ngIf="tactics.length">
-                                    <h3 class="indent">Tactics</h3>
+                                    <h3 class="indent">{{ textBySlug.ui.types.tactics }}</h3>
                                     <ul><li *ngFor="let m of tactics">
                                         <a [routerLink]="['/module', m.slug]" class="tactic">{{ m.title }}</a>
                                     </li></ul>
                                 </div>
                                 <div *ngIf="principles.length">
-                                    <h3 class="indent">Principles</h3>
+                                    <h3 class="indent">{{ textBySlug.ui.types.principles }}</h3>
                                     <ul><li *ngFor="let m of principles">
                                         <a [routerLink]="['/module', m.slug]" class="principle">{{ m.title }}</a>
                                     </li></ul>
                                 </div>
                                 <div *ngIf="theories.length">
-                                    <h3 class="indent">Theories</h3>
+                                    <h3 class="indent">{{ textBySlug.ui.types.theories }}</h3>
                                     <ul><li *ngFor="let m of theories">
                                         <a [routerLink]="['/module', m.slug]" class="theory">{{ m.title }}</a>
                                     </li></ul>
                                 </div>
                                 <div *ngIf="methodologies.length">
-                                    <h3 class="indent">Methodologies</h3>
+                                    <h3 class="indent">{{ textBySlug.ui.types.methodologies }}</h3>
                                     <ul><li *ngFor="let m of methodologies">
                                         <a [routerLink]="['/module', m.slug]" class="methodology">{{ m.title }}</a>
                                     </li></ul>
@@ -804,7 +811,7 @@ export class GalleryComponent {
                     </div>
                     <div class="col-xs-12 col-sm-4 col-sm-offset-1 col-md-4 col-md-offset-0 column-b visible-xs visible-sm">
                         <div *ngIf="module.tags">
-                            <h3 class="border-bottom">Tags</h3>
+                            <h3 class="border-bottom">{{ textBySlug.ui.module.tags }}</h3>
                             <span *ngFor="let tag of module.tags; let last=last">
                                 <a [routerLink]="['/tag', slugify(tag)]" class="tag">{{ tag }}</a><strong *ngIf="!last"> / </strong>
                             </span>
@@ -816,14 +823,8 @@ export class GalleryComponent {
             <a target="_blank" class="edit-link" href="{{ module.document_link }}">edit</a>
         </div>
     `,
-    directives: [
-        APP_DIRECTIVES,
-        ROUTER_DIRECTIVES
-    ],
-    pipes: [
-        NotagsPipe, 
-        TrimPipe
-    ]
+    directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES ],
+    pipes: [ APP_PIPES ]
 })
 export class DetailComponent {
     _ = _;
@@ -920,36 +921,36 @@ export class DetailComponent {
                         <div (window:scroll)="onScroll()" class="menu-scroll">
                             <div class="menu-section">
                                 <!-- wait for https://github.com/angular/angular/pull/9792 to add routerLinkActive -->
-                                <h3 class="clickable" (click)="nav(['/about'])">About</h3>
-                                <p class="clickable" (click)="nav(['/about', 'whats-inside'])">The Toolbox</p>
-                                <p class="clickable" (click)="nav(['/about', 'process'])">Our Process</p>
-                                <p class="clickable" (click)="nav(['/about', 'values'])">Our Values</p>
-                                <p class="clickable" (click)="nav(['/about', 'advisory-network'])">Our Advisory Network</p>
-                                <p class="clickable" (click)="nav(['/about', 'team'])">Our Team</p>
-                                <p class="clickable" (click)="nav(['/about', 'beautiful-trouble-and-action-aid'])">Beautiful Trouble + AA</p>
-                                <p class="clickable" (click)="nav(['/about', 'partners'])">Partners</p>
-                                <p class="clickable" (click)="nav(['/about', 'faq'])">FAQ</p>
+                                <h3 class="clickable" (click)="nav(['/about'])">{{ textBySlug.ui.menu.about }}</h3>
+                                <p class="clickable" (click)="nav(['/about', 'whats-inside'])">{{ textBySlug.ui.menu['whats-inside'] }}</p>
+                                <p class="clickable" (click)="nav(['/about', 'process'])">{{ textBySlug.ui.menu.process }}</p>
+                                <p class="clickable" (click)="nav(['/about', 'values'])">{{ textBySlug.ui.menu.values }}</p>
+                                <p class="clickable" (click)="nav(['/about', 'advisory-network'])">{{ textBySlug.ui.menu['advisory-network'] }}</p>
+                                <p class="clickable" (click)="nav(['/about', 'team'])">{{ textBySlug.ui.menu.team }}</p>
+                                <p class="clickable" (click)="nav(['/about', 'beautiful-trouble-and-action-aid'])">{{ textBySlug.ui.menu['beautiful-trouble-and-action-aid'] }}</p>
+                                <p class="clickable" (click)="nav(['/about', 'partners'])">{{ textBySlug.ui.menu.partners }}</p>
+                                <p class="clickable" (click)="nav(['/about', 'faq'])">{{ textBySlug.ui.menu.faq }}</p>
                             </div>
                             <div class="menu-section">
-                                <h3 class="clickable" (click)="nav(['/platforms'])">Platforms</h3>
-                                <em>Explore other ways to access the toolbox</em>
-                                <p class="clickable" (click)="nav(['/platforms', 'chatbot'])">Chat Bot</p>
-                                <p class="clickable" (click)="nav(['/platforms', 'game'])">Game</p>
-                                <p class="clickable" (click)="nav(['/platforms', 'pdf'])">PDF</p>
+                                <h3 class="clickable" (click)="nav(['/platforms'])">{{ textBySlug.ui.menu.platforms }}</h3>
+                                <em>{{ textBySlug.ui.menu.explore }}</em>
+                                <p class="clickable" (click)="nav(['/platforms', 'chatbot'])">{{ textBySlug.ui.menu.chatbot }}</p>
+                                <p class="clickable" (click)="nav(['/platforms', 'game'])">{{ textBySlug.ui.menu.game }}</p>
+                                <p class="clickable" (click)="nav(['/platforms', 'pdf'])">{{ textBySlug.ui.menu.pdf }}</p>
                             </div>
                             <div class="menu-section">
-                                <h3 class="clickable" (click)="nav(['/contribute'])">Contribute</h3>
-                                <p class="clickable" (click)="nav(['/contribute', 'how-it-works'])">How does it work?</p>
+                                <h3 class="clickable" (click)="nav(['/contribute'])">{{ textBySlug.ui.menu.contribute }}</h3>
+                                <p class="clickable" (click)="nav(['/contribute', 'how-it-works'])">{{ textBySlug.ui.menu['how-it-works'] }}</p>
                             </div>
                             <!--
                             <div class="menu-section">
-                                <h3 class="clickable" (click)="nav(['/resources'])">Training + Resources</h3>
-                                <p class="clickable" (click)="nav(['/resources', 'training'])">Request a Training</p>
-                                <p class="clickable" (click)="nav(['/resources', 'other'])">Other Resources</p>
+                                <h3 class="clickable" (click)="nav(['/resources'])">{{ textBySlug.ui.menu['training-and-resources'] }}</h3>
+                                <p class="clickable" (click)="nav(['/resources', 'training'])">{{ textBySlug.ui.menu.training }}</p>
+                                <p class="clickable" (click)="nav(['/resources', 'other'])">{{ textBySlug.ui.menu.other }}</p>
                             </div>
                             -->
                             <div class="menu-section">
-                                <h3>Contact Us</h3>
+                                <h3>{{ textBySlug.ui.menu['contact-us'] }}</h3>
                                 <a class="email" href="mailto:{{ textBySlug.ui.misc['contact-email'] }}">{{ textBySlug.ui.misc['contact-email'] }}</a>
                                 <a href="{{ textBySlug.ui.misc['twitter-link'] }}" target="_blank" style="color: white"><svg-inline src="/assets/icons/Twitter.svg"></svg-inline></a>
                                 <a href="{{ textBySlug.ui.misc['facebook-link'] }}" target="_blank" style="color: white"><svg-inline src="/assets/icons/facebook.svg"></svg-inline></a>
@@ -958,7 +959,7 @@ export class DetailComponent {
                                 <p class="subscribe-note">Subscribe to our newsletter</p>
                                 <div class="form-wrapper">
                                     <input placeholder="{{ textBySlug.ui.misc['placeholder-email'] }}">
-                                    <span class="submit clickable">Submit</span>
+                                    <span class="submit clickable">{{ textBySlug.ui.menu.submit }}</span>
                                 </div>
                                 -->
                             </div>
@@ -968,10 +969,7 @@ export class DetailComponent {
             </div>
         </div>
     `,
-    directives: [
-        APP_DIRECTIVES,
-        ROUTER_DIRECTIVES
-    ]
+    directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES ]
 })
 export class MenuComponent {
     @ViewChild('menu') menu;
@@ -1064,10 +1062,7 @@ export class MenuComponent {
         </div>
         -->
     `,
-    directives: [
-        APP_DIRECTIVES,
-        ROUTER_DIRECTIVES
-    ]
+    directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES ]
 })
 export class ToolsComponent {
     @Input() modulesBySlug;
@@ -1132,13 +1127,7 @@ export class ToolsComponent {
                 </div>
             </div>
     `,
-    directives: [
-        APP_DIRECTIVES,
-        ROUTER_DIRECTIVES,
-        ModalComponent,
-        MenuComponent,
-        ToolsComponent,
-    ]
+    directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES, ModalComponent, MenuComponent, ToolsComponent ]
 })
 export class AppComponent {
     @LocalStorage() language;
