@@ -524,6 +524,8 @@ export class GalleryComponent {
     }
     filterModules() {
         if (!this.ready) return;
+
+        var filterOutSnapshots = true;
         // Detect the blank (as opposed to null) query
         if (!this.query && this.query !== null) {
             history.replaceState(null, null, '');
@@ -548,6 +550,7 @@ export class GalleryComponent {
                 this.config.search.forEach(field => this.index.addField(field));
                 this.modules.forEach(module => this.index.addDoc(module)); 
             }
+            filterOutSnapshots = false;
             this.selectedModules = _.map(this.index.search(query, config), obj => this.modulesBySlug[obj.ref]);
         } else if (this.type) {
             this.selectedModules = this.modulesByType[this.type] || [];
@@ -560,6 +563,7 @@ export class GalleryComponent {
         } else {
             this.selectedModules = this.modules;
         }
+        if (filterOutSnapshots) this.selectedModules = _.filter(this.selectedModules, m => !/SNAPSHOT/.test(m.document_title));
         this.sortModules();
     }
     sortModules(key) {
