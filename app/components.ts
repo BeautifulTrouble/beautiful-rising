@@ -920,7 +920,7 @@ export class DetailComponent {
             <svg-inline class="open-icon" src="/assets/icons/hamburger.svg"></svg-inline>
             <h4>Menu</h4>
         </div>
-        <div *ngIf="visible">
+        <div *ngIf="textBySlug && visible">
             <div (click)="visible = !visible" class="overlay" [class.visible]="visible"></div>
             <div class="menu-outer">
                 <div class="menu">
