@@ -533,6 +533,7 @@ export class GalleryComponent {
             //this.router.navigate(['/']);
         }
         if (this.query) {
+            filterOutSnapshots = false;
             history.replaceState(null, null, '/search/' + this.query);
             this.type = this.tag = null;
             this.viewStyle = 'list';
@@ -550,7 +551,6 @@ export class GalleryComponent {
                 this.config.search.forEach(field => this.index.addField(field));
                 this.modules.forEach(module => this.index.addDoc(module)); 
             }
-            filterOutSnapshots = false;
             this.selectedModules = _.map(this.index.search(query, config), obj => this.modulesBySlug[obj.ref]);
         } else if (this.type) {
             this.selectedModules = this.modulesByType[this.type] || [];
@@ -559,6 +559,7 @@ export class GalleryComponent {
                 if (!this.selectedModules.length) setTimeout(() => this.router.navigate(['/type', this.type]), 1000);
             }
         } else if (this.tag) {
+            filterOutSnapshots = false;
             this.selectedModules = this.modulesByTag[this.tag];
         } else {
             this.selectedModules = this.modules;
