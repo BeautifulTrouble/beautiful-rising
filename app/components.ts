@@ -445,7 +445,7 @@ export class ModuleTypeComponent {
                                 <div class="module-hide-on-hover">
                                     <svg-inline *ngIf="module.region" src="/assets/icons/{{ module.region }}.svg" class="region-icon"></svg-inline>
                                     <div class="offset" [style.justify-content]="['center','flex-start','flex-end'][module.timestamp%3]">
-                                        <div [ngClass]="['module-type', module.type]">{{ module.type }}</div>
+                                        <div [ngClass]="['module-type', module.type]">{{ textBySlug.ui.types[module.type] }}</div>
                                         <div [class.story]="module.type == 'story'" class="module-title">{{ module.title }}</div>
                                         <div (click)="savingService.toggleSaved(module); $event.stopPropagation()" [ngSwitch]="savingService.isSaved(module)" class="module-save">
                                             <svg-inline *ngSwitchCase="true" src="/assets/icons/-_tileandmodule.svg"></svg-inline>
@@ -466,7 +466,7 @@ export class ModuleTypeComponent {
                                 <div *ngFor="let module of selectedModules" (click)="router.navigate(['/module', module.slug])" class="gallery-module-list col-sm-6">
                                     <div class="module-content clickable">
                                         <div class="module-type-accent"></div>
-                                        <div [ngClass]="['module-type', module.type]">{{ module.type }}</div>
+                                        <div [ngClass]="['module-type', module.type]">{{ textBySlug.ui.types[module.type] }}</div>
                                         <div class="module-title">{{ module.title }}</div>
                                         <div [innerHTML]="module.snapshot" class="module-snapshot"></div>
                                     </div>
@@ -608,7 +608,7 @@ export class GalleryComponent {
                                     <p *ngIf="module.where || module.when">{{ module.where }} {{ module.when }}</p>
                                     <svg-inline *ngIf="module.region" src="/assets/icons/{{ module.region }}.svg" class="region-icon"></svg-inline>
                                 </div>
-                                <div [routerLink]="['/type', module.type]" [ngClass]="['module-type', 'clickable', module.type]">{{ module.type }}</div>
+                                <div [routerLink]="['/type', module.type]" [ngClass]="['module-type', 'clickable', module.type]">{{ textBySlug.ui.types[module.type] }}</div>
                                 <div class="module-title">{{ module.title }}</div>
                                 <div (click)="savingService.toggleSaved(module)" [ngSwitch]="savingService.isSaved(module)" class="module-save clickable">
                                     <div *ngSwitchCase="true"><svg-inline src="/assets/icons/-_tileandmodule.svg"></svg-inline>{{ textBySlug.ui.module.remove }}</div>
