@@ -348,7 +348,7 @@ export class ModuleTypeComponent {
         this.setExpanded();
     }
     setExpanded() {
-        if (document.body.scrollTop == 0) {
+        if (pageYOffset == 0) {
             this.expanded = true;
             this.overrideExpanded = false;
         } else if (!this.overrideExpanded) {
