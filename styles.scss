@@ -261,7 +261,7 @@ svg-inline.selected * {
 
 
 // Fixed header
-$nav-height: 96px;
+$nav-height: 90px;
 $nav-height-small: 72px;
 .fixed-container-wrapper {
     position: fixed;
@@ -300,7 +300,7 @@ $nav-height-small: 72px;
 .logo {
     position: relative;
     left: 20px;
-    top: 8px;
+    top: 17px;
     z-index: 1550;
     display: inline-block;
     @include xs { 
@@ -456,12 +456,14 @@ $menu-top-size: 74px;
 $menu-width: 248px;
 menu {
     display: inline-block;
+    vertical-align: top;
     padding: 0;
     .menu-toggle {
         svg-inline.open-icon {
             display: inline-block;
             position: relative;
             left: 6px;
+            top: 6px;
         }
         img.close-icon {
             visibility: hidden;
