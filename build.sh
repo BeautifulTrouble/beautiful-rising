@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# Not nearly enough sanity checking
-if [ -z "$BRANCH" ]; then
+if ! [[ "$BRANCH" =~ ^(master|develop)$ ]]; then
     echo "This script is unsafe to run manually."
     exit 1
 fi
