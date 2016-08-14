@@ -815,6 +815,12 @@ export class GalleryComponent {
                                         <a [routerLink]="['/module', m.slug]" class="methodology">{{ m.title }}</a>
                                     </li></ul>
                                 </div>
+                                <div *ngIf="stories.length">
+                                    <h3 class="indent">{{ textBySlug.ui.types.stories }}</h3>
+                                    <ul><li *ngFor="let m of stories">
+                                        <a [routerLink]="['/module', m.slug]" class="story">{{ m.title }}</a>
+                                    </li></ul>
+                                </div>
                             </div>
                         </div>
                     </div>
