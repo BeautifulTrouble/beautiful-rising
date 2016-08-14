@@ -90,11 +90,9 @@ export class LazyBackgroundGroupDirective {
         this.outside.removeEventListener(window, 'scroll', this.lazyLoad);
         this.outside.removeEventListener(window, 'resize', this.lazyLoad);
     }
-    ngDoCheck() {
-        this.lazyLoad();
-    }
     add(element, url) {
         this.elements.push([element, url]);
+        this.lazyLoad();
     }
     remove(element) {
         _.remove(this.elements, value => value[0] === element);
