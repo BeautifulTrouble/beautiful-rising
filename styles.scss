@@ -779,11 +779,11 @@ $search-height: 50px;
         padding: 2 * $margin + 2 4 * $margin;
         display: inline-block;
         @include prefix(transition, transform $transition linear, webkit moz);
-        transform: rotate(-90deg);
+        transform: rotate(180deg);
         svg * { fill: $lightgray; }
     }
     .arrow.selected {
-        transform: rotate(-270deg);
+        transform: rotate(270deg);
         svg * { fill: black; }
     }
 }
@@ -1195,12 +1195,12 @@ detail {
             }
             .arrow {
                 @include prefix(transition, transform $transition linear, webkit moz);
-                transform: rotate(180deg) scale(0.75);
+                transform: scale(0.75) translate(5px,-10px) rotate(180deg);
                 svg * { fill: $lightgray; }
             }
             .arrow.selected {
-                transform: rotate(270deg) scale(0.75);
                 svg * { fill: black; }
+                transform: scale(0.75) translate(6px,-6px) rotate(270deg);
             }
         }
         @include sm {
