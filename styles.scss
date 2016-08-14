@@ -842,6 +842,15 @@ $search-height: 50px;
         font-size: 150%;
     }
 }
+.gallery-module-grid-wrapper {
+    // Compensate for some wonky bootstrap margin situation
+    @include md-down { 
+        margin-right: 9px;
+    }
+    @include sm-down {
+        margin-left: 9px;
+    }
+}
 .gallery-module-grid {
     .make-it-square {
         margin-top: 110%;
@@ -878,6 +887,9 @@ $search-height: 50px;
             flex-direction: column;
         }
     }
+    .module-content-inner {
+        height: 100%; // forcing the flexbox thing to work
+    }
     .module-image {
         background-size: cover;
         background-position: 50% 50%;
@@ -892,10 +904,10 @@ $search-height: 50px;
     .module-content, .module-overlay, .module-image, {
         position: absolute;
         top: 4 * $margin; bottom: 0;
-        left: 4 * $margin; right: 0;
-        @include sm-down {
-            top: 2*$margin;
-            left: $margin; right: $margin;
+        left: 10px; right: 15px; // Just as bootstrap grid would do
+        @include md-down {
+            top: 12px;
+            left: 6px; right: 6px;
         }
     }
     .module-snapshot {
@@ -906,10 +918,9 @@ $search-height: 50px;
         z-index: -50;
         opacity: 0;
     }
-    .module-snapshot, .module-hide-on-hover, .module-overlay {
+    .module-snapshot, .module-content-inner, .module-overlay {
         @include prefix(transition, opacity $transition linear, webkit moz);
     }
-
 }
 .gallery-module-list {
     .module-type-accent {

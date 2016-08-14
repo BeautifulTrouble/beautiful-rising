@@ -233,99 +233,96 @@ export class ContributeComponent {
 @Component({
     selector: 'module-types',
     template: `
-        <div class="row">
+                <div heightPolling="100ms" (heightChanged)="resized.next($event)"
+                 (window:scroll)="setExpanded()" [ngClass]="['module-types', expanded ? 'expanded' : 'collapsed']">
 
-            <div heightPolling="100ms" (heightChanged)="resized.next($event)"
-             (window:scroll)="setExpanded()" [ngClass]="['module-types', expanded ? 'expanded' : 'collapsed']">
+                    <div *ngIf="!textBySlug" class="loader-wrapper">
+                        <div class="loader"></div>
+                    </div>
+                    <div *ngIf="textBySlug">
+                        <div *ngIf="!type">
+                            <div [ngClass]="['col-xs-12', expanded ? 'col-md-10 col-md-offset-1' : 'col-md-12']">
+                                <div class="row">
+                                    <div *ngFor="let each of types; let first=first">
+                                        <div [routerLink]="['/type', each[0]]" class="clickable">
 
-                <div *ngIf="!textBySlug" class="loader-wrapper">
-                    <div class="loader"></div>
-                </div>
-                <div *ngIf="textBySlug">
-                    <div *ngIf="!type">
-                        <div [ngClass]="['col-xs-12', expanded ? 'col-md-10 col-md-offset-1' : 'col-md-12']">
-                            <div class="row">
-                                <div *ngFor="let each of types; let first=first">
-                                    <div [routerLink]="['/type', each[0]]" class="clickable">
-
-                                        <!-- larger -->
-                                        <div *ngIf="first" class="hidden-xs type-representation first" [class.expanded]="expanded">
-                                            <div [ngClass]="[expanded ? 'col-xs-6 col-sm-3 col-sm-offset-3' : 'col-xs-2 col-xs-offset-1']">
-                                                <h3>{{ each[1] }}</h3>
-                                                <svg-inline class="tworows pattern" src="/assets/patterns/2rows/{{ each[0] }}.svg"></svg-inline>
+                                            <!-- larger -->
+                                            <div *ngIf="first" class="hidden-xs type-representation first" [class.expanded]="expanded">
+                                                <div [ngClass]="[expanded ? 'col-xs-6 col-sm-3 col-sm-offset-3' : 'col-xs-2 col-xs-offset-1']">
+                                                    <h3>{{ each[1] }}</h3>
+                                                    <svg-inline class="tworows pattern" src="/assets/patterns/2rows/{{ each[0] }}.svg"></svg-inline>
+                                                </div>
+                                                <div *ngIf="expanded" class="col-xs-6 col-sm-3"><p class="definition" [innerHTML]="textBySlug.ui.definitions[each[0] + '-short']"></p></div>
+                                                <div *ngIf="expanded" class="clearfix"></div>
                                             </div>
-                                            <div *ngIf="expanded" class="col-xs-6 col-sm-3"><p class="definition" [innerHTML]="textBySlug.ui.definitions[each[0] + '-short']"></p></div>
-                                            <div *ngIf="expanded" class="clearfix"></div>
+                                            <div *ngIf="!first" class="hidden-xs type-representation" [class.expanded]="expanded">
+                                                <div [ngClass]="[expanded ? 'col-sm-3' : 'col-sm-2']">
+                                                    <h3>{{ each[1] }}</h3>
+                                                    <svg-inline class="tworows pattern" src="/assets/patterns/2rows/{{ each[0] }}.svg"></svg-inline>
+                                                    <p *ngIf="expanded" class="definition" [innerHTML]="textBySlug.ui.definitions[each[0] + '-short']"></p>
+                                                </div>
+                                            </div>
+
+                                            <!-- smaller -->
+                                            <div class="visible-xs type-representation" [class.expanded]="expanded" [class.clearfix]="true">
+                                                <div [ngClass]="[expanded ? 'col-xs-5 col-xs-offset-1' : 'col-xs-5 col-xs-offset-1']">
+                                                    <h3>{{ each[1] }}</h3>
+                                                    <svg-inline *ngIf="expanded" class="tworows pattern" src="/assets/patterns/2rows/{{ each[0] }}.svg"></svg-inline>
+                                                </div>
+                                                <div [ngClass]="[expanded ? 'col-xs-5' : 'col-xs-4']">
+                                                    <p *ngIf="expanded" class="definition" [innerHTML]="textBySlug.ui.definitions[each[0] + '-short']"></p>
+                                                    <svg-inline *ngIf="!expanded" class="onerow pattern" src="/assets/patterns/1row/{{ each[0] }}.svg"></svg-inline>
+                                                </div>
+                                            </div>
+
                                         </div>
-                                        <div *ngIf="!first" class="hidden-xs type-representation" [class.expanded]="expanded">
-                                            <div [ngClass]="[expanded ? 'col-sm-3' : 'col-sm-2']">
-                                                <h3>{{ each[1] }}</h3>
-                                                <svg-inline class="tworows pattern" src="/assets/patterns/2rows/{{ each[0] }}.svg"></svg-inline>
-                                                <p *ngIf="expanded" class="definition" [innerHTML]="textBySlug.ui.definitions[each[0] + '-short']"></p>
-                                            </div>
-                                        </div>
-
-                                        <!-- smaller -->
-                                        <div class="visible-xs type-representation" [class.expanded]="expanded" [class.clearfix]="true">
-                                            <div [ngClass]="[expanded ? 'col-xs-5 col-xs-offset-1' : 'col-xs-5 col-xs-offset-1']">
-                                                <h3>{{ each[1] }}</h3>
-                                                <svg-inline *ngIf="expanded" class="tworows pattern" src="/assets/patterns/2rows/{{ each[0] }}.svg"></svg-inline>
-                                            </div>
-                                            <div [ngClass]="[expanded ? 'col-xs-5' : 'col-xs-4']">
-                                                <p *ngIf="expanded" class="definition" [innerHTML]="textBySlug.ui.definitions[each[0] + '-short']"></p>
-                                                <svg-inline *ngIf="!expanded" class="onerow pattern" src="/assets/patterns/1row/{{ each[0] }}.svg"></svg-inline>
-                                            </div>
-                                        </div>
-
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div *ngIf="type">
-                        <div *ngIf="expanded">
-                            <div class="col-sm-3 col-md-2 type-list">
-                                <a class="expanded type-link" [routerLink]="['/']">All</a>
-                                <a *ngFor="let each of types" [routerLink]="['/type', each[0]]" [class.selected]="each[0] == type" class="expanded type-link">{{ each[1] }}</a>
-                            </div>
-                            <div class="hidden-xs col-sm-2 col-md-3 col-lg-4 type-pattern">
-                                <div *ngFor="let each of types" class="expanded">
-                                    <div *ngIf="each[0] == type">
-                                        <h3>{{ each[1] }}</h3>
-                                        <svg-inline class="pattern" src="/assets/patterns/3rows/{{ each[0] }}.svg"></svg-inline>
+                        <div *ngIf="type">
+                            <div *ngIf="expanded">
+                                <div class="col-sm-3 col-md-2 type-list">
+                                    <a class="expanded type-link" [routerLink]="['/']">All</a>
+                                    <a *ngFor="let each of types" [routerLink]="['/type', each[0]]" [class.selected]="each[0] == type" class="expanded type-link">{{ each[1] }}</a>
+                                </div>
+                                <div class="hidden-xs col-sm-2 col-md-3 col-lg-4 type-pattern">
+                                    <div *ngFor="let each of types" class="expanded">
+                                        <div *ngIf="each[0] == type">
+                                            <h3>{{ each[1] }}</h3>
+                                            <svg-inline class="pattern" src="/assets/patterns/3rows/{{ each[0] }}.svg"></svg-inline>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-7 col-md-7 col-lg-6 type-description">
+                                    <div [innerHtml]="textBySlug.ui.definitions[type]"></div>
+                                    <div *ngIf="type == 'story'" class="expanded regions">
+                                        <h3>Region</h3>
+                                        <span *ngFor="let each of ['africa','latin-america-and-the-caribbean','north-america','asia','europe','middle-east','oceania']">
+                                            <svg-inline *ngIf="region == each" [routerLink]="['/type/story']" [ngClass]="regionHasModules(each) ? 'clickable' : 'disabled'" class="selected" src="/assets/icons/{{ each }}.svg"></svg-inline>
+                                            <svg-inline *ngIf="region != each" [routerLink]="['/type/story', each]" [ngClass]="regionHasModules(each) ? 'clickable' : 'disabled'" src="/assets/icons/{{ each }}.svg"></svg-inline>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-xs-12 col-sm-7 col-md-7 col-lg-6 type-description">
-                                <div [innerHtml]="textBySlug.ui.definitions[type]"></div>
-                                <div *ngIf="type == 'story'" class="expanded regions">
-                                    <h3>Region</h3>
-                                    <span *ngFor="let each of ['africa','latin-america-and-the-caribbean','north-america','asia','europe','middle-east','oceania']">
-                                        <svg-inline *ngIf="region == each" [routerLink]="['/type/story']" [ngClass]="regionHasModules(each) ? 'clickable' : 'disabled'" class="selected" src="/assets/icons/{{ each }}.svg"></svg-inline>
-                                        <svg-inline *ngIf="region != each" [routerLink]="['/type/story', each]" [ngClass]="regionHasModules(each) ? 'clickable' : 'disabled'" src="/assets/icons/{{ each }}.svg"></svg-inline>
-                                    </span>
+                            <div *ngIf="!expanded">
+                                <div class="col-md-12 type-list">
+                                    <a [routerLink]="['/']" class="type-link">All</a>
+                                    <a *ngFor="let each of types" class="type-link"
+                                     [routerLink]="['/type', each[0]]" [class.selected]="each[0] == type" [class.h3]="each[0] == type">{{ each[1] }}</a>
+                                    <div *ngIf="type == 'story'" class="regions">
+                                        <span *ngFor="let each of ['africa','latin-america-and-the-caribbean','north-america','asia','europe','middle-east','oceania']">
+                                            <svg-inline *ngIf="region == each" [routerLink]="['/type/story']" [ngClass]="regionHasModules(each) ? 'clickable' : 'disabled'" class="selected" src="/assets/icons/{{ each }}.svg"></svg-inline>
+                                            <svg-inline *ngIf="region != each" [routerLink]="['/type/story', each]" [ngClass]="regionHasModules(each) ? 'clickable' : 'disabled'" src="/assets/icons/{{ each }}.svg"></svg-inline>
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div *ngIf="!expanded">
-                            <div class="col-md-12 type-list">
-                                <a [routerLink]="['/']" class="type-link">All</a>
-                                <a *ngFor="let each of types" class="type-link"
-                                 [routerLink]="['/type', each[0]]" [class.selected]="each[0] == type" [class.h3]="each[0] == type">{{ each[1] }}</a>
-                                <div *ngIf="type == 'story'" class="regions">
-                                    <span *ngFor="let each of ['africa','latin-america-and-the-caribbean','north-america','asia','europe','middle-east','oceania']">
-                                        <svg-inline *ngIf="region == each" [routerLink]="['/type/story']" [ngClass]="regionHasModules(each) ? 'clickable' : 'disabled'" class="selected" src="/assets/icons/{{ each }}.svg"></svg-inline>
-                                        <svg-inline *ngIf="region != each" [routerLink]="['/type/story', each]" [ngClass]="regionHasModules(each) ? 'clickable' : 'disabled'" src="/assets/icons/{{ each }}.svg"></svg-inline>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
+                        <svg-inline *ngIf="!expanded || overrideExpanded" (click)="expanded = overrideExpanded = !expanded" 
+                         class="hidden-xs arrow clickable" [class.selected]="expanded" src="/assets/icons/arrow.svg"></svg-inline>
                     </div>
-                    <svg-inline *ngIf="!expanded || overrideExpanded" (click)="expanded = overrideExpanded = !expanded" 
-                     class="hidden-xs arrow clickable" [class.selected]="expanded" src="/assets/icons/arrow.svg"></svg-inline>
                 </div>
-            </div>
-        </div>
     `,
     directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES ]
 })
@@ -376,33 +373,39 @@ export class ModuleTypeComponent {
         <div class="fixed-container-wrapper">
             <div class="container">
                 <div class="row">
-                    <input [(ngModel)]="query" (ngModelChange)="filterModules()" class="search-box visible-xs visible-sm" 
-                     placeholder="{{ textBySlug && textBySlug.ui.list['search-text'] }}">
-                    <input [(ngModel)]="query" (ngModelChange)="filterModules()" class="search-box visible-md visible-lg" 
-                     placeholder="{{ textBySlug && textBySlug.ui.list['search-text'] }}" autofocus>
+                    <div class="col-xs-12">
+                        <input [(ngModel)]="query" (ngModelChange)="filterModules()" class="search-box visible-xs visible-sm" 
+                         placeholder="{{ textBySlug && textBySlug.ui.list['search-text'] }}">
+                        <input [(ngModel)]="query" (ngModelChange)="filterModules()" class="search-box visible-md visible-lg" 
+                         placeholder="{{ textBySlug && textBySlug.ui.list['search-text'] }}" autofocus>
+                        <module-types (resized)="marginTop = $event" [region]="region" [type]="type" [textBySlug]="textBySlug" [modulesByRegion]="modulesByRegion"></module-types>
+                    </div>
                 </div>
-                <module-types (resized)="marginTop = $event" [region]="region" [type]="type" [textBySlug]="textBySlug" [modulesByRegion]="modulesByRegion"></module-types>
             </div>
         </div>
         <div *ngIf="textBySlug" class="container">
             <div class="row gallery" [style.margin-top.px]="marginTop">
                 <div class="gallery-sort visible-md visible-lg col-md-3">
                     <h3>{{ textBySlug.ui.list.view }}</h3>
-                    <div class="row border-top border-bottom view-as">
-                        <div class="col-xs-6">
-                            <svg-inline (click)="viewStyle='grid'" [class.selected]="viewStyle == 'grid'" class="clickable" src="/assets/icons/grid.svg"></svg-inline>
-                        </div>
-                        <div class="col-xs-6">
-                            <svg-inline (click)="viewStyle='list'" [class.selected]="viewStyle == 'list'" class="clickable" src="/assets/icons/list.svg"></svg-inline>
+                    <div class="border-top border-bottom view-as">
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <svg-inline (click)="viewStyle='grid'" [class.selected]="viewStyle == 'grid'" class="clickable" src="/assets/icons/grid.svg"></svg-inline>
+                            </div>
+                            <div class="col-xs-6">
+                                <svg-inline (click)="viewStyle='list'" [class.selected]="viewStyle == 'list'" class="clickable" src="/assets/icons/list.svg"></svg-inline>
+                            </div>
                         </div>
                     </div>
                     <h3>{{ textBySlug.ui.list.sort }}</h3>
-                    <div class="row border-top border-bottom sort-by">
-                        <div (click)="sortModules('title')" [class.selected]="sortKey == 'title'" class="col-xs-6 clickable">{{ textBySlug.ui.list.alphabetical }}</div>
-                        <div (click)="sortModules('timestamp')" [class.selected]="sortKey == 'timestamp'" class="col-xs-6 clickable">{{ textBySlug.ui.list.newest }}</div>
+                    <div class="border-top border-bottom sort-by">
+                        <div class="row">
+                            <div (click)="sortModules('title')" [class.selected]="sortKey == 'title'" class="col-xs-6 clickable">{{ textBySlug.ui.list.alphabetical }}</div>
+                            <div (click)="sortModules('timestamp')" [class.selected]="sortKey == 'timestamp'" class="col-xs-6 clickable">{{ textBySlug.ui.list.newest }}</div>
+                        </div>
                     </div>
                     <h3>{{ textBySlug.ui.list.tags }}</h3>
-                    <div class="row border-top">
+                    <div class="border-top">
                         <span *ngFor="let each of tags; let last=last">
                             <a *ngIf="tag != each" [routerLink]="['/tag', each]" class="tag">{{ tagsBySlug[each] }}</a>
                             <a *ngIf="tag == each" [routerLink]="['/']" class="tag selected">{{ tagsBySlug[each] }}</a>
@@ -437,30 +440,27 @@ export class ModuleTypeComponent {
                     </div>
 
                     <div lazyBackgroundGroup *ngIf="viewStyle == 'grid'" class="row">
-                        <div *ngFor="let module of selectedModules" (click)="router.navigate(['/module', module.slug])" class="col-xs-6 col-sm-4 gallery-module-grid">
-                            <!-- Rethink the structure of this whole section -->
+                        <div class="gallery-module-grid-wrapper">
+                            <div *ngFor="let module of selectedModules" (click)="router.navigate(['/module', module.slug])" class="col-xs-6 col-sm-4 gallery-module-grid">
+                                <div class="make-it-square"></div>
+                                <div *ngIf="module.image" [lazyBackground]="config['asset-path'] +'/medium-'+ module.image" class="module-image"></div>
+                                <div class="module-overlay"></div>
 
-                            <div class="make-it-square"></div>
-                            <div *ngIf="module.image" [lazyBackground]="config['asset-path'] +'/medium-'+ module.image" class="module-image"></div>
-                            <div class="module-overlay"></div>
-
-                            <div class="module-content clickable">
-                                <div class="module-hide-on-hover">
-                                    <svg-inline *ngIf="module.region" src="/assets/icons/{{ module.region }}.svg" class="region-icon"></svg-inline>
-                                    <div class="offset" [style.justify-content]="['center','flex-start','flex-end'][module.timestamp%3]">
-                                        <div [ngClass]="['module-type', module.type]">{{ textBySlug.ui.types[module.type] }}</div>
-                                        <div [class.story]="module.type == 'story'" class="module-title">{{ module.title }}</div>
-                                        <div (click)="savingService.toggleSaved(module); $event.stopPropagation()" [ngSwitch]="savingService.isSaved(module)" class="module-save">
-                                            <svg-inline *ngSwitchCase="true" src="/assets/icons/-_tileandmodule.svg"></svg-inline>
-                                            <svg-inline *ngSwitchCase="false" src="/assets/icons/+_tileandmodule.svg"></svg-inline>
+                                <div class="module-content clickable">
+                                    <div class="module-content-inner">
+                                        <svg-inline *ngIf="module.region" src="/assets/icons/{{ module.region }}.svg" class="region-icon"></svg-inline>
+                                        <div class="offset" [style.justify-content]="['center','flex-start','flex-end'][module.timestamp%3]">
+                                            <div [ngClass]="['module-type', module.type]">{{ textBySlug.ui.types[module.type] }}</div>
+                                            <div [class.story]="module.type == 'story'" class="module-title">{{ module.title }}</div>
+                                            <div (click)="savingService.toggleSaved(module); $event.stopPropagation()" [ngSwitch]="savingService.isSaved(module)" class="module-save">
+                                                <svg-inline *ngSwitchCase="true" src="/assets/icons/-_tileandmodule.svg"></svg-inline>
+                                                <svg-inline *ngSwitchCase="false" src="/assets/icons/+_tileandmodule.svg"></svg-inline>
+                                            </div>
                                         </div>
                                     </div>
-
+                                    <div [ngClass]="['module-snapshot', module.type]" [innerHTML]="module.snapshot"></div>
                                 </div>
-                                <div [ngClass]="['module-snapshot', module.type]" [innerHTML]="module.snapshot"></div>
                             </div>
-                            
-                            <!-- ... -->
                         </div>
                     </div>
                     <div *ngIf="viewStyle == 'list'">
