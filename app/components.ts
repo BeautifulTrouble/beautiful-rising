@@ -641,7 +641,7 @@ export class GalleryComponent {
                                     <h4 class="last">{{ author.lastname }}</h4>
                                 </div>
                             </a>
-                            <p *ngIf="author.bio" [innerHTML]="author.bio"></p>
+                            <div class="contributor-bio" *ngIf="author.bio" [innerHTML]="author.bio"></div>
                         </div>
                         <div *ngIf="!authors.length">
                             <div class="contributor-image" style="background-image: url('/assets/icons/anon.png')"></div>
@@ -705,7 +705,7 @@ export class GalleryComponent {
                         <div *ngIf="snapshot">
                             <p [innerHTML]="module.snapshot"></p>
                             <p><strong>{{ textBySlug.ui.module.snapshot | template: {type: textBySlug.ui.types[module.type].toLowerCase()} }}</strong></p>
-                            <div class="row">
+                            <div class="row contribute-message">
                                 <div class="col-xs-6">
                                     <a href="{{ textBySlug.ui.forms[module.type] }}" target="_blank"><h4>{{ textBySlug.ui.module.form }}</h4></a>
                                 </div>
@@ -717,8 +717,8 @@ export class GalleryComponent {
                         <div *ngIf="!snapshot">
                             <div *ngIf="collapsed">
                                 <div class="short-write-up" [innerHTML]="module['short-write-up']"></div>
-                                <h5 *ngIf="!gallery" (click)="collapsed = false">{{ textBySlug.ui.module['read-more'] }}</h5>
-                                <div *ngIf="gallery">
+                                <h5 *ngIf="!gallery" class="button" (click)="collapsed = false">{{ textBySlug.ui.module['read-more'] }}</h5>
+                                <div *ngIf="gallery" class="contribute-message">
                                     <strong [innerMarkdown]="template(textBySlug.ui.module.gallery, {form: textBySlug.ui.forms[module.type]})"></strong>
                                 </div>
                             </div>
@@ -728,7 +728,7 @@ export class GalleryComponent {
                                     <div class="attribution" [innerHTML]="epigraph[1]"></div>
                                 </div>
                                 <div *ngIf="!gallery" [innerHTML]="module['full-write-up']"></div>
-                                <h5 (click)="collapsed = true">{{ textBySlug.ui.module['read-less'] }}</h5>
+                                <h5 class="button" (click)="collapsed = true">{{ textBySlug.ui.module['read-less'] }}</h5>
                             </div>
                             <div *ngIf="module['how-to-use']" class="how-to-use">
                                 <h4>{{ textBySlug.ui.module['how-to-use'] }}</h4>
@@ -762,9 +762,50 @@ export class GalleryComponent {
                                 </p>
                             </div>
                         </div>
+
+                        <div *ngIf="(module['real-world-examples'] || []).length" class="examples hidden-sm">
+                            <div (click)="examplesCollapsed = !examplesCollapsed" class="heading clickable">
+                                <svg-inline src="/assets/icons/RWE_{{ module.type }}.svg"></svg-inline>
+                                <h3 class="bigger after-arrow" [class.selected]="!examplesCollapsed">{{ textBySlug.ui.module['real-world'] | template:{title: module.title } }}</h3>
+                            </div>
+                            <div *ngIf="!examplesCollapsed" class="example-wrapper">
+                                <div class="example" *ngFor="let example of module['real-world-examples']; let index=index;">
+                                    <div class="caption-wrapper" [class.staggered]="!(index%2)">
+                                        <div class="caption">
+                                            <a target="_blank" href="{{ example.link }}"><h5>{{ example.title }}</h5></a>
+                                            <div class="description" [innerMarkdown]="example.description"></div>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="!module.image" class="image"></div>
+                                    <div *ngIf="module.image" class="image" 
+                                        [class.staggered]="!(index%2)" [class.shifted]="!(index%3)" 
+                                        [ngStyle]="{'background-image': 'url(/assets/patterns/snapshotoverlay/' + module.type +'.svg), url('+ config['asset-path'] +'/'+ module.image +')'}"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="col-sm-12 visible-sm"><!-- small only full width content -->
+                        <div *ngIf="(module['real-world-examples'] || []).length" class="examples">
+                            <div (click)="examplesCollapsed = !examplesCollapsed" class="heading clickable">
+                                <svg-inline src="/assets/icons/RWE_{{ module.type }}.svg"></svg-inline>
+                                <h3 class="bigger after-arrow" [class.selected]="!examplesCollapsed">{{ textBySlug.ui.module['real-world'] | template:{title: module.title } }}</h3>
+                            </div>
+                            <div *ngIf="!examplesCollapsed" class="example-wrapper">
+                                <div class="example" *ngFor="let example of module['real-world-examples']; let index=index;">
+                                    <div class="caption-wrapper" [class.staggered]="!(index%2)">
+                                        <div class="caption">
+                                            <a target="_blank" href="{{ example.link }}"><h5>{{ example.title }}</h5></a>
+                                            <div class="description" [innerMarkdown]="example.description"></div>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="!module.image" class="image"></div>
+                                    <div *ngIf="module.image" class="image" 
+                                        [class.staggered]="!(index%2)" [class.shifted]="!(index%3)" 
+                                        [ngStyle]="{'background-image': 'url(/assets/patterns/snapshotoverlay/' + module.type +'.svg), url('+ config['asset-path'] +'/'+ module.image +')'}"></div>
+                                </div>
+                            </div>
+                        </div>
                         <div *ngIf="module['potential-risks']" (click)="riskCollapsed = !riskCollapsed" class="risks" [class.clickable]="module['potential-risks-short']">
                             <div class="heading">
                                 <svg-inline src="/assets/icons/pr.svg" [ngClass]="'type-' + module.type"></svg-inline>
@@ -788,7 +829,7 @@ export class GalleryComponent {
                             <div *ngIf="riskCollapsed && !module['potential-risks-short']" [innerHTML]="module['potential-risks']"></div>
                             <div *ngIf="!riskCollapsed" [innerHTML]="module['potential-risks']"></div>
                         </div>
-                        <div *ngIf="tactics.length || principles.length || theories.length || methodologies.length">
+                        <div *ngIf="tactics.length || principles.length || theories.length || methodologies.length || stories.length">
                             <h3 class="bigger related">{{ textBySlug.ui.module['related-modules'] }}</h3>
                             <div class="related">
                                 <div *ngIf="tactics.length">
@@ -867,6 +908,7 @@ export class DetailComponent {
                 }
                 this.collapsed = true;
                 this.riskCollapsed = true;
+                this.examplesCollapsed = true;
 
                 this.authors = this.getRelated('authors', this.peopleBySlug);
                 this.stories = this.getRelated('stories', this.modulesBySlug);

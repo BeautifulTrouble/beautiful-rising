@@ -881,14 +881,14 @@ $search-height: 50px;
         z-index: 100;
         position: relative;
         top: 50%;
-        .offset {
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
     }
     .module-content-inner {
         height: 100%; // forcing the flexbox thing to work
+    }
+    .offset {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
     }
     .module-image {
         background-size: cover;
@@ -942,14 +942,6 @@ $search-height: 50px;
 
 // Detail
 detail {
-    h5 {
-        text-transform: uppercase;
-        padding: $margin 2 * $margin;
-        border: 2px solid black;
-        cursor: pointer;
-        font-weight: bold;
-        display: inline-block;
-    }
     .module-image {
         padding-top: 35%;
         background-size: cover;
@@ -1048,105 +1040,113 @@ detail {
             }
         }
     }
-    .column-a, .column-b {
-        //margin-top: 32px;
-        h3.bigger {
-            padding-top: 0;
-            padding-bottom: 0;
-            color: black;
-            font-size: 40px;
-            line-height: 42px;
-            margin-top: 0;
-            @include sm-down {
-                margin-top: 36px;
-                font-size: 30px;
-                line-height: 36px;
-            }
-        }
-        h4 {
-            padding: $margin 0;
-            font-size: 19px;
-            line-height: 22px;
-            @include sm-down {
-                font-size: 16px;
-                line-height: 18px;
-            }
-        }
-        .contributed-by {
-            @include sm-down {
-                margin-bottom: 24px;
-                margin-top: 0 !important;
-            }
-        }
-        .contributor-image {
-            width: 100%;
-            height: 165px;
-            border: 2px solid black;
-            background-size: cover;
-            background-position: 50% 30%;
-        }
-        .contributor-name {
-            position: relative;
-            .first { 
-                margin-bottom: 0; 
-                padding-bottom: 0;
-            }
-            .last { 
-                margin-top: 0; 
-                padding-top: 0;
-            }
-            @include sm {
-                h4 { 
-                    margin-top: 0;
-                    padding-top: 0; 
-                }
-            }
-
-
-        }
-        .anon {
-            width: 60%;
-            position: relative;
-            @include xs { 
-                max-width: 100px;
-                width: 30%; 
-            }
-            @include sm { width: 20%; }
-            @include md { width: 50%; }
-        }
-        .your-arrow {
-            position: absolute;
-            left: 100%;
-            top: -65%;
-            @include sm {
-                transform: rotateY(180deg) rotateZ(90deg);
-                left: 0; right: 100%;
-                top: 50%;
-            }
-        }
-        .tag {
-            color: $gray;
+    h3.bigger {
+        padding-top: 0;
+        padding-bottom: 0;
+        color: black;
+        font-size: 40px;
+        line-height: 36px;
+        margin-top: 0;
+        margin-bottom: 7px;
+        @include sm-down {
+            margin-top: 36px;
+            font-size: 30px;
+            line-height: 26px;
         }
     }
-    .column-b {
-        .related {
-            padding: 24px;
-            padding-top: $margin;
-            background: $lightergray;
-            h3 {
-                padding-left: 22px;
+    h4 {
+        padding: $margin 0;
+        font-size: 19px;
+        line-height: 22px;
+        @include sm-down {
+            font-size: 16px;
+            line-height: 18px;
+        }
+    }
+    h5.button {
+        text-transform: uppercase;
+        padding: $margin 2 * $margin;
+        border: 2px solid black;
+        cursor: pointer;
+        font-weight: bold;
+        display: inline-block;
+    }
+    .contributed-by {
+        @include sm-down {
+            margin-bottom: 24px !important;
+            margin-top: 0 !important;
+        }
+    }
+    .contributor-image {
+        width: 100%;
+        height: 165px;
+        border: 2px solid black;
+        background-size: cover;
+        background-position: 50% 30%;
+        @include md-up {
+            margin-top: 10px;
+        }
+    }
+    .contributor-name {
+        position: relative;
+        .first { 
+            margin-bottom: 0; 
+            padding-bottom: 0;
+        }
+        .last { 
+            margin-top: 0; 
+            padding-top: 0;
+        }
+        @include sm {
+            h4 { 
+                margin-top: 0;
+                padding-top: 0; 
             }
-            ul { 
-                list-style-type: square;
-                text-transform: uppercase;
-            }
-            li {
-                font-weight: bold;
-                padding: 2px 0;
-            }
-            @include xs {
-                padding: 6px 24px 24px 0;
-            }
+        }
+    }
+    .contributor-bio {
+        margin-bottom: 24px;
+    }
+    .anon {
+        width: 60%;
+        position: relative;
+        @include xs { 
+            max-width: 100px;
+            width: 30%; 
+        }
+        @include sm { width: 20%; }
+        @include md { width: 50%; }
+    }
+    .your-arrow {
+        position: absolute;
+        left: 100%;
+        top: -65%;
+        @include sm {
+            transform: rotateY(180deg) rotateZ(90deg);
+            left: 0; right: 100%;
+            top: 50%;
+        }
+    }
+    .tag {
+        color: $gray;
+    }
+    .related {
+        padding: 24px;
+        padding-top: $margin;
+        background: $lightergray;
+        h3 {
+            padding-left: 22px;
+        }
+        ul { 
+            list-style-type: square;
+            text-transform: uppercase;
+        }
+        li {
+            font-weight: bold;
+            padding: 2px 0;
+        }
+        @include xs {
+            padding: 6px 24px 24px 0;
         }
     }
     .content {
@@ -1176,8 +1176,9 @@ detail {
             }
         }
         .learn-more {
+            padding-bottom: 36px;
             h4 {
-                margin: 6*$margin 0 3*$margin 0;
+                margin: 36px 0 12px 0;
             }
             a {
                 color: $gray;
@@ -1188,12 +1189,11 @@ detail {
         .key-heading, .how-to-use, .why-worked-or-failed {
             margin-top: 6*$margin;
         }
-    }
-    .risks {
-        margin-bottom: 32px;
-        &.clickable {
-            text-decoration: none;
+        .contribute-message {
+            margin-bottom: 36px;
         }
+    }
+    .risks, .examples {
         .heading {
             border-bottom: $margin solid black;
             margin-bottom: $margin * 2;
@@ -1202,7 +1202,10 @@ detail {
             }
             h3 {
                 margin-left: $margin;
-                margin-bottom: 4px;
+                margin-bottom: 7px;
+                @include xs {
+                    margin-bottom: 0;
+                }
             }
             .arrow {
                 @include prefix(transition, transform $transition linear, webkit moz);
@@ -1214,8 +1217,111 @@ detail {
                 transform: scale(0.75) translate(6px,-6px) rotate(270deg);
             }
         }
+    }
+    .risks {
+        margin-bottom: 36px;
+        &.clickable {
+            text-decoration: none;
+        }
         @include sm {
             p { padding-left: 50px }
+        }
+        @include sm-down {
+            h3.bigger { // Check this carefully before changing it
+                margin-bottom: 0;
+            }
+        }
+    }
+    .examples {
+        .heading {
+            margin-bottom: 24px;
+            svg-inline {
+                position: relative;
+                top: 3px;
+                svg .circle { fill: black; }
+                @include sm { 
+                    top: 0; 
+                    vertical-align: bottom;
+                }
+                @include xs { top: -3px; }
+            }
+            h3 {
+                max-width: 80%;
+                @include sm {
+                    margin-bottom: 0;
+                }
+                vertical-align: top;
+                transform: scale(1) translate(0,0) rotate(0deg);
+            }
+            h3::after {
+                display: inline-block;
+                content: url('/assets/icons/arrow.svg');
+                transform: scale(0.75) translate(10px,0px) rotate(180deg);
+                @include prefix(transition, transform $transition linear, webkit moz);
+            }
+            h3.selected::after {
+                content: url('/assets/icons/arrow-black.svg');
+                transform: scale(0.75) translate(6px,0px) rotate(270deg);
+            }
+        }
+        .example {
+            position: relative;
+        }
+        .example-wrapper {
+            @include sm {
+                padding-left: 50px;
+            }
+        }
+        .caption-wrapper {
+            min-height: 200px;
+            .caption {
+                position: absolute;
+                left: 25%; right: 0;
+                bottom: 24px;
+                background: white;
+                border: 2px solid black;
+                padding: 10px 12px 0 12px;
+                line-height: 18px;
+                a {
+                    text-decoration: initial;
+                    color: black;
+                }
+                h5 {
+                    font-weight: bold;
+                    margin: 2px 0 6px 0;
+                    text-transform: uppercase;
+                }
+                .description {
+                    font-style: italic;
+                }
+            }
+            &.staggered {
+                .caption {
+                    bottom: initial;
+                    top: 0;
+                    left: 0; right: 25%;
+                }
+            }
+        }
+        .image {
+            position: absolute;
+            top: 0; bottom: 48px;
+            left: 24px; right: 24px;
+            padding-left: 10%;
+            padding-right: 10%;
+            z-index: -1;
+            //background: $lightergray;
+            opacity: .5;
+            background-repeat: no-repeat;
+            background-position-y: 25%;
+            background-position-x: 100%;
+            &.staggered {
+                top: 24px; bottom: 24px;
+                background-position-x: 0%;
+            }
+            &.shifted {
+                background-position-x: 50%;
+            }
         }
     }
     .edit-link {
