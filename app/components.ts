@@ -1090,18 +1090,20 @@ export class MenuComponent {
                                 </div>
                                 <div *ngIf="active == 'tools'" class="row">
                                     <div class="col-md-6 tab pdf-tab">
-                                        <div (click)="toolsTab = toolsTab == 'pdf' ? null : 'pdf'" [class.active]="toolsTab == 'pdf'" class="button">
+                                        <div (click)="toolsTab = toolsTab == 'pdf' ? null : 'pdf'; scrollTo(0)" 
+                                            [class.active]="toolsTab == 'pdf'" class="button">
                                             <svg-inline src="/assets/icons/pdf.svg"></svg-inline></div>
                                     </div>
                                     <div class="col-md-6 tab email-tab">
-                                        <div (click)="toolsTab = toolsTab == 'email' ? null : 'email'" [class.active]="toolsTab == 'email'" class="button">
+                                        <div (click)="toolsTab = toolsTab == 'email' ? null : 'email'; scrollTo(0)" 
+                                            [class.active]="toolsTab == 'email'" class="button">
                                             <svg-inline src="/assets/icons/email.svg"></svg-inline></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div *ngIf="isOpen" class="col-md-9 main-panel">
+                    <div #mainPanel *ngIf="isOpen" class="col-md-9 main-panel">
                         <div class="row">
                             <div class="col-md-12 content">
                                 <div *ngIf="active == 'news'" class="row">
@@ -1122,7 +1124,7 @@ export class MenuComponent {
                                             [innerMarkdown]="template(textBySlug.ui.sidebar['tools-invite'], {icon: iconHTML})"></div>
                                     </div>
                                     <div *ngFor="let module of getSavedModules(); let first=first" class="col-md-12 tool" [class.first]="first">
-                                        <div (click)="router.navigate(['/tool', module.slug]); close()" class="module-title clickable" [ngClass]="module.type">{{ module.title }}</div>
+                                        <div (click)="router.navigate(['/tool', module.slug])" class="module-title clickable" [ngClass]="module.type">{{ module.title }}</div>
                                         <div class="module-snapshot" [innerHTML]="module.snapshot"></div>
                                         <div class="row">
                                             <div (click)="savingService.toggleSaved(module)" class="col-sm-6 module-unsave clickable">
@@ -1149,6 +1151,7 @@ export class MenuComponent {
 export class ToolsComponent {
     @Output() offsetchanged = new EventEmitter();
     @ViewChild('master') master;
+    @ViewChild('mainPanel') mainPanel;
     @ViewChild('iconPanel') iconPanel;
     template = template;
     _ = _;
@@ -1168,6 +1171,9 @@ export class ToolsComponent {
     ngOnInit() {
         this.contentService.injectContent(this);
     }
+    ngOnDestroy() {
+        this.sub && this.sub.unsubscribe();
+    }
     open() {
         this.isOpen = true;
         if (this.master) {
@@ -1175,18 +1181,28 @@ export class ToolsComponent {
             var diff = Math.abs(innerWidth - rect.right) - this.marginLeft;
             this.marginLeft = -diff;
             this.offsetchanged.next(diff);
+            this.scrollTo(this.position || 0);
         }
+        this.sub = this.router.events.subscribe(event => {
+            if (event instanceof NavigationEnd) {
+                this.sub && this.sub.unsubscribe();
+                this.close();
+            }
+        });
     }
     close() {
         this.isOpen = false;
         this.toolsTab = null;
         this.marginLeft = 0;
         this.offsetchanged.next(0);
+        if (this.mainPanel && this.active == 'tools') {
+            this.position = this.mainPanel.nativeElement.scrollTop;   
+        }
     }
     slide() {
         if (this.iconPanel) {
             var rect = this.iconPanel.nativeElement.getBoundingClientRect();
-            if (rect.right <= innerWidth) return;
+            if (rect.right <= innerWidth - 10) return;
             this.marginLeft = -rect.width;
             this.offsetchanged.next(rect.width);
         }
@@ -1194,6 +1210,11 @@ export class ToolsComponent {
     unslide() {
         this.marginLeft = 0;
         this.offsetchanged.next(0);
+    }
+    scrollTo(y) {
+        setTimeout(() => { 
+            if (this.mainPanel) this.mainPanel.nativeElement.scrollTop = y;
+        });
     }
     activate(which) {
         if (which == this.active && this.isOpen) this.close();

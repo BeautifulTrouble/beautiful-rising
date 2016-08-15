@@ -325,11 +325,11 @@ tools {
     }
     .master {
         position: relative;
-        left: 100%;
+        left: 101%;
         margin-left: 0px;
         pointer-events: initial;
         height: 100vh;
-        padding-bottom: $nav-height + 16px;
+        padding-bottom: $nav-height + 24px;
         @include prefix(transition, margin-left $transition linear, webkit moz);
     }
     .icon-panel, .main-panel {
