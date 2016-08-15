@@ -441,7 +441,7 @@ export class ModuleTypeComponent {
 
                     <div lazyBackgroundGroup *ngIf="viewStyle == 'grid'" class="row">
                         <div class="gallery-module-grid-wrapper">
-                            <div *ngFor="let module of selectedModules" (click)="router.navigate(['/module', module.slug])" class="col-xs-6 col-sm-4 gallery-module-grid">
+                            <div *ngFor="let module of selectedModules" (click)="router.navigate(['/tool', module.slug])" class="col-xs-6 col-sm-4 gallery-module-grid">
                                 <div class="make-it-square"></div>
                                 <div *ngIf="module.image" [lazyBackground]="config['asset-path'] +'/medium-'+ module.image" class="module-image"></div>
                                 <div class="module-overlay"></div>
@@ -466,7 +466,7 @@ export class ModuleTypeComponent {
                     <div *ngIf="viewStyle == 'list'">
                         <div class="row">
                             <div class="col-md-11 col-md-offset-1">
-                                <div *ngFor="let module of selectedModules" (click)="router.navigate(['/module', module.slug])" class="gallery-module-list col-sm-6">
+                                <div *ngFor="let module of selectedModules" (click)="router.navigate(['/tool', module.slug])" class="gallery-module-list col-sm-6">
                                     <div class="module-content clickable">
                                         <div class="module-type-accent"></div>
                                         <div [ngClass]="['module-type', module.type]">{{ textBySlug.ui.types[module.type] }}</div>
@@ -835,31 +835,31 @@ export class GalleryComponent {
                                 <div *ngIf="tactics.length">
                                     <h3 class="indent">{{ textBySlug.ui.types.tactics }}</h3>
                                     <ul><li *ngFor="let m of tactics">
-                                        <a [routerLink]="['/module', m.slug]" class="tactic">{{ m.title }}</a>
+                                        <a [routerLink]="['/tool', m.slug]" class="tactic">{{ m.title }}</a>
                                     </li></ul>
                                 </div>
                                 <div *ngIf="principles.length">
                                     <h3 class="indent">{{ textBySlug.ui.types.principles }}</h3>
                                     <ul><li *ngFor="let m of principles">
-                                        <a [routerLink]="['/module', m.slug]" class="principle">{{ m.title }}</a>
+                                        <a [routerLink]="['/tool', m.slug]" class="principle">{{ m.title }}</a>
                                     </li></ul>
                                 </div>
                                 <div *ngIf="theories.length">
                                     <h3 class="indent">{{ textBySlug.ui.types.theories }}</h3>
                                     <ul><li *ngFor="let m of theories">
-                                        <a [routerLink]="['/module', m.slug]" class="theory">{{ m.title }}</a>
+                                        <a [routerLink]="['/tool', m.slug]" class="theory">{{ m.title }}</a>
                                     </li></ul>
                                 </div>
                                 <div *ngIf="methodologies.length">
                                     <h3 class="indent">{{ textBySlug.ui.types.methodologies }}</h3>
                                     <ul><li *ngFor="let m of methodologies">
-                                        <a [routerLink]="['/module', m.slug]" class="methodology">{{ m.title }}</a>
+                                        <a [routerLink]="['/tool', m.slug]" class="methodology">{{ m.title }}</a>
                                     </li></ul>
                                 </div>
                                 <div *ngIf="stories.length">
                                     <h3 class="indent">{{ textBySlug.ui.types.stories }}</h3>
                                     <ul><li *ngFor="let m of stories">
-                                        <a [routerLink]="['/module', m.slug]" class="story">{{ m.title }}</a>
+                                        <a [routerLink]="['/tool', m.slug]" class="story">{{ m.title }}</a>
                                     </li></ul>
                                 </div>
                             </div>
@@ -942,7 +942,7 @@ export class DetailComponent {
         if (links.length) _.map(links, el => el.setAttribute('href', location.pathname + el.hash));
 
         // HACK: Prevent module links rendered from markdown from reloading the page
-        var links = this.el.nativeElement.querySelectorAll('a[href^="/module"]');
+        var links = this.el.nativeElement.querySelectorAll('a[href^="/tool"]');
         if (links.length) {
             _.map(links, el => {
                 if (el.hash) return; // Don't rewrite links with fragment ids
@@ -1055,98 +1055,155 @@ export class MenuComponent {
 @Component({
     selector: 'tools',
     template: `
-        <!-- new stuff 
-        <div *ngIf="bottom" class="navbar-fixed-bottom" [class.opened]="opened">
-            <div class="container">
-                <div (click)="toggle()" class="row tool-toggle">
-                    <div class="col-xs-6 clickable icon" [class.selected]="opened && visible == 'news-feed'" 
-                     (click)="selectTool('news-feed'); $event.stopPropagation()">
-        -->
-
-
-        <!--
-        <div *ngIf="bottom" class="navbar-fixed-bottom" [class.opened]="opened">
-            <div class="container">
-                <div class="row">
-                    <div (click)="toggleOpened()" class="tools" [class.opened]="opened">
-                        <div class="col-xs-6 clickable icon" [class.selected]="opened && visible == 'news-feed'" 
-                         (click)="selectTool('news-feed'); $event.stopPropagation()">
-                            <svg-inline src="/assets/icons/News_Feed.svg"></svg-inline><div class="tool-text">News feed</div>
+        <div class="container visible-md visible-lg">
+            <div *ngIf="textBySlug">
+                <div #master class="master col-xs-12 col-md-5 col-lg-4" [style.margin-left.px]="marginLeft" (mouseenter)="!isOpen && slide()" (mouseleave)="!isOpen && unslide()">
+                    <div #iconPanel class="col-md-3 icon-panel" (click)="isOpen ? close() : open()">
+                        <div class="arrow" [class.active]="isOpen">
+                            <div class="button"><svg-inline src="/assets/icons/arrow.svg"></svg-inline></div>
                         </div>
-                        <div class="col-xs-6 clickable icon" [class.selected]="opened && visible == 'my-tools'" 
-                         (click)="selectTool('my-tools'); $event.stopPropagation()">
-                            <svg-inline src="/assets/icons/My_tools.svg"></svg-inline><div class="tool-text">My tools</div>
+                        <div (click)="activate('news'); $event.stopPropagation()" class="news-icon" [class.active]="isOpen && active == 'news'">
+                            <div class="button">
+                                <svg-inline src="/assets/icons/News_Feed.svg"></svg-inline>
+                                <div class="title">{{ textBySlug.ui.sidebar.news }}</div>
+                            </div>
+                        </div>
+                        <div (click)="activate('tools'); $event.stopPropagation()" class="tools-icon" [class.active]="isOpen && active == 'tools'">
+                            <div class="button">
+                                <svg-inline src="/assets/icons/My_tools.svg"></svg-inline>
+                                <div class="title">{{ textBySlug.ui.sidebar.tools }}</div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-        <div *ngIf="opened" class="sidebar">
-            <div *ngIf="visible == 'news-feed'">
-                <div class="top-buttons border-bottom">
-                    <svg-inline (click)="newsTab = 'twitter'" [class.selected]="newsTab == 'twitter'" class="sidebar-icon clickable" src="/assets/icons/Twitter.svg"></svg-inline>
-                    <svg-inline (click)="newsTab = 'facebook'" [class.selected]="newsTab == 'facebook'" class="sidebar-icon clickable" src="/assets/icons/facebook.svg"></svg-inline>
-                </div>
-                <div class="scrollable">
-                    <div class="information">
-                        <h2>Coming soon: Trending posts from Twitter and Facebook</h2>
-                    </div>
-                    <div class="news-post">
-                    </div>
-                </div>
-            </div>
-            <div *ngIf="visible == 'my-tools'">
-                <div class="top-buttons border-bottom">
-                    <svg-inline (click)="toolTab = 'pdf'" [class.selected]="toolTab == 'pdf'" class="sidebar-icon clickable" src="/assets/icons/pdf.svg"></svg-inline>
-                    <svg-inline (click)="toolTab = 'email'" [class.selected]="toolTab == 'email'" class="sidebar-icon clickable" src="/assets/icons/email.svg"></svg-inline>
-                </div>
-                <div class="scrollable">
-                    <div class="downloaders">
-                        <div *ngIf="toolTab == 'pdf'"><h2>Coming Soon: Download a PDF of these modules</h2></div>
-                        <div *ngIf="toolTab == 'email'"><h2>Coming Soon: Have these modules emailed to you</h2></div>
-                    </div>
-                    <div *ngIf="!getSavedModules().length" class="information">
-                        <p>You can save your go-to modules here, so that next time you access the toolbox you don’t need to go searching for them all over again!</p>
-                        <p>Click on the <svg-inline src="/assets/icons/+_tileandmodule.svg"></svg-inline> of a module to save it here. You don’t need to login, we’ll remember the next time you visit the site from the same device and keep your modules in store.</p>
-                    </div>
-                    <div *ngFor="let module of getSavedModules(); let first = first" class="saved-module" [ngClass]="{first: first}">
-                        <div (click)="router.navigate(['/module', module.slug]); toggleOpened()" class="module-title clickable">{{ module.title }}</div>
-                        <div class="module-snapshot" [innerHTML]="module.snapshot"></div>
+                    <div *ngIf="isOpen" class="col-md-9 tab-panel">
                         <div class="row">
-                            <div (click)="savingService.toggleSaved(module)" class="col-sm-6 module-unsave clickable"><svg-inline src="/assets/icons/Remove.svg"></svg-inline> Remove</div>
-                            <div class="col-sm-6 module-share clickable"><svg-inline src="/assets/icons/Share_not_in_module.svg"></svg-inline> Share</div>
+                            <div class="col-md-12 tabs">
+                                <div *ngIf="active == 'news'" class="row">
+                                    <div class="col-md-6 tab twitter-tab">
+                                        <div (click)="newsTab = 'twitter'" [class.active]="newsTab == 'twitter'" class="button">
+                                            <svg-inline src="/assets/icons/Twitter.svg"></svg-inline></div>
+                                    </div>
+                                    <div class="col-md-6 tab facebook-tab">
+                                        <div (click)="newsTab = 'facebook'" [class.active]="newsTab == 'facebook'" class="button">
+                                            <svg-inline src="/assets/icons/facebook.svg"></svg-inline></div>
+                                    </div>
+                                </div>
+                                <div *ngIf="active == 'tools'" class="row">
+                                    <div class="col-md-6 tab pdf-tab">
+                                        <div (click)="toolsTab = toolsTab == 'pdf' ? null : 'pdf'" [class.active]="toolsTab == 'pdf'" class="button">
+                                            <svg-inline src="/assets/icons/pdf.svg"></svg-inline></div>
+                                    </div>
+                                    <div class="col-md-6 tab email-tab">
+                                        <div (click)="toolsTab = toolsTab == 'email' ? null : 'email'" [class.active]="toolsTab == 'email'" class="button">
+                                            <svg-inline src="/assets/icons/email.svg"></svg-inline></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="isOpen" class="col-md-9 main-panel">
+                        <div class="row">
+                            <div class="col-md-12 content">
+                                <div *ngIf="active == 'news'" class="row">
+                                    <div class="col-md-12 presto">
+                                        <p class="heading">{{ textBySlug.ui.sidebar['news-intro'] }}</p>
+                                        <p class="subheading">{{ textBySlug.ui.sidebar['news-invite'] }}</p>
+                                        <div class="form"></div>
+                                    </div>
+                                    <div class="col-md-12 news-item">
+                                    </div>
+                                </div>
+                                <div *ngIf="active == 'tools'" class="row">
+                                    <div *ngIf="toolsTab == 'pdf'" class="col-md-12 pdf"><h3>Coming Soon: Download a PDF of these modules</h3></div>
+                                    <div *ngIf="toolsTab == 'email'" class="col-md-12 pdf"><h3>Coming Soon: Have these modules emailed to you</h3></div>
+                                    <div *ngIf="!getSavedModules().length" class="col-md-12 presto">
+                                        <p class="heading">{{ textBySlug.ui.sidebar['tools-intro'] }}</p>
+                                        <div (click)="addThisModule()" class="subheading" 
+                                            [innerMarkdown]="template(textBySlug.ui.sidebar['tools-invite'], {icon: iconHTML})"></div>
+                                    </div>
+                                    <div *ngFor="let module of getSavedModules(); let first=first" class="col-md-12 tool" [class.first]="first">
+                                        <div (click)="router.navigate(['/tool', module.slug]); close()" class="module-title clickable" [ngClass]="module.type">{{ module.title }}</div>
+                                        <div class="module-snapshot" [innerHTML]="module.snapshot"></div>
+                                        <div class="row">
+                                            <div (click)="savingService.toggleSaved(module)" class="col-sm-6 module-unsave clickable">
+                                                <svg-inline src="/assets/icons/Remove.svg"></svg-inline>
+                                                <span>{{ textBySlug.ui.sidebar.remove }}</span>
+                                            </div>
+                                            <div class="col-sm-6 module-share clickable">
+                                                <svg-inline src="/assets/icons/Share_not_in_module.svg"></svg-inline> 
+                                                <span>{{ textBySlug.ui.sidebar.share }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        -->
     `,
-    directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES ]
+    directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES ],
+    pipes: [ APP_PIPES ]
 })
 export class ToolsComponent {
-    @Input() modulesBySlug;
-    @Input() opened;
-    @Output() open = new EventEmitter();
-    @Output() close = new EventEmitter();
+    @Output() offsetchanged = new EventEmitter();
+    @ViewChild('master') master;
+    @ViewChild('iconPanel') iconPanel;
+    template = template;
     _ = _;
-    visible = 'my-tools';
-    newsTab = 'twitter';
-    toolTab = 'pdf';
 
-    bottom = true;
+    isOpen = false;
+    active = 'tools';
+    newsTab = 'twitter';
+    toolsTab = null;
+    iconHTML = '<img src="/assets/icons/+_intext.svg" width="25px" class="clickable">';
+    marginLeft = 0;
 
     constructor(
         private router: Router,
-        private savingService: ModuleSavingService) { 
+        private savingService: ModuleSavingService,
+        private contentService: ContentService) {
     }
-    toggleOpened() {
-        this.opened ? this.close.next() : this.open.next();
-        this.opened = !this.opened;
+    ngOnInit() {
+        this.contentService.injectContent(this);
     }
-    selectTool(tool) {
-        if (!(this.opened && tool != this.visible)) this.toggleOpened();
-        this.visible = tool;
+    open() {
+        this.isOpen = true;
+        if (this.master) {
+            var rect = this.master.nativeElement.getBoundingClientRect();
+            var diff = Math.abs(innerWidth - rect.right) - this.marginLeft;
+            this.marginLeft = -diff;
+            this.offsetchanged.next(diff);
+        }
+    }
+    close() {
+        this.isOpen = false;
+        this.toolsTab = null;
+        this.marginLeft = 0;
+        this.offsetchanged.next(0);
+    }
+    slide() {
+        if (this.iconPanel) {
+            var rect = this.iconPanel.nativeElement.getBoundingClientRect();
+            if (rect.right <= innerWidth) return;
+            this.marginLeft = -rect.width;
+            this.offsetchanged.next(rect.width);
+        }
+    }
+    unslide() {
+        this.marginLeft = 0;
+        this.offsetchanged.next(0);
+    }
+    activate(which) {
+        if (which == this.active && this.isOpen) this.close();
+        else if (which == this.active) this.open();
+        else if (!this.isOpen) this.open();
+        this.active = which;
+    }
+    addThisModule() {
+        var match = this.router.url.match(/^\/tool\/([^/]+)/);
+        if (match) this.savingService.toggleSaved({slug: match[1]});
     }
     getSavedModules() {
         return _.filter(_.map(this.savingService.savedModules.sort(), (slug) => this.modulesBySlug[slug]));
@@ -1157,9 +1214,7 @@ export class ToolsComponent {
 @Component({
     selector: 'beautiful-rising',
     template: `
-        <div class="background" data-background="true" 
-            (click)="closeToolsOnBackgroundClick($event)" 
-            [ngStyle]="{'direction': contentService.language==='ar' ? 'rtl' : 'ltr'}">
+        <div class="background" data-background="true" [ngStyle]="{'direction': contentService.language==='ar' ? 'rtl' : 'ltr'}">
             <modal></modal>
             <div id="fixed-nav" class="fixed-container-wrapper">
                 <div class="container" data-background="true">
@@ -1170,9 +1225,8 @@ export class ToolsComponent {
                     <a [routerLink]="['']"><img class="logo" src="/assets/icons/logo-en.png"></a>
                 </div><!-- .container -->
             </div>
-            <tools class="bottom" [modulesBySlug]="modulesBySlug" [opened]="toolsOpened" 
-                (open)="toolsOpened = true" (close)="toolsOpened = false"></tools>
-            <div class="content-area" (window:resize)="setToolsOffset()" [ngStyle]="{'right': toolsOpened ? toolsOffset : '0'}">
+            <tools (offsetchanged)="toolsOffset = $event"></tools>
+            <div class="content-area" [style.right.px]="toolsOffset">
                 <router-outlet></router-outlet>
                 <div *ngIf="textBySlug" class="container">
                     <div class="row">
@@ -1193,7 +1247,7 @@ export class ToolsComponent {
 export class AppComponent {
     //@LocalStorage() language;
     language = 'en';
-    toolsOpened = false;
+    right = 0;
 
     constructor(
         private router: Router,
@@ -1215,19 +1269,6 @@ export class AppComponent {
         this.contentService.language = this.language;
         // Get the content
         this.contentService.injectContent(this);
-        //this.setToolsOffset = _.throttle(this.setToolsOffset, 100);
-        //this.setToolsOffset();
-    }
-    setToolsOffset() {
-        return;
-        // Calculate how much to shift the content-area when the tools panel is expanded
-        var toolsRect = document.body.querySelector('.tools').getBoundingClientRect();
-        var currentOffset = parseInt(getComputedStyle(document.body.querySelector('.content-area')).right);
-        var spaceToRight = document.documentElement.clientWidth - (toolsRect.left + toolsRect.width) - currentOffset;
-        this.toolsOffset = Math.max(265 - spaceToRight, 0);
-    }
-    closeToolsOnBackgroundClick(event) {
-        if (event.target.dataset && event.target.dataset.background) this.toolsOpened = false;
     }
 }
 
@@ -1239,7 +1280,8 @@ export const APP_ROUTER_PROVIDERS = [provideRouter([
     {path: 'type/:type',            component: GalleryComponent},
     {path: 'type/story/:region',    component: GalleryComponent},
 
-    {path: 'module/:slug',          component: DetailComponent},
+    {path: 'module',                redirectTo: 'tool', pathMatch: 'prefix'},
+    {path: 'tool/:slug',            component: DetailComponent},
 
     {path: 'about',                 component: AboutComponent},
     {path: 'about/:section',        component: AboutComponent},
