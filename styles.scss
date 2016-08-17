@@ -371,7 +371,7 @@ tools {
         }
         &.active {
             svg-inline {
-                transform: translate(2px,5px) rotate(270deg);
+                transform: translate(-2px,6px) rotate(0deg);
             }
             svg * { fill: black; }
         }
