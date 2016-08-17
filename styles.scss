@@ -366,12 +366,12 @@ tools {
         }
         svg-inline {
             display: inline-block;
-            transform: translate(0,0) rotate(180deg);
+            transform: translate(-2px,6px) rotate(0deg);
             @include prefix(transition, transform $transition linear, webkit moz);
         }
         &.active {
             svg-inline {
-                transform: translate(-2px,6px) rotate(0deg);
+                transform: translate(0,0) rotate(180deg);
             }
             svg * { fill: black; }
         }
