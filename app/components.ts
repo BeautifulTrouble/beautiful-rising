@@ -715,7 +715,7 @@ export class GalleryComponent {
                             </div>
                         </div>
                         <div *ngIf="!snapshot">
-                            <div *ngIf="!topside">
+                            <div *ngIf="gallery || !topside">
                                 <div class="short-write-up" [innerHTML]="module['short-write-up']"></div>
                                 <h5 *ngIf="!gallery" class="button" (click)="topside = true">{{ textBySlug.ui.module['read-more'] }}</h5>
                                 <div *ngIf="gallery" class="contribute-message">
@@ -728,7 +728,7 @@ export class GalleryComponent {
                                     <div class="attribution" [innerHTML]="epigraph[1]"></div>
                                 </div>
                                 <div *ngIf="!gallery" [innerHTML]="module['full-write-up']"></div>
-                                <h5 class="button" (click)="topside = false">{{ textBySlug.ui.module['read-less'] }}</h5>
+                                <h5 *ngIf="!gallery" class="button" (click)="topside = false">{{ textBySlug.ui.module['read-less'] }}</h5>
                             </div>
                             <div *ngIf="module['how-to-use']" class="how-to-use">
                                 <h4>{{ textBySlug.ui.module['how-to-use'] }}</h4>
