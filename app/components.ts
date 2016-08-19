@@ -575,15 +575,6 @@ export class GalleryComponent {
         if (key) this.sortKey = key;
         this.selectedModules = _.orderBy(this.selectedModules, this.sortKey, this.sortKey == 'timestamp' ? 'desc' : 'asc');
     }
-    crazyHover($event,a,b,c) {
-        return;
-        // TODO: think of some other way to structure the html/css!
-        // Hover state covers up save button, so jump through some hoops
-        var parent = $event.target.parentElement;
-        parent.style.opacity = a;
-        parent.nextElementSibling.style.opacity = b;
-        parent.parentElement.previousElementSibling.style.opacity = c;
-    }
 }
 
 
