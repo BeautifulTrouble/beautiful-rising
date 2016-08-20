@@ -42,10 +42,10 @@ import { template } from './utilities';
                     <div class="border-top border-bottom view-as">
                         <div class="row">
                             <div class="col-xs-6">
-                                <svg-inline (click)="viewStyle='grid'" [class.selected]="viewStyle == 'grid'" class="clickable" src="/assets/icons/grid.svg"></svg-inline>
+                                <svg-inline (click)="viewStyle='grid'" [class.selected]="viewStyle == 'grid'" class="clickable" src="/assets/img/grid.svg"></svg-inline>
                             </div>
                             <div class="col-xs-6">
-                                <svg-inline (click)="viewStyle='list'" [class.selected]="viewStyle == 'list'" class="clickable" src="/assets/icons/list.svg"></svg-inline>
+                                <svg-inline (click)="viewStyle='list'" [class.selected]="viewStyle == 'list'" class="clickable" src="/assets/img/list.svg"></svg-inline>
                             </div>
                         </div>
                     </div>
@@ -71,8 +71,8 @@ import { template } from './utilities';
                 <div class="gallery-sort clearfix visible-xs visible-sm col-xs-12">
                     <h3>{{ textBySlug.ui.list.view }}</h3>
                     <span class="view-as">
-                        <svg-inline (click)="viewStyle='grid'" [class.selected]="viewStyle == 'grid'" class="clickable" src="/assets/icons/grid.svg"></svg-inline>
-                        <svg-inline (click)="viewStyle='list'" [class.selected]="viewStyle == 'list'" class="clickable" src="/assets/icons/list.svg"></svg-inline>
+                        <svg-inline (click)="viewStyle='grid'" [class.selected]="viewStyle == 'grid'" class="clickable" src="/assets/img/grid.svg"></svg-inline>
+                        <svg-inline (click)="viewStyle='list'" [class.selected]="viewStyle == 'list'" class="clickable" src="/assets/img/list.svg"></svg-inline>
                     </span>
                     <h3>{{ textBySlug.ui.list.sort }}</h3>
                     <span class="sort-by">
@@ -100,13 +100,13 @@ import { template } from './utilities';
 
                                 <div class="module-content clickable">
                                     <div class="module-content-inner">
-                                        <svg-inline *ngIf="module.region" src="/assets/icons/{{ module.region }}.svg" class="region-icon"></svg-inline>
+                                        <svg-inline *ngIf="module.region" src="/assets/img/{{ module.region }}.svg" class="region-icon"></svg-inline>
                                         <div class="offset" [style.justify-content]="['center','flex-start','flex-end'][module.timestamp%3]">
                                             <div [ngClass]="['module-type', module.type]">{{ textBySlug.ui.types[module.type] }}</div>
                                             <div [class.story]="module.type == 'story'" class="module-title">{{ module.title }}</div>
                                             <div (click)="savingService.toggleSaved(module); $event.stopPropagation()" [ngSwitch]="savingService.isSaved(module)" class="module-save">
-                                                <svg-inline *ngSwitchCase="true" src="/assets/icons/-_tileandmodule.svg"></svg-inline>
-                                                <svg-inline *ngSwitchCase="false" src="/assets/icons/+_tileandmodule.svg"></svg-inline>
+                                                <svg-inline *ngSwitchCase="true" src="/assets/img/-_tileandmodule.svg"></svg-inline>
+                                                <svg-inline *ngSwitchCase="false" src="/assets/img/+_tileandmodule.svg"></svg-inline>
                                             </div>
                                         </div>
                                     </div>

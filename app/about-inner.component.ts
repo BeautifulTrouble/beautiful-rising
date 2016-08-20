@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
                     <section class="whats-inside" name="whats-inside">
                         <h4 accordionToggle class="heading" [class.clickable]="useAccordion">
                             {{ textBySlug.about.misc['whats-inside'] }}
-                            <svg-inline src="/assets/icons/arrow.svg"></svg-inline>
+                            <svg-inline src="/assets/img/arrow.svg"></svg-inline>
                         </h4>
                         <div class="content">
                             <div class="row">
@@ -44,7 +44,7 @@ import { Router } from '@angular/router';
                     <section class="process" name="process">
                         <h4 accordionToggle class="heading" [class.clickable]="useAccordion">
                             {{ textBySlug.about.misc.process }}
-                            <svg-inline src="/assets/icons/arrow.svg"></svg-inline>
+                            <svg-inline src="/assets/img/arrow.svg"></svg-inline>
                         </h4>
                         <div class="content">
                             <div *ngFor="let item of textBySlug.about.process" [ngSwitch]="item.type">
@@ -61,7 +61,7 @@ import { Router } from '@angular/router';
                                 <div *ngSwitchCase="'workshops'" class="row">
                                     <div *ngFor="let workshop of textBySlug['workshop-participants'].groups; let index=index">
                                         <div [class.col-md-offset-3]="index == 4" class="col-sm-6 col-md-3 workshop-list">
-                                            <div class="img-wrapper"><img src="/assets/icons/{{ workshop.name }}.png"></div>
+                                            <div class="img-wrapper"><img src="/assets/img/{{ workshop.name }}.png"></div>
                                             <h3 class="overline">{{ item.value[workshop.name] }}</h3>
                                             <ul><li *ngFor="let participant of workshop.participants">{{ participant }}</li></ul>
                                         </div>
@@ -74,7 +74,7 @@ import { Router } from '@angular/router';
                     <section class="values" name="values">
                         <h4 accordionToggle class="heading" [class.clickable]="useAccordion">
                             {{ textBySlug.about.misc.values }}
-                            <svg-inline src="/assets/icons/arrow.svg"></svg-inline>
+                            <svg-inline src="/assets/img/arrow.svg"></svg-inline>
                         </h4>
                         <div class="content">
                             <div *ngFor="let item of textBySlug.about.values" [ngSwitch]="item.type">
@@ -93,7 +93,7 @@ import { Router } from '@angular/router';
                     <section class="advisory-network" name="advisory-network">
                         <h4 accordionToggle class="heading" [class.clickable]="useAccordion">
                             {{ textBySlug.about.misc['advisory-network'] }}
-                            <svg-inline src="/assets/icons/arrow.svg"></svg-inline>
+                            <svg-inline src="/assets/img/arrow.svg"></svg-inline>
                         </h4>
                         <div class="content">
                             <div class="row">
@@ -114,7 +114,7 @@ import { Router } from '@angular/router';
                     <section class="team" name="team">
                         <h4 accordionToggle class="heading" [class.clickable]="useAccordion">
                             {{ textBySlug.about.misc.team }}
-                            <svg-inline src="/assets/icons/arrow.svg"></svg-inline>
+                            <svg-inline src="/assets/img/arrow.svg"></svg-inline>
                         </h4>
                         <div class="content">
                             <div class="row team-members">
@@ -132,7 +132,7 @@ import { Router } from '@angular/router';
                     <section class="beautiful-trouble-and-action-aid" name="beautiful-trouble-and-action-aid">
                         <h4 accordionToggle class="heading" [class.clickable]="useAccordion">
                             {{ textBySlug.about.misc['beautiful-trouble-and-action-aid'] }}
-                            <svg-inline src="/assets/icons/arrow.svg"></svg-inline>
+                            <svg-inline src="/assets/img/arrow.svg"></svg-inline>
                         </h4>
                         <div class="content">
                             <div class="row">
@@ -141,11 +141,11 @@ import { Router } from '@angular/router';
                                 </div>
                                 <div class="col-md-6">
                                     <div [innerMarkdown]="textBySlug.about['beautiful-trouble-and-action-aid'].bt" class="blurb"></div>
-                                    <a href="http://beautifultrouble.org/" target="_blank"><img src="/assets/icons/bt-logo.png"></a>
+                                    <a href="http://beautifultrouble.org/" target="_blank"><img src="/assets/img/bt-logo.png"></a>
                                 </div>
                                 <div class="col-md-6">
                                     <div [innerMarkdown]="textBySlug.about['beautiful-trouble-and-action-aid'].aa" class="blurb"></div>
-                                    <a href="http://actionaid.org/" target="_blank"><img src="/assets/icons/aa-logo.png"></a>
+                                    <a href="http://actionaid.org/" target="_blank"><img src="/assets/img/aa-logo.png"></a>
                                 </div>
                             </div>
                         </div>
@@ -153,7 +153,7 @@ import { Router } from '@angular/router';
                     <section class="partners" name="partners">
                         <h4 accordionToggle class="heading" [class.clickable]="useAccordion">
                             {{ textBySlug.about.misc.partners }}
-                            <svg-inline src="/assets/icons/arrow.svg"></svg-inline>
+                            <svg-inline src="/assets/img/arrow.svg"></svg-inline>
                         </h4>
                         <div class="content">
                             <div class="row">
@@ -177,7 +177,7 @@ import { Router } from '@angular/router';
                     <section class="faq" name="faq">
                         <h4 accordionToggle class="heading" [class.clickable]="useAccordion">
                             {{ textBySlug.about.misc.faq }}
-                            <svg-inline src="/assets/icons/arrow.svg"></svg-inline>
+                            <svg-inline src="/assets/img/arrow.svg"></svg-inline>
                         </h4>
                         <div class="content">
                             <div *ngFor="let qa of textBySlug.about.questions" class="question">

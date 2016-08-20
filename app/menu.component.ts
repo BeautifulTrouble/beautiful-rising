@@ -7,8 +7,8 @@ import { Router } from '@angular/router';
     selector: 'menu',
     template: `
         <div (click)="visible = !visible" class="menu-toggle clickable">
-            <img [class.visible]="visible" class="close-icon" src="/assets/icons/close.png">
-            <svg-inline class="open-icon" src="/assets/icons/hamburger.svg"></svg-inline>
+            <img [class.visible]="visible" class="close-icon" src="/assets/img/close.png">
+            <svg-inline class="open-icon" src="/assets/img/hamburger.svg"></svg-inline>
             <h4>Menu</h4>
         </div>
         <div *ngIf="textBySlug && visible">
@@ -51,8 +51,8 @@ import { Router } from '@angular/router';
                             <div class="menu-section">
                                 <h3>{{ textBySlug.ui.menu['contact-us'] }}</h3>
                                 <a class="email" href="mailto:{{ textBySlug.ui.misc['contact-email'] }}">{{ textBySlug.ui.misc['contact-email'] }}</a>
-                                <a href="{{ textBySlug.ui.misc['twitter-link'] }}" target="_blank" style="color: white"><svg-inline src="/assets/icons/Twitter.svg"></svg-inline></a>
-                                <a href="{{ textBySlug.ui.misc['facebook-link'] }}" target="_blank" style="color: white"><svg-inline src="/assets/icons/facebook.svg"></svg-inline></a>
+                                <a href="{{ textBySlug.ui.misc['twitter-link'] }}" target="_blank" style="color: white"><svg-inline src="/assets/img/Twitter.svg"></svg-inline></a>
+                                <a href="{{ textBySlug.ui.misc['facebook-link'] }}" target="_blank" style="color: white"><svg-inline src="/assets/img/facebook.svg"></svg-inline></a>
 
                                 <!--
                                 <p class="subscribe-note">Subscribe to our newsletter</p>

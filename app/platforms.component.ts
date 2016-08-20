@@ -16,7 +16,7 @@ import { ContentService } from './services';
                     </div>
                     <section *ngFor="let p of ['chatbot', 'game', 'pdf']" class="{{ p }}" name="{{ p }}">
                         <div class="row">
-                            <div class="col-md-1"><svg-inline src="/assets/icons/{{ p }}.svg"></svg-inline></div>
+                            <div class="col-md-1"><svg-inline src="/assets/img/{{ p }}.svg"></svg-inline></div>
                             <div class="col-md-4 platform">
                                 <h3 class="overline title">{{ textBySlug.platforms[p].title }}</h3> 
                                 <h4 class="subheading">{{ textBySlug.platforms[p].introduction }}</h4>

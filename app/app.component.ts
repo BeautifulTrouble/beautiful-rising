@@ -16,7 +16,7 @@ import { ContentService, ClientStorageService, LocalStorage } from './services';
                         <span *ngFor="let lang of languages" (click)="language=lang" [class.selected]="language===lang">{{ lang|uppercase }}</span>
                     </div>
                     <menu [textBySlug]="textBySlug"></menu>
-                    <a [routerLink]="['']"><img class="logo" src="/assets/icons/logo-en.png"></a>
+                    <a [routerLink]="['']"><img class="logo" src="/assets/img/logo-en.png"></a>
                 </div>
             </div>
             <tools (offsetchanged)="toolsOffset = $event"></tools>
@@ -27,7 +27,7 @@ import { ContentService, ClientStorageService, LocalStorage } from './services';
                         <div class="footer">
                             <div class="hr"></div>
                             <div class="col-md-8 col-md-offset-2">
-                                <img src="/assets/icons/Creative_Commons.svg">
+                                <img src="/assets/img/Creative_Commons.svg">
                                 <div [innerMarkdown]="textBySlug.ui.footer"></div>
                             </div>
                         </div>

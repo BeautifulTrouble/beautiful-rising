@@ -76,8 +76,8 @@ import { ContentService } from './services';
                             <div *ngIf="type == 'story'" class="expanded regions">
                                 <h3>Region</h3>
                                 <span *ngFor="let each of ['africa','latin-america-and-the-caribbean','north-america','asia','europe','middle-east','oceania']">
-                                    <svg-inline *ngIf="region == each" [routerLink]="['/type/story']" [ngClass]="regionHasModules(each) ? 'clickable' : 'disabled'" class="selected" src="/assets/icons/{{ each }}.svg"></svg-inline>
-                                    <svg-inline *ngIf="region != each" [routerLink]="['/type/story', each]" [ngClass]="regionHasModules(each) ? 'clickable' : 'disabled'" src="/assets/icons/{{ each }}.svg"></svg-inline>
+                                    <svg-inline *ngIf="region == each" [routerLink]="['/type/story']" [ngClass]="regionHasModules(each) ? 'clickable' : 'disabled'" class="selected" src="/assets/img/{{ each }}.svg"></svg-inline>
+                                    <svg-inline *ngIf="region != each" [routerLink]="['/type/story', each]" [ngClass]="regionHasModules(each) ? 'clickable' : 'disabled'" src="/assets/img/{{ each }}.svg"></svg-inline>
                                 </span>
                             </div>
                         </div>
@@ -89,15 +89,15 @@ import { ContentService } from './services';
                              [routerLink]="['/type', each[0]]" [class.selected]="each[0] == type" [class.h3]="each[0] == type">{{ each[1] }}</a>
                             <div *ngIf="type == 'story'" class="regions">
                                 <span *ngFor="let each of ['africa','latin-america-and-the-caribbean','north-america','asia','europe','middle-east','oceania']">
-                                    <svg-inline *ngIf="region == each" [routerLink]="['/type/story']" [ngClass]="regionHasModules(each) ? 'clickable' : 'disabled'" class="selected" src="/assets/icons/{{ each }}.svg"></svg-inline>
-                                    <svg-inline *ngIf="region != each" [routerLink]="['/type/story', each]" [ngClass]="regionHasModules(each) ? 'clickable' : 'disabled'" src="/assets/icons/{{ each }}.svg"></svg-inline>
+                                    <svg-inline *ngIf="region == each" [routerLink]="['/type/story']" [ngClass]="regionHasModules(each) ? 'clickable' : 'disabled'" class="selected" src="/assets/img/{{ each }}.svg"></svg-inline>
+                                    <svg-inline *ngIf="region != each" [routerLink]="['/type/story', each]" [ngClass]="regionHasModules(each) ? 'clickable' : 'disabled'" src="/assets/img/{{ each }}.svg"></svg-inline>
                                 </span>
                             </div>
                         </div>
                     </div>
                 </div>
                 <svg-inline *ngIf="!expanded || overrideExpanded" (click)="expanded = overrideExpanded = !expanded" 
-                 class="hidden-xs arrow clickable" [class.selected]="expanded" src="/assets/icons/arrow.svg"></svg-inline>
+                 class="hidden-xs arrow clickable" [class.selected]="expanded" src="/assets/img/arrow.svg"></svg-inline>
             </div>
         </div>
     `

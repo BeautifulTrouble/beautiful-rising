@@ -19,7 +19,7 @@ import { ContentService, LocalStorage } from './services';
                     <div class="upper row">
                         <div class="banner"></div>
                         <div class="col-md-5">
-                            <img class="logo" src="/assets/icons/logo-reverse-en.png">
+                            <img class="logo" src="/assets/img/logo-reverse-en.png">
                             <h3>{{ textBySlug.about.modal.welcome }}</h3>
                             <p>{{ textBySlug.about.modal.introduction }}</p>
                         </div>
@@ -29,7 +29,7 @@ import { ContentService, LocalStorage } from './services';
                             <about-inner [config]="config" [textBySlug]="textBySlug" [peopleBySlug]="peopleBySlug" [useAccordion]="true"></about-inner>
                         </div>
                     </div>
-                    <img (click)="dismissedExplicitly = true" class="clickable close-icon" src="/assets/icons/close.png">
+                    <img (click)="dismissedExplicitly = true" class="clickable close-icon" src="/assets/img/close.png">
                     <div (click)="dismissedExplicitly = true" [routerLink]="['/']" class="clickable dismiss"><p>{{ textBySlug.about.modal.dismiss }}</p></div>
                 </div>
             </div>

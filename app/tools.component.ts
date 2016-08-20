@@ -16,17 +16,17 @@ import { template } from './utilities';
                 <div #master class="master col-xs-12 col-md-5 col-lg-4" [style.margin-left.px]="marginLeft" (mouseenter)="!isOpen && slide()" (mouseleave)="!isOpen && unslide()">
                     <div #iconPanel class="col-md-3 icon-panel" (click)="isOpen ? close() : open()">
                         <div class="arrow" [class.active]="isOpen">
-                            <div class="button"><svg-inline src="/assets/icons/arrow.svg"></svg-inline></div>
+                            <div class="button"><svg-inline src="/assets/img/arrow.svg"></svg-inline></div>
                         </div>
                         <div (click)="activate('news'); $event.stopPropagation()" class="news-icon" [class.active]="isOpen && active == 'news'">
                             <div class="button">
-                                <svg-inline src="/assets/icons/News_Feed.svg"></svg-inline>
+                                <svg-inline src="/assets/img/News_Feed.svg"></svg-inline>
                                 <div class="title">{{ textBySlug.ui.sidebar.news }}</div>
                             </div>
                         </div>
                         <div (click)="activate('tools'); $event.stopPropagation()" class="tools-icon" [class.active]="isOpen && active == 'tools'">
                             <div class="button">
-                                <svg-inline src="/assets/icons/My_tools.svg"></svg-inline>
+                                <svg-inline src="/assets/img/My_tools.svg"></svg-inline>
                                 <div class="title">{{ textBySlug.ui.sidebar.tools }}</div>
                             </div>
                         </div>
@@ -37,23 +37,23 @@ import { template } from './utilities';
                                 <div *ngIf="active == 'news'" class="row">
                                     <div class="col-md-6 tab twitter-tab">
                                         <div (click)="newsTab = 'twitter'" [class.active]="newsTab == 'twitter'" class="button">
-                                            <svg-inline src="/assets/icons/Twitter.svg"></svg-inline></div>
+                                            <svg-inline src="/assets/img/Twitter.svg"></svg-inline></div>
                                     </div>
                                     <div class="col-md-6 tab facebook-tab">
                                         <div (click)="newsTab = 'facebook'" [class.active]="newsTab == 'facebook'" class="button">
-                                            <svg-inline src="/assets/icons/facebook.svg"></svg-inline></div>
+                                            <svg-inline src="/assets/img/facebook.svg"></svg-inline></div>
                                     </div>
                                 </div>
                                 <div *ngIf="active == 'tools'" class="row">
                                     <div class="col-md-6 tab pdf-tab">
                                         <div (click)="toolsTab = toolsTab == 'pdf' ? null : 'pdf'; scrollTo(0)" 
                                             [class.active]="toolsTab == 'pdf'" class="button">
-                                            <svg-inline src="/assets/icons/pdf.svg"></svg-inline></div>
+                                            <svg-inline src="/assets/img/pdf.svg"></svg-inline></div>
                                     </div>
                                     <div class="col-md-6 tab email-tab">
                                         <div (click)="toolsTab = toolsTab == 'email' ? null : 'email'; scrollTo(0)" 
                                             [class.active]="toolsTab == 'email'" class="button">
-                                            <svg-inline src="/assets/icons/email.svg"></svg-inline></div>
+                                            <svg-inline src="/assets/img/email.svg"></svg-inline></div>
                                     </div>
                                 </div>
                             </div>
@@ -84,11 +84,11 @@ import { template } from './utilities';
                                         <div class="module-snapshot" [innerHTML]="module.snapshot"></div>
                                         <div class="row">
                                             <div (click)="savingService.toggleSaved(module)" class="col-sm-6 module-unsave clickable">
-                                                <svg-inline src="/assets/icons/Remove.svg"></svg-inline>
+                                                <svg-inline src="/assets/img/Remove.svg"></svg-inline>
                                                 <span>{{ textBySlug.ui.sidebar.remove }}</span>
                                             </div>
                                             <div class="col-sm-6 module-share clickable">
-                                                <svg-inline src="/assets/icons/Share_not_in_module.svg"></svg-inline> 
+                                                <svg-inline src="/assets/img/Share_not_in_module.svg"></svg-inline> 
                                                 <span>{{ textBySlug.ui.sidebar.share }}</span>
                                             </div>
                                         </div>
@@ -114,7 +114,7 @@ export class ToolsComponent {
     active = 'tools';
     newsTab = 'twitter';
     toolsTab = null;
-    iconHTML = '<img src="/assets/icons/+_intext.svg" width="25px" class="clickable">';
+    iconHTML = '<img src="/assets/img/+_intext.svg" width="25px" class="clickable">';
     marginLeft = 0;
 
     constructor(

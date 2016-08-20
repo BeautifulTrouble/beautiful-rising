@@ -1268,12 +1268,12 @@ detail {
             }
             h3::after {
                 display: inline-block;
-                content: url('/assets/icons/arrow.svg');
+                content: url('/assets/img/arrow.svg');
                 transform: scale(0.75) translate(10px,0px) rotate(180deg);
                 @include prefix(transition, transform $transition linear, webkit moz);
             }
             h3.selected::after {
-                content: url('/assets/icons/arrow-black.svg');
+                content: url('/assets/img/arrow-black.svg');
                 transform: scale(0.75) translate(6px,0px) rotate(270deg);
             }
         }
@@ -1385,7 +1385,7 @@ modal {
         .logo { top: 0; }
     }
     .banner {
-        background-image: url('/assets/icons/modal.jpg');
+        background-image: url('/assets/img/modal.jpg');
         background-size: cover;
         background-position: 50% 50%;
         position: absolute;

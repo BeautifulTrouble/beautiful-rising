@@ -31,16 +31,16 @@ import { ContentService, ModuleSavingService } from './services';
                             <div class="module-header">
                                 <div *ngIf="module.type == 'story'" class="story-extra">
                                     <p *ngIf="module.where || module.when">{{ module.where }} {{ module.when }}</p>
-                                    <svg-inline *ngIf="module.region" src="/assets/icons/{{ module.region }}.svg" class="region-icon"></svg-inline>
+                                    <svg-inline *ngIf="module.region" src="/assets/img/{{ module.region }}.svg" class="region-icon"></svg-inline>
                                 </div>
                                 <div [routerLink]="['/type', module.type]" [ngClass]="['module-type', 'clickable', module.type]">{{ textBySlug.ui.types[module.type] }}</div>
                                 <div class="module-title">{{ module.title }}</div>
                                 <div (click)="savingService.toggleSaved(module)" [ngSwitch]="savingService.isSaved(module)" class="module-save clickable">
-                                    <div *ngSwitchCase="true"><svg-inline src="/assets/icons/-_tileandmodule.svg"></svg-inline>{{ textBySlug.ui.module.remove }}</div>
-                                    <div *ngSwitchCase="false"><svg-inline src="/assets/icons/+_tileandmodule.svg"></svg-inline>{{ textBySlug.ui.module.save }}</div>
+                                    <div *ngSwitchCase="true"><svg-inline src="/assets/img/-_tileandmodule.svg"></svg-inline>{{ textBySlug.ui.module.remove }}</div>
+                                    <div *ngSwitchCase="false"><svg-inline src="/assets/img/+_tileandmodule.svg"></svg-inline>{{ textBySlug.ui.module.save }}</div>
                                 </div><br>
                                 <div class="module-share clickable">
-                                    <svg-inline src="/assets/icons/share_in_module.svg"></svg-inline>{{ textBySlug.ui.module.share }}
+                                    <svg-inline src="/assets/img/share_in_module.svg"></svg-inline>{{ textBySlug.ui.module.share }}
                                 </div>
                             </div>
                             <div class="hidden-xs module-image-caption" [innerHTML]="module['image-caption']"></div>
@@ -57,7 +57,7 @@ import { ContentService, ModuleSavingService } from './services';
                         <div *ngFor="let author of authors" >
                             <a [routerLink]="['/search', 'authors!' + author.slug]">
                                 <div class="contributor-image" 
-                                    [ngStyle]="{'background-image': author.image ? 'url('+config['asset-path']+'/small-'+author.image+')' : 'url(/assets/icons/anon.png)'}"></div>
+                                    [ngStyle]="{'background-image': author.image ? 'url('+config['asset-path']+'/small-'+author.image+')' : 'url(/assets/img/anon.png)'}"></div>
                                 <div class="contributor-name">
                                     <h4 class="first">{{ author.firstname }}</h4>
                                     <h4 class="last">{{ author.lastname }}</h4>
@@ -66,10 +66,10 @@ import { ContentService, ModuleSavingService } from './services';
                             <div class="contributor-bio" *ngIf="author.bio" [innerHTML]="author.bio"></div>
                         </div>
                         <div *ngIf="!authors.length">
-                            <div class="contributor-image" style="background-image: url('/assets/icons/anon.png')"></div>
+                            <div class="contributor-image" style="background-image: url('/assets/img/anon.png')"></div>
                             <div class="contributor-name">
                                 <div class="anon">
-                                    <svg-inline class="your-arrow" src="/assets/icons/yourarrow.svg"></svg-inline>
+                                    <svg-inline class="your-arrow" src="/assets/img/yourarrow.svg"></svg-inline>
                                     <h4 class="first">{{ textBySlug.ui.module['no-name'] }}</h4> 
                                 </div>
                             </div>
@@ -92,7 +92,7 @@ import { ContentService, ModuleSavingService } from './services';
                             <div class="col-xs-12 col-sm-4">
                                 <a [routerLink]="['/search', 'authors!' + author.slug]">
                                     <div class="contributor-image" 
-                                        [ngStyle]="{'background-image': author.image ? 'url('+config['asset-path']+'/small-'+author.image+')' : 'url(/assets/icons/anon.png)'}"></div>
+                                        [ngStyle]="{'background-image': author.image ? 'url('+config['asset-path']+'/small-'+author.image+')' : 'url(/assets/img/anon.png)'}"></div>
                                 </a>
                             </div>
                             <div class="col-xs-12 col-sm-8">
@@ -108,12 +108,12 @@ import { ContentService, ModuleSavingService } from './services';
                         </div>
                         <div *ngIf="!authors.length">
                             <div class="col-xs-12 col-sm-4">
-                                <div class="contributor-image" style="background-image: url('/assets/icons/anon.png')"></div>
+                                <div class="contributor-image" style="background-image: url('/assets/img/anon.png')"></div>
                             </div>
                             <div class="col-xs-12 col-sm-8">
                                 <div class="contributor-name">
                                     <div class="anon">
-                                        <svg-inline class="your-arrow" src="/assets/icons/yourarrow.svg"></svg-inline>
+                                        <svg-inline class="your-arrow" src="/assets/img/yourarrow.svg"></svg-inline>
                                         <h4 class="first">{{ textBySlug.ui.module['no-name'] }}</h4> 
                                     </div>
                                 </div>
@@ -187,7 +187,7 @@ import { ContentService, ModuleSavingService } from './services';
 
                         <div *ngIf="(module['real-world-examples'] || []).length" class="examples hidden-sm">
                             <div (click)="topside = !topside" class="heading clickable">
-                                <svg-inline src="/assets/icons/RWE_{{ module.type }}.svg"></svg-inline>
+                                <svg-inline src="/assets/img/RWE_{{ module.type }}.svg"></svg-inline>
                                 <h3 class="bigger after-arrow" [class.selected]="!topside">{{ textBySlug.ui.module['real-world'] | template:{title: module.title } }}</h3>
                             </div>
                             <div *ngIf="!topside" class="example-wrapper">
@@ -210,7 +210,7 @@ import { ContentService, ModuleSavingService } from './services';
                     <div class="col-sm-12 visible-sm"><!-- small only full width content -->
                         <div *ngIf="(module['real-world-examples'] || []).length" class="examples">
                             <div (click)="topside = !topside" class="heading clickable">
-                                <svg-inline src="/assets/icons/RWE_{{ module.type }}.svg"></svg-inline>
+                                <svg-inline src="/assets/img/RWE_{{ module.type }}.svg"></svg-inline>
                                 <h3 class="bigger after-arrow" [class.selected]="!topside">{{ textBySlug.ui.module['real-world'] | template:{title: module.title } }}</h3>
                             </div>
                             <div *ngIf="!topside" class="example-wrapper">
@@ -230,9 +230,9 @@ import { ContentService, ModuleSavingService } from './services';
                         </div>
                         <div *ngIf="module['potential-risks']" (click)="riskCollapsed = !riskCollapsed" class="risks" [class.clickable]="module['potential-risks-short']">
                             <div class="heading">
-                                <svg-inline src="/assets/icons/pr.svg" [ngClass]="'type-' + module.type"></svg-inline>
+                                <svg-inline src="/assets/img/pr.svg" [ngClass]="'type-' + module.type"></svg-inline>
                                 <h3 class="bigger">{{ textBySlug.ui.module['potential-risks'] }}</h3>
-                                <svg-inline *ngIf="module['potential-risks-short']" class="arrow" [class.selected]="!riskCollapsed" src="/assets/icons/arrow.svg"></svg-inline>
+                                <svg-inline *ngIf="module['potential-risks-short']" class="arrow" [class.selected]="!riskCollapsed" src="/assets/img/arrow.svg"></svg-inline>
                             </div>
                             <div *ngIf="riskCollapsed && module['potential-risks-short']" [innerHTML]="module['potential-risks-short']"></div>
                             <div *ngIf="riskCollapsed && !module['potential-risks-short']" [innerHTML]="module['potential-risks']"></div>
@@ -243,9 +243,9 @@ import { ContentService, ModuleSavingService } from './services';
                     <div class="col-xs-12 col-sm-6 col-md-4 column-b">
                         <div *ngIf="module['potential-risks']" (click)="riskCollapsed = !riskCollapsed" class="risks hidden-sm" [class.clickable]="module['potential-risks-short']">
                             <div class="heading">
-                                <svg-inline src="/assets/icons/pr.svg" [ngClass]="'type-' + module.type"></svg-inline>
+                                <svg-inline src="/assets/img/pr.svg" [ngClass]="'type-' + module.type"></svg-inline>
                                 <h3 class="bigger">{{ textBySlug.ui.module['potential-risks'] }}</h3>
-                                <svg-inline *ngIf="module['potential-risks-short']" class="arrow" [class.selected]="!riskCollapsed" src="/assets/icons/arrow.svg"></svg-inline>
+                                <svg-inline *ngIf="module['potential-risks-short']" class="arrow" [class.selected]="!riskCollapsed" src="/assets/img/arrow.svg"></svg-inline>
                             </div>
                             <div *ngIf="riskCollapsed && module['potential-risks-short']" [innerHTML]="module['potential-risks-short']"></div>
                             <div *ngIf="riskCollapsed && !module['potential-risks-short']" [innerHTML]="module['potential-risks']"></div>
