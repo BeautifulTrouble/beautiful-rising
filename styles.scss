@@ -263,6 +263,7 @@ svg-inline.selected * {
 // Fixed header
 $nav-height: 90px;
 $nav-height-small: 72px;
+$overlay-z: 1500;
 .fixed-container-wrapper {
     position: fixed;
     z-index: 500; // XXX: How high is necessary?
@@ -280,7 +281,7 @@ $nav-height-small: 72px;
     background: $lightgray;
     left: 0; right: 0;
     top: 0; bottom: 0;
-    z-index: 1500;  // Anything above the overlay needs to be z-indexed > 1500
+    z-index: $overlay-z;
     position: fixed;
     @include prefix(transition, opacity 2s linear, webkit moz);
 }
@@ -301,12 +302,10 @@ $nav-height-small: 72px;
     position: relative;
     left: 20px;
     top: 17px;
-    z-index: 1550;
+    z-index: $overlay-z + 100;
     display: inline-block;
     @include xs { 
-        position: absolute;
         max-width: 200px;
-        left: 78px;
         top: 10px;
     }
 }
@@ -467,6 +466,111 @@ tools {
 // Menu
 $menu-top-size: 74px;
 $menu-width: 248px;
+$menu-heading-size: 74px;
+nav-bar {
+    .menu-toggle {
+        display: inline-block;
+        vertical-align: top;
+        text-align: center;
+        position: relative;
+        top: 20px;
+        h4 {
+            margin-top: 0;
+        }
+    }
+    .menu-container-wrapper {
+        top: 0;
+        z-index: $overlay-z + 50;
+        @include md-up {
+            .container {
+                position: relative;
+            }
+        }
+    }
+    .menu-outer {
+        height: 100vh;
+        border: 2px solid black;
+        border-bottom: none; // This border is added to the inner
+        padding: 0;
+        overflow-x: hidden;
+    }
+    .menu {
+        height: 100%;
+        width: 106%;
+        background: white;
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
+    .menu-heading {
+        position: absolute;
+        width: 100%;
+        height: $menu-heading-size;
+        background: white;
+        z-index: 1;
+        border-bottom: 2px solid black;
+        .home, .close-icon, .spacer {
+            display: inline-block;
+            vertical-align: middle;
+        }
+    }
+    .menu-sections {
+        padding-top: $menu-heading-size;
+    }
+    .menu-section, .menu-heading {
+        padding: 18px;
+        border-bottom: 2px solid black;
+        em {
+            color: $lightgray;
+            font-size: 13px;
+            display: inline-block;
+        }
+        h3 { 
+            margin-top: 0; 
+        }
+        input {
+            outline: none;
+        }
+        p {
+            font-size: 12px;
+        }
+        p:first-of-type {
+            margin-top: 20px;
+        }
+        p.clickable {
+            font-weight: bold;
+            text-transform: uppercase;
+            text-decoration: underline;
+            color: $gray;
+            margin-bottom: 12px;
+        }
+        svg-inline {
+            margin-right: 20px;
+        }
+        .form-wrapper { 
+            position: relative;
+            input {
+                padding: 5px 70px 5px 10px;
+                margin-bottom: 20px;
+                width: 100%;
+                border: 2px solid black;
+            }
+            .submit {
+                color: $gray;
+                position: absolute;
+                font-weight: bold;
+                text-transform: uppercase;
+                text-decoration: underline;
+                right: 8px; top: 8px;
+            }
+        }
+        .email {
+            display: block;
+            padding: 12px 0;
+        }
+    }
+}
+
+
 menu {
     display: inline-block;
     vertical-align: top;
@@ -495,7 +599,7 @@ menu {
         height: 100vh;  // TODO: polyfill or js
         width: $menu-width;
         overflow: hidden;
-        z-index: 1550;
+        z-index: $overlay-z + 50;
         background: white;
         border: 2px solid black;
     }
@@ -511,7 +615,7 @@ menu {
         width: $menu-width - 4;
         border-bottom: 2px solid black;
         background: white;
-        z-index: 1550;
+        z-index: $overlay-z + 50;
     }
     .menu-scroll {
         margin-top: $menu-top-size;
@@ -974,6 +1078,30 @@ detail {
             }
             @include sm-down {
                 svg { height: 100px; width: auto; }
+            }
+        }
+        .pattern-hover {
+            width: 264px;   // Matches the pattern width
+        }
+        .pattern-hover-inner {
+            z-index: 1000;
+            position: absolute;
+            top: 10%;
+            text-align: center;
+            border: 2px solid black;
+            background: white;
+            display: inline-block;
+            padding: 2px 6px;
+            .hover-unit, .pattern-unit, .plus {
+                display: inline-block;
+                height: 100%;
+            }
+            .plus {
+                position: relative;
+                bottom: 32px;
+            }
+            .title.first {
+                text-decoration: underline;
             }
         }
         .pattern-snapshot {

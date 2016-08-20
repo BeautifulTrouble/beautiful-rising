@@ -587,12 +587,38 @@ export class GalleryComponent {
                     <div class="col-sm-12">
                         <div class="module-image" [ngStyle]="{'background-image': module.image ? 'url('+config['asset-path']+'/'+module.image+')' : ''}">
                             <div class="overlay"></div>
-                            <div *ngIf="!snapshot" [ngClass]="['pattern', module.type]">
-                                <div *ngIf="module.type != 'story'">
-                                    <svg-inline *ngIf="!patternTypes.length" src="/assets/patterns/3rows/{{ module.type }}.svg"></svg-inline>
-                                    <svg-inline *ngIf="patternTypes.length" src="/assets/patterns/3rowsoverlay/{{ module.type }}.svg"></svg-inline>
+                            <div *ngIf="!snapshot">
+                                <div class="pattern" [ngClass]="module.type">
+                                    <div *ngIf="module.type != 'story'">
+                                        <!-- The subtle difference is that "3rows" patterns don't layer the way "3rowsoverlay" ones do -->
+                                        <svg-inline *ngIf="!patternTypes.length" src="/assets/patterns/3rows/{{ module.type }}.svg"></svg-inline>
+                                        <svg-inline *ngIf="patternTypes.length" src="/assets/patterns/3rowsoverlay/{{ module.type }}.svg"></svg-inline>
+                                    </div>
+                                    <svg-inline *ngFor="let type of patternTypes" src="/assets/patterns/3rowsoverlay/{{ type }}.svg"></svg-inline>
                                 </div>
-                                <svg-inline *ngFor="let type of patternTypes" src="/assets/patterns/3rowsoverlay/{{ type }}.svg"></svg-inline>
+                                <div class="pattern-hover">
+                                    <div class="pattern-hover-inner">
+                                        <div *ngFor="let type of [module.type].concat(patternTypes); let first=first; let last=last" class="hover-unit">
+                                            <div *ngIf="type != 'story'" class="pattern-unit">
+                                                <svg-inline class="pattern" src="/assets/patterns/single/{{ type }}.svg"></svg-inline>
+                                                <div [class.first]="first" class="title">{{ textBySlug.ui.types[type] }}</div>
+                                            </div>
+                                            <div *ngIf="type != 'story' && !last" class="plus">+</div>
+                                        </div>
+                                    </div>
+                                    <!--
+                                    <div class="thingamajig">
+                                        <div *ngIf="module.type != 'story'" class="pattern-unit">
+                                            <svg-inline class="pattern" src="/assets/patterns/single/{{ module.type }}.svg"></svg-inline>
+                                            <div class="title primary">{{ textBySlug.ui.types[module.type] }}</div>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="module.type != 'story' && patternTypes.length" class="plus">+</div>
+                                    <div *ngFor="let type of patternTypes" class="pattern-unit"> 
+                                        <div class="plus">+</div>
+                                    </div>
+                                    -->
+                                </div>
                             </div>
                             <div *ngIf="snapshot" 
                                 [ngClass]="['pattern', 'pattern-snapshot', module.type]" 
@@ -955,76 +981,160 @@ export class DetailComponent {
 
 
 @Component({
-    selector: 'menu',
+    selector: 'nav-bar',
     template: `
-        <div (click)="visible = !visible" class="menu-toggle clickable">
-            <img [class.visible]="visible" class="close-icon" src="/assets/icons/close.png">
-            <svg-inline class="open-icon" src="/assets/icons/hamburger.svg"></svg-inline>
-            <h4>Menu</h4>
-        </div>
-        <div *ngIf="textBySlug && visible">
-            <div (click)="visible = !visible" class="overlay" [class.visible]="visible"></div>
-            <div class="menu-outer">
-                <div class="menu">
-                    <div #menu class="menu-inner">
-                        <div class="menu-top"></div>
-                        <div (window:scroll)="onScroll()" class="menu-scroll">
-                            <div class="menu-section">
-                                <!-- wait for https://github.com/angular/angular/pull/9792 to add routerLinkActive -->
-                                <h3 class="clickable" (click)="nav(['/about'])">{{ textBySlug.ui.menu.about }}</h3>
-                                <p class="clickable" (click)="nav(['/about', 'whats-inside'])">{{ textBySlug.ui.menu['whats-inside'] }}</p>
-                                <p class="clickable" (click)="nav(['/about', 'process'])">{{ textBySlug.ui.menu.process }}</p>
-                                <p class="clickable" (click)="nav(['/about', 'values'])">{{ textBySlug.ui.menu.values }}</p>
-                                <p class="clickable" (click)="nav(['/about', 'advisory-network'])">{{ textBySlug.ui.menu['advisory-network'] }}</p>
-                                <p class="clickable" (click)="nav(['/about', 'team'])">{{ textBySlug.ui.menu.team }}</p>
-                                <p class="clickable" (click)="nav(['/about', 'beautiful-trouble-and-action-aid'])">{{ textBySlug.ui.menu['beautiful-trouble-and-action-aid'] }}</p>
-                                <p class="clickable" (click)="nav(['/about', 'partners'])">{{ textBySlug.ui.menu.partners }}</p>
-                                <p class="clickable" (click)="nav(['/about', 'faq'])">{{ textBySlug.ui.menu.faq }}</p>
-                            </div>
-                            <div class="menu-section">
-                                <h3 class="clickable" (click)="nav(['/platforms'])">{{ textBySlug.ui.menu.platforms }}</h3>
-                                <em>{{ textBySlug.ui.menu.explore }}</em>
-                                <p class="clickable" (click)="nav(['/platforms', 'chatbot'])">{{ textBySlug.ui.menu.chatbot }}</p>
-                                <p class="clickable" (click)="nav(['/platforms', 'game'])">{{ textBySlug.ui.menu.game }}</p>
-                                <p class="clickable" (click)="nav(['/platforms', 'pdf'])">{{ textBySlug.ui.menu.pdf }}</p>
-                            </div>
-                            <div class="menu-section">
-                                <h3 class="clickable" (click)="nav(['/contribute'])">{{ textBySlug.ui.menu.contribute }}</h3>
-                                <p class="clickable" (click)="nav(['/contribute', 'how-it-works'])">{{ textBySlug.ui.menu['how-it-works'] }}</p>
-                            </div>
-                            <!--
-                            <div class="menu-section">
-                                <h3 class="clickable" (click)="nav(['/resources'])">{{ textBySlug.ui.menu['training-and-resources'] }}</h3>
-                                <p class="clickable" (click)="nav(['/resources', 'training'])">{{ textBySlug.ui.menu.training }}</p>
-                                <p class="clickable" (click)="nav(['/resources', 'other'])">{{ textBySlug.ui.menu.other }}</p>
-                            </div>
-                            -->
-                            <div class="menu-section">
-                                <h3>{{ textBySlug.ui.menu['contact-us'] }}</h3>
-                                <a class="email" href="mailto:{{ textBySlug.ui.misc['contact-email'] }}">{{ textBySlug.ui.misc['contact-email'] }}</a>
-                                <a href="{{ textBySlug.ui.misc['twitter-link'] }}" target="_blank" style="color: white"><svg-inline src="/assets/icons/Twitter.svg"></svg-inline></a>
-                                <a href="{{ textBySlug.ui.misc['facebook-link'] }}" target="_blank" style="color: white"><svg-inline src="/assets/icons/facebook.svg"></svg-inline></a>
-
-                                <!--
-                                <p class="subscribe-note">Subscribe to our newsletter</p>
-                                <div class="form-wrapper">
-                                    <input placeholder="{{ textBySlug.ui.misc['placeholder-email'] }}">
-                                    <span class="submit clickable">{{ textBySlug.ui.menu.submit }}</span>
+        <div *ngIf="textBySlug">
+            <div id="fixed-nav" class="fixed-container-wrapper">
+                <div class="container">
+                    <div (click)="visible = !visible" class="menu-toggle clickable">
+                        <svg-inline class="open-icon" src="/assets/icons/hamburger.svg"></svg-inline>
+                        <h4>{{ textBySlug.ui.menu.title }}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="fixed-container-wrapper">
+                <div class="container">
+                    <img (click)="nav([''])" class="logo clickable" src="/assets/icons/logo-en.png">
+                </div>
+            </div>
+            <div *ngIf="visible" class="overlay" [class.visible]="visible" (click)="visible = false"></div>
+            <div class="fixed-container-wrapper menu-container-wrapper" (click)="visible = false">
+                <div *ngIf="visible" class="container">
+                    <div class="row">
+                        <div class="col-xs-12 col-md-3 col-lg-3 menu-outer" (click)="$event.stopPropagation()">
+                            <div class="menu">
+                                <div class="col-md-12 menu-heading">
+                                    <p class="home clickable" (click)="nav([''])">{{ textBySlug.ui.menu.home }}</p>
+                                    <svg-inline class="close-icon" (click)="visible = false" src="/assets/icons/close.svg"></svg-inline>
                                 </div>
-                                -->
+                                <div class="menu-sections">
+                                    <div class="menu-section row">
+                                        <div class="col-xs-8 col-xs-offset-2 col-sm-6 col-sm-offset-3 col-md-12 col-md-offset-0">
+                                            <h3 class="clickable" (click)="nav(['/about'])">{{ textBySlug.ui.menu.about }}</h3>
+                                            <p class="clickable" (click)="nav(['/about', 'whats-inside'])">{{ textBySlug.ui.menu['whats-inside'] }}</p>
+                                            <p class="clickable" (click)="nav(['/about', 'process'])">{{ textBySlug.ui.menu.process }}</p>
+                                            <p class="clickable" (click)="nav(['/about', 'values'])">{{ textBySlug.ui.menu.values }}</p>
+                                            <p class="clickable" (click)="nav(['/about', 'advisory-network'])">{{ textBySlug.ui.menu['advisory-network'] }}</p>
+                                            <p class="clickable" (click)="nav(['/about', 'team'])">{{ textBySlug.ui.menu.team }}</p>
+                                            <p class="clickable" (click)="nav(['/about', 'beautiful-trouble-and-action-aid'])">{{ textBySlug.ui.menu['beautiful-trouble-and-action-aid'] }}</p>
+                                            <p class="clickable" (click)="nav(['/about', 'partners'])">{{ textBySlug.ui.menu.partners }}</p>
+                                            <p class="clickable" (click)="nav(['/about', 'faq'])">{{ textBySlug.ui.menu.faq }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="menu-section row">
+                                        <div class="col-xs-8 col-xs-offset-2 col-sm-6 col-sm-offset-3 col-md-12 col-md-offset-0">
+                                            <h3 class="clickable" (click)="nav(['/platforms'])">{{ textBySlug.ui.menu.platforms }}</h3>
+                                            <em>{{ textBySlug.ui.menu.explore }}</em>
+                                            <p class="clickable" (click)="nav(['/platforms', 'chatbot'])">{{ textBySlug.ui.menu.chatbot }}</p>
+                                            <p class="clickable" (click)="nav(['/platforms', 'game'])">{{ textBySlug.ui.menu.game }}</p>
+                                            <p class="clickable" (click)="nav(['/platforms', 'pdf'])">{{ textBySlug.ui.menu.pdf }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="menu-section row">
+                                        <div class="col-xs-8 col-xs-offset-2 col-sm-6 col-sm-offset-3 col-md-12 col-md-offset-0">
+                                            <h3 class="clickable" (click)="nav(['/contribute'])">{{ textBySlug.ui.menu.contribute }}</h3>
+                                            <p class="clickable" (click)="nav(['/contribute', 'how-it-works'])">{{ textBySlug.ui.menu['how-it-works'] }}</p>
+                                        </div>
+                                    </div>
+                                    <!--
+                                    <div class="menu-section">
+                                        <div class="col-xs-8 col-xs-offset-2 col-sm-6 col-sm-offset-3 col-md-12 col-md-offset-0">
+                                            <h3 class="clickable" (click)="nav(['/resources'])">{{ textBySlug.ui.menu['training-and-resources'] }}</h3>
+                                            <p class="clickable" (click)="nav(['/resources', 'training'])">{{ textBySlug.ui.menu.training }}</p>
+                                            <p class="clickable" (click)="nav(['/resources', 'other'])">{{ textBySlug.ui.menu.other }}</p>
+                                        </div>
+                                    </div>
+                                    -->
+                                    <div class="menu-section row">
+                                        <div class="col-xs-8 col-xs-offset-2 col-sm-6 col-sm-offset-3 col-md-12 col-md-offset-0">
+                                            <h3>{{ textBySlug.ui.menu['contact-us'] }}</h3>
+                                            <a class="email" href="mailto:{{ textBySlug.ui.misc['contact-email'] }}">{{ textBySlug.ui.misc['contact-email'] }}</a>
+                                            <a href="{{ textBySlug.ui.misc['twitter-link'] }}" target="_blank" style="color: white"><svg-inline src="/assets/icons/Twitter.svg"></svg-inline></a>
+                                            <a href="{{ textBySlug.ui.misc['facebook-link'] }}" target="_blank" style="color: white"><svg-inline src="/assets/icons/facebook.svg"></svg-inline></a>
+                                            <!--
+                                            <p class="subscribe-note">Subscribe to our newsletter</p>
+                                            <div class="form-wrapper">
+                                                <input placeholder="{{ textBySlug.ui.misc['placeholder-email'] }}">
+                                                <span class="submit clickable">{{ textBySlug.ui.menu.submit }}</span>
+                                            </div>
+                                            -->
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+
+        <!--
+        <div *ngIf="textBySlug">
+            <div (click)="visible = !visible" class="menu-toggle clickable">
+                <img [class.visible]="visible" class="close-icon" src="/assets/icons/close.png">
+                <svg-inline class="open-icon" src="/assets/icons/hamburger.svg"></svg-inline>
+                <h4>{{ textBySlug.ui.menu.title }}</h4>
+            </div>
+            <div *ngIf="visible">
+                <div (click)="visible = !visible" class="overlay" [class.visible]="visible"></div>
+                <div class="menu-outer">
+                    <div class="menu">
+                        <div #menu class="menu-inner">
+                            <div class="menu-top"></div>
+                            <div (window:scroll)="onScroll()" class="menu-scroll">
+                                <div class="menu-section">
+                                    <h3 class="clickable" (click)="nav(['/about'])">{{ textBySlug.ui.menu.about }}</h3>
+                                    <p class="clickable" (click)="nav(['/about', 'whats-inside'])">{{ textBySlug.ui.menu['whats-inside'] }}</p>
+                                    <p class="clickable" (click)="nav(['/about', 'process'])">{{ textBySlug.ui.menu.process }}</p>
+                                    <p class="clickable" (click)="nav(['/about', 'values'])">{{ textBySlug.ui.menu.values }}</p>
+                                    <p class="clickable" (click)="nav(['/about', 'advisory-network'])">{{ textBySlug.ui.menu['advisory-network'] }}</p>
+                                    <p class="clickable" (click)="nav(['/about', 'team'])">{{ textBySlug.ui.menu.team }}</p>
+                                    <p class="clickable" (click)="nav(['/about', 'beautiful-trouble-and-action-aid'])">{{ textBySlug.ui.menu['beautiful-trouble-and-action-aid'] }}</p>
+                                    <p class="clickable" (click)="nav(['/about', 'partners'])">{{ textBySlug.ui.menu.partners }}</p>
+                                    <p class="clickable" (click)="nav(['/about', 'faq'])">{{ textBySlug.ui.menu.faq }}</p>
+                                </div>
+                                <div class="menu-section">
+                                    <h3 class="clickable" (click)="nav(['/platforms'])">{{ textBySlug.ui.menu.platforms }}</h3>
+                                    <em>{{ textBySlug.ui.menu.explore }}</em>
+                                    <p class="clickable" (click)="nav(['/platforms', 'chatbot'])">{{ textBySlug.ui.menu.chatbot }}</p>
+                                    <p class="clickable" (click)="nav(['/platforms', 'game'])">{{ textBySlug.ui.menu.game }}</p>
+                                    <p class="clickable" (click)="nav(['/platforms', 'pdf'])">{{ textBySlug.ui.menu.pdf }}</p>
+                                </div>
+                                <div class="menu-section">
+                                    <h3 class="clickable" (click)="nav(['/contribute'])">{{ textBySlug.ui.menu.contribute }}</h3>
+                                    <p class="clickable" (click)="nav(['/contribute', 'how-it-works'])">{{ textBySlug.ui.menu['how-it-works'] }}</p>
+                                </div>
+                                <div class="menu-section">
+                                    <h3 class="clickable" (click)="nav(['/resources'])">{{ textBySlug.ui.menu['training-and-resources'] }}</h3>
+                                    <p class="clickable" (click)="nav(['/resources', 'training'])">{{ textBySlug.ui.menu.training }}</p>
+                                    <p class="clickable" (click)="nav(['/resources', 'other'])">{{ textBySlug.ui.menu.other }}</p>
+                                </div>
+                                <div class="menu-section">
+                                    <h3>{{ textBySlug.ui.menu['contact-us'] }}</h3>
+                                    <a class="email" href="mailto:{{ textBySlug.ui.misc['contact-email'] }}">{{ textBySlug.ui.misc['contact-email'] }}</a>
+                                    <a href="{{ textBySlug.ui.misc['twitter-link'] }}" target="_blank" style="color: white"><svg-inline src="/assets/icons/Twitter.svg"></svg-inline></a>
+                                    <a href="{{ textBySlug.ui.misc['facebook-link'] }}" target="_blank" style="color: white"><svg-inline src="/assets/icons/facebook.svg"></svg-inline></a>
+                                    <p class="subscribe-note">Subscribe to our newsletter</p>
+                                    <div class="form-wrapper">
+                                        <input placeholder="{{ textBySlug.ui.misc['placeholder-email'] }}">
+                                        <span class="submit clickable">{{ textBySlug.ui.menu.submit }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        -->
     `,
     directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES ]
 })
-export class MenuComponent {
+export class NavComponent {
     @ViewChild('menu') menu;
     @Input() textBySlug;
-    visible = false;
+    visible = true;
     lastScrollTop = 0;
 
     constructor(private router: Router) { }
@@ -1227,6 +1337,8 @@ export class ToolsComponent {
     template: `
         <div class="background" data-background="true" [ngStyle]="{'direction': contentService.language==='ar' ? 'rtl' : 'ltr'}">
             <modal></modal>
+            <nav-bar [textBySlug]="textBySlug"></nav-bar>
+            <!--
             <div id="fixed-nav" class="fixed-container-wrapper">
                 <div class="container" data-background="true">
                     <div class="language-selection">
@@ -1234,8 +1346,9 @@ export class ToolsComponent {
                     </div>
                     <menu [textBySlug]="textBySlug"></menu>
                     <a [routerLink]="['']"><img class="logo" src="/assets/icons/logo-en.png"></a>
-                </div><!-- .container -->
+                </div>
             </div>
+            -->
             <tools (offsetchanged)="toolsOffset = $event"></tools>
             <div class="content-area" [style.right.px]="toolsOffset">
                 <router-outlet></router-outlet>
@@ -1249,11 +1362,11 @@ export class ToolsComponent {
                             </div>
                         </div>
                     </div>
-                </div><!-- .container -->
+                </div>
             </div>
         </div>
     `,
-    directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES, ModalComponent, MenuComponent, ToolsComponent ]
+    directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES, ModalComponent, NavComponent, ToolsComponent ]
 })
 export class AppComponent {
     //@LocalStorage() language;
