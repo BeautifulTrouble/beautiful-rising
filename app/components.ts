@@ -1,11 +1,10 @@
 // Define all site components here.
 
 import { Component, Input, Output, Inject, EventEmitter, ElementRef, ViewChild, isDevMode } from '@angular/core';
-import { Router, ActivatedRoute, provideRouter, ROUTER_DIRECTIVES, NavigationEnd } from '@angular/router';
-import { Title, DomSanitizationService } from '@angular/platform-browser';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { Title } from '@angular/platform-browser';
 
-import { APP_DIRECTIVES } from './directives';
-import { APP_PIPES, plainString, slugify, template } from './utilities';
+import { plainString, slugify, template } from './utilities';
 import { ContentService, ClientStorageService, ModuleSavingService, LocalStorage, SessionStorage } from './services';
 
 import '../styles.scss';
@@ -15,8 +14,7 @@ import ElasticLunr = require('elasticlunr');
 
 @Component({
     selector: 'about-inner',
-    template: require('../templates/about_inner.html'),
-    directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES ]
+    template: require('../templates/about_inner.html')
 })
 export class AboutInnerComponent {
     @Input() config;
@@ -44,8 +42,7 @@ export class AboutInnerComponent {
             </div>
             <about-inner [config]="config" [textBySlug]="textBySlug" [peopleBySlug]="peopleBySlug" [useAccordion]="false"></about-inner>
         </div>
-    `,
-    directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES, AboutInnerComponent ]
+    `
 })
 export class AboutComponent {
     constructor(private contentService: ContentService) { }
@@ -82,8 +79,7 @@ export class AboutComponent {
                 </div>
             </div>
         </div>
-    `,
-    directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES, AboutInnerComponent ]
+    `
 })
 export class ModalComponent {
     @LocalStorage() dismissedExplicitly;
@@ -132,20 +128,18 @@ export class ModalComponent {
                                 </div>
                                 <div class="links" [innerMarkdown]="textBySlug.platforms[p].get"></div>
                             </div>
-                            <div class="col-md-7 platform-image" [style.background-image]="sanitizer.bypassSecurityTrustStyle('url(/' + textBySlug.platforms[p].image + ')')"></div>
+                            <div class="col-md-7 platform-image" [ngStyle]="{'background-image': 'url(/' + textBySlug.platforms[p].image + ')'}"></div>
                             <div class="clearfix"></div>
                         </div>
                     </section>
                 </div>
             </div>
         </div>
-    `,
-    directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES ]
+    `
 })
 export class PlatformsComponent {
     constructor(
         private router: Router,
-        private sanitizer: DomSanitizationService,
         private contentService: ContentService) {
     }
     ngOnInit() {
@@ -156,8 +150,7 @@ export class PlatformsComponent {
 
 @Component({
     selector: 'resources',
-    template: require('../templates/resources.html'),
-    directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES ]
+    template: require('../templates/resources.html')
 })
 export class ResourcesComponent {
     constructor(
@@ -210,8 +203,7 @@ export class ResourcesComponent {
                 </section>
             </div>
         </div>
-    `,
-    directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES ]
+    `
 })
 export class ContributeComponent {
     activeType = 'story';
@@ -323,8 +315,7 @@ export class ContributeComponent {
                          class="hidden-xs arrow clickable" [class.selected]="expanded" src="/assets/icons/arrow.svg"></svg-inline>
                     </div>
                 </div>
-    `,
-    directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES ]
+    `
 })
 export class ModuleTypeComponent {
     @Input() type;
@@ -480,9 +471,7 @@ export class ModuleTypeComponent {
                 </div>
             </div>
         </div>
-    `,
-    directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES, ModuleTypeComponent ],
-    pipes: [ APP_PIPES ]
+    `
 })
 export class GalleryComponent {
     @LocalStorage() sortKey;
@@ -871,9 +860,7 @@ export class GalleryComponent {
 
             <a target="_blank" class="edit-link" href="{{ module.document_link }}">edit</a>
         </div>
-    `,
-    directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES ],
-    pipes: [ APP_PIPES ]
+    `
 })
 export class DetailComponent {
     _ = _;
@@ -1018,8 +1005,7 @@ export class DetailComponent {
                 </div>
             </div>
         </div>
-    `,
-    directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES ]
+    `
 })
 export class MenuComponent {
     @ViewChild('menu') menu;
@@ -1134,9 +1120,7 @@ export class MenuComponent {
                 </div>
             </div>
         </div>
-    `,
-    directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES ],
-    pipes: [ APP_PIPES ]
+    `
 })
 export class ToolsComponent {
     @Output() offsetchanged = new EventEmitter();
@@ -1252,8 +1236,7 @@ export class ToolsComponent {
                 </div><!-- .container -->
             </div>
         </div>
-    `,
-    directives: [ APP_DIRECTIVES, ROUTER_DIRECTIVES, ModalComponent, MenuComponent, ToolsComponent ]
+    `
 })
 export class AppComponent {
     //@LocalStorage() language;
@@ -1284,7 +1267,7 @@ export class AppComponent {
 }
 
 
-export const APP_ROUTER_PROVIDERS = [provideRouter([
+export const appRoutes = [
     {path: '',                      component: GalleryComponent},
     {path: 'search/:query',         component: GalleryComponent},
     {path: 'tag/:tag',              component: GalleryComponent},
@@ -1301,7 +1284,22 @@ export const APP_ROUTER_PROVIDERS = [provideRouter([
     {path: 'resources',             component: ResourcesComponent},
     {path: 'resources/:section',    component: ResourcesComponent},
     {path: 'contribute',            component: ContributeComponent},
-    {path: 'contribute/:section',   component: ContributeComponent},
-])];
+    {path: 'contribute/:section',   component: ContributeComponent}
+];
 
+
+export var APP_COMPONENTS = [
+    AboutComponent,
+    AboutInnerComponent,
+    AppComponent,
+    ContributeComponent,
+    DetailComponent,
+    GalleryComponent,
+    MenuComponent,
+    ModalComponent,
+    ModuleTypeComponent,
+    PlatformsComponent,
+    ResourcesComponent,
+    ToolsComponent,
+];
 

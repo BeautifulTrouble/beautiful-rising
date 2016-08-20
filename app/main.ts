@@ -1,30 +1,45 @@
 
-// Bootstrap the Angular app.
-import { enableProdMode } from '@angular/core';
-import { bootstrap } from '@angular/platform-browser-dynamic';
-
-// Import all the providers and make them globally available
+import { NgModule, enableProdMode } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { HTTP_PROVIDERS } from '@angular/http';
-import { Title } from '@angular/platform-browser';
+import { BrowserModule, Title } from '@angular/platform-browser';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { RouterModule } from '@angular/router';
 
-import { AppComponent, APP_ROUTER_PROVIDERS } from './components';
-import { ContentService, ClientStorageService, ModuleSavingService, OutsideAngularService, CachedHttpService, MarkdownService } from './services';
+import { APP_COMPONENTS, AppComponent, appRoutes } from './components';
+import { APP_DIRECTIVES } from './directives';
+import { APP_SERVICES } from './services';
+import { APP_PIPES } from './utilities';
 
 
+// Create the app module
+@NgModule({
+    bootstrap: [ AppComponent ],
+    imports: [
+        BrowserModule,
+        FormsModule,
+        RouterModule.forRoot(appRoutes),
+    ],
+    declarations: [
+        APP_COMPONENTS,
+        APP_DIRECTIVES,
+        APP_PIPES,
+    ],
+    providers: [
+        APP_SERVICES,
+        HTTP_PROVIDERS,
+        Title,
+    ]
+})
+class AppModule {}
+
+
+// Set the mode
 if (process.env.ENV === 'production') {
     enableProdMode();
 }
 
-bootstrap(AppComponent, [
-    HTTP_PROVIDERS,
-    Title,
 
-    APP_ROUTER_PROVIDERS,
-    CachedHttpService,
-    ContentService,
-    ClientStorageService,
-    MarkdownService,
-    ModuleSavingService,
-    OutsideAngularService,
-]);
+// Bootstrap the Angular app
+platformBrowserDynamic().bootstrapModule(AppModule);
 

@@ -283,3 +283,13 @@ export class ModuleSavingService {
     }
 }
 
+
+export var APP_SERVICES = [
+    ContentService,
+    ClientStorageService,
+    ModuleSavingService,
+    OutsideAngularService,
+    CachedHttpService,
+    MarkdownService
+];
+
