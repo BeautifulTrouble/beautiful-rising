@@ -15,7 +15,7 @@ import { AppComponent } from './app.component';
 import { ContributeComponent } from './contribute.component';
 import { DetailComponent } from './detail.component';
 import { GalleryComponent } from './gallery.component';
-import { MenuComponent } from './menu.component';
+import { NavbarComponent } from './navbar.component';
 import { ModalComponent } from './modal.component';
 import { ModuleTypeComponent } from './module-types.component';
 import { PlatformsComponent } from './platforms.component';
@@ -64,7 +64,7 @@ const appRoutes = [
         ContributeComponent,
         DetailComponent,
         GalleryComponent,
-        MenuComponent,
+        NavbarComponent,
         ModalComponent,
         ModuleTypeComponent,
         PlatformsComponent,

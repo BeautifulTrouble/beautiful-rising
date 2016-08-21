@@ -8,17 +8,9 @@ import { ContentService, ClientStorageService, LocalStorage } from './services';
 @Component({
     selector: 'beautiful-rising',
     template: `
-        <div class="background" data-background="true" [ngStyle]="{'direction': contentService.language==='ar' ? 'rtl' : 'ltr'}">
+        <div class="background" [ngStyle]="{'direction': contentService.language==='ar' ? 'rtl' : 'ltr'}">
             <modal></modal>
-            <div id="fixed-nav" class="fixed-container-wrapper">
-                <div class="container" data-background="true">
-                    <div class="language-selection">
-                        <span *ngFor="let lang of languages" (click)="language=lang" [class.selected]="language===lang">{{ lang|uppercase }}</span>
-                    </div>
-                    <menu [textBySlug]="textBySlug"></menu>
-                    <a [routerLink]="['']"><img class="logo" src="/assets/img/logo-en.png"></a>
-                </div>
-            </div>
+            <navbar [textBySlug]="textBySlug"></navbar>
             <tools (offsetchanged)="toolsOffset = $event"></tools>
             <div class="content-area" [style.right.px]="toolsOffset">
                 <router-outlet></router-outlet>
