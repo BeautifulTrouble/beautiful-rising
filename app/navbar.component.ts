@@ -74,18 +74,17 @@ import { Router } from '@angular/router';
                                     <div class="menu-section row">
                                         <div class="col-xs-8 col-xs-offset-2 col-sm-6 col-sm-offset-3 col-md-12 col-md-offset-0">
                                             <h3>{{ textBySlug.ui.menu['contact-us'] }}</h3>
-                                            <a class="email" href="mailto:{{ textBySlug.ui.misc['contact-email'] }}">{{ textBySlug.ui.misc['contact-email'] }}</a>
+                                            <a class="email" href="mailto:{{ textBySlug.ui.misc['contact-email'] }}" target="_blank">{{ textBySlug.ui.misc['contact-email'] }}</a>
                                             <a href="{{ textBySlug.ui.misc['twitter-link'] }}" target="_blank" style="color: white"><svg-inline src="/assets/img/Twitter.svg"></svg-inline></a>
                                             <a href="{{ textBySlug.ui.misc['facebook-link'] }}" target="_blank" style="color: white"><svg-inline src="/assets/img/facebook.svg"></svg-inline></a>
-                                            <div></div>
-                                            <br>
-                                            <!--
-                                            <p class="subscribe-note">Subscribe to our newsletter</p>
+                                            <p class="subscribe">{{ textBySlug.ui.menu.subscribe }}</p>
                                             <div class="form-wrapper">
-                                                <input placeholder="{{ textBySlug.ui.misc['placeholder-email'] }}">
-                                                <span class="submit clickable">{{ textBySlug.ui.menu.submit }}</span>
+                                                <form action="//beautifulrising.us8.list-manage.com/subscribe/post?u=17cdfdd393d63b7891e9b3ef4&amp;id=29b9c2184c" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+                                                    <input type="email" value="" name="EMAIL" placeholder="{{ textBySlug.ui.misc['placeholder-email'] }}">
+                                                    <span class="submit clickable">{{ textBySlug.ui.menu.submit }}</span>
+                                                    <input type="submit" value=" " name="{{ textBySlug.ui.menu.submit }}" id="mc-embedded-subscribe" class="button">
+                                                </form>
                                             </div>
-                                            -->
                                         </div>
                                     </div>
                                 </div>

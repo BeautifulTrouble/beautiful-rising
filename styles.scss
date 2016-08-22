@@ -567,16 +567,27 @@ navbar {
             color: $gray;
             margin-bottom: 12px;
         }
+        .email {
+            display: block;
+            padding: 12px 0;
+        }
+        p.subscribe {
+            margin: 12px 0 6px 0;
+        }
         svg-inline {
-            margin-right: 20px;
+            position: relative;
+            top: 6px;
+            margin-right: 18px;
         }
         .form-wrapper { 
             position: relative;
+            border: 2px solid black;
+            margin-bottom: 18px;
+            width: 95%;
             input {
                 padding: 5px 70px 5px 10px;
-                margin-bottom: 20px;
                 width: 100%;
-                border: 2px solid black;
+                border: 0px solid;
             }
             .submit {
                 color: $gray;
@@ -586,10 +597,6 @@ navbar {
                 text-decoration: underline;
                 right: 8px; top: 8px;
             }
-        }
-        .email {
-            display: block;
-            padding: 12px 0;
         }
     }
 }

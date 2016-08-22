@@ -76,7 +76,7 @@ export class ContentService {
     }
 
     // Returns a cached observable containing processed API content
-    getContent(callback) {
+    getContent() {
         if (ContentService.cacheByLanguage[this.language]) {
             var observable = ContentService.cacheByLanguage[this.language];
         } else {
