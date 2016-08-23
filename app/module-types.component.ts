@@ -26,7 +26,7 @@ import { ContentService } from './services';
                                     <!-- larger -->
                                     <div *ngIf="first" class="hidden-xs type-representation first" [class.expanded]="expanded">
                                         <div [ngClass]="[expanded ? 'col-xs-6 col-sm-3 col-sm-offset-3' : 'col-xs-2 col-xs-offset-1']">
-                                            <h3>{{ each[1] }}</h3>
+                                            <h3>{{ textBySlug.ui.types[each[1]] }}</h3>
                                             <svg-inline class="tworows pattern" src="/assets/patterns/2rows/{{ each[0] }}.svg"></svg-inline>
                                         </div>
                                         <div *ngIf="expanded" class="col-xs-6 col-sm-3"><p class="definition" [innerHTML]="textBySlug.ui.definitions[each[0] + '-short']"></p></div>
@@ -34,7 +34,7 @@ import { ContentService } from './services';
                                     </div>
                                     <div *ngIf="!first" class="hidden-xs type-representation" [class.expanded]="expanded">
                                         <div [ngClass]="[expanded ? 'col-sm-3' : 'col-sm-2']">
-                                            <h3>{{ each[1] }}</h3>
+                                            <h3>{{ textBySlug.ui.types[each[1]] }}</h3>
                                             <svg-inline class="tworows pattern" src="/assets/patterns/2rows/{{ each[0] }}.svg"></svg-inline>
                                             <p *ngIf="expanded" class="definition" [innerHTML]="textBySlug.ui.definitions[each[0] + '-short']"></p>
                                         </div>
@@ -43,7 +43,7 @@ import { ContentService } from './services';
                                     <!-- smaller -->
                                     <div class="visible-xs type-representation" [class.expanded]="expanded" [class.clearfix]="true">
                                         <div [ngClass]="[expanded ? 'col-xs-5 col-xs-offset-1' : 'col-xs-5 col-xs-offset-1']">
-                                            <h3>{{ each[1] }}</h3>
+                                            <h3>{{ textBySlug.ui.types[each[1]] }}</h3>
                                             <svg-inline *ngIf="expanded" class="tworows pattern" src="/assets/patterns/2rows/{{ each[0] }}.svg"></svg-inline>
                                         </div>
                                         <div [ngClass]="[expanded ? 'col-xs-5' : 'col-xs-4']">
@@ -61,12 +61,12 @@ import { ContentService } from './services';
                     <div *ngIf="expanded">
                         <div class="col-sm-3 col-md-2 type-list">
                             <a class="expanded type-link" [routerLink]="['/']">All</a>
-                            <a *ngFor="let each of types" [routerLink]="['/type', each[0]]" [class.selected]="each[0] == type" class="expanded type-link">{{ each[1] }}</a>
+                            <a *ngFor="let each of types" [routerLink]="['/type', each[0]]" [class.selected]="each[0] == type" class="expanded type-link">{{ textBySlug.ui.menu[each[1]] }}</a>
                         </div>
                         <div class="hidden-xs col-sm-2 col-md-3 col-lg-4 type-pattern">
                             <div *ngFor="let each of types" class="expanded">
                                 <div *ngIf="each[0] == type">
-                                    <h3>{{ each[1] }}</h3>
+                                    <h3>{{ textBySlug.ui.types[each[1]] }}</h3>
                                     <svg-inline class="pattern" src="/assets/patterns/3rows/{{ each[0] }}.svg"></svg-inline>
                                 </div>
                             </div>
@@ -86,7 +86,7 @@ import { ContentService } from './services';
                         <div class="col-md-12 type-list">
                             <a [routerLink]="['/']" class="type-link">All</a>
                             <a *ngFor="let each of types" class="type-link"
-                             [routerLink]="['/type', each[0]]" [class.selected]="each[0] == type" [class.h3]="each[0] == type">{{ each[1] }}</a>
+                             [routerLink]="['/type', each[0]]" [class.selected]="each[0] == type" [class.h3]="each[0] == type">{{ textBySlug.ui.types[each[1]] }}</a>
                             <div *ngIf="type == 'story'" class="regions">
                                 <span *ngFor="let each of ['africa','latin-america-and-the-caribbean','north-america','asia','europe','middle-east','oceania']">
                                     <svg-inline *ngIf="region == each" [routerLink]="['/type/story']" [ngClass]="regionHasModules(each) ? 'clickable' : 'disabled'" class="selected" src="/assets/img/{{ each }}.svg"></svg-inline>

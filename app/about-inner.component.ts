@@ -22,7 +22,7 @@ import { Router } from '@angular/router';
                                         <div [routerLink]="['/type', each[0]]" class="clickable">
                                             <div *ngIf="first" class="type-representation expanded first">
                                                 <div class="col-xs-3 col-xs-offset-3">
-                                                    <h3>{{ each[1] }}</h3>
+                                                    <h3>{{ textBySlug.ui.types[each[1]] }}</h3>
                                                     <svg-inline class="tworows pattern" src="/assets/patterns/2rows/{{ each[0] }}.svg"></svg-inline>
                                                 </div>
                                                 <div class="col-xs-3"><p class="definition" [innerHTML]="textBySlug.ui.definitions[each[0] + '-short']"></p></div>
@@ -30,7 +30,7 @@ import { Router } from '@angular/router';
                                             </div>
                                             <div *ngIf="!first" class="type-representation expanded">
                                                 <div class="col-xs-3">
-                                                    <h3>{{ each[1] }}</h3>
+                                                    <h3>{{ textBySlug.ui.types[each[1]] }}</h3>
                                                     <svg-inline class="tworows pattern" src="/assets/patterns/2rows/{{ each[0] }}.svg"></svg-inline>
                                                     <p class="definition" [innerHTML]="textBySlug.ui.definitions[each[0] + '-short']"></p>
                                                 </div>
