@@ -60,8 +60,8 @@ import { ContentService } from './services';
                 <div *ngIf="type">
                     <div *ngIf="expanded">
                         <div class="col-sm-3 col-md-2 type-list">
-                            <a class="expanded type-link" [routerLink]="['/']">All</a>
-                            <a *ngFor="let each of types" [routerLink]="['/type', each[0]]" [class.selected]="each[0] == type" class="expanded type-link">{{ textBySlug.ui.menu[each[1]] }}</a>
+                            <a class="expanded type-link" [routerLink]="['/']">{{ textBySlug.ui.types.all }}</a>
+                            <a *ngFor="let each of types" [routerLink]="['/type', each[0]]" [class.selected]="each[0] == type" class="expanded type-link">{{ textBySlug.ui.types[each[1]] }}</a>
                         </div>
                         <div class="hidden-xs col-sm-2 col-md-3 col-lg-4 type-pattern">
                             <div *ngFor="let each of types" class="expanded">
@@ -84,7 +84,7 @@ import { ContentService } from './services';
                     </div>
                     <div *ngIf="!expanded">
                         <div class="col-md-12 type-list">
-                            <a [routerLink]="['/']" class="type-link">All</a>
+                            <a [routerLink]="['/']" class="type-link">{{ textBySlug.ui.types.all }}</a>
                             <a *ngFor="let each of types" class="type-link"
                              [routerLink]="['/type', each[0]]" [class.selected]="each[0] == type" [class.h3]="each[0] == type">{{ textBySlug.ui.types[each[1]] }}</a>
                             <div *ngIf="type == 'story'" class="regions">
