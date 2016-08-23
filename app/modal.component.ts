@@ -19,7 +19,7 @@ import { ContentService, LocalStorage } from './services';
                     <div class="upper row">
                         <div class="banner"></div>
                         <div class="col-md-5">
-                            <img class="logo" src="/assets/img/logo-reverse-en.png">
+                            <img [ngClass]="['logo', language]" src="/assets/img/logo-reverse-{{ language }}.png">
                             <h3>{{ textBySlug.about.modal.welcome }}</h3>
                             <p>{{ textBySlug.about.modal.introduction }}</p>
                         </div>

@@ -19,7 +19,7 @@ import { Router } from '@angular/router';
                         </div>
                         <div class="col-xs-9 col-sm-6 col-md-9">
                             <div class="logo-wrapper" [class.modified-background]="visible" [class.shifted]="!visible">
-                                <img (click)="nav([''])" class="logo clickable" src="/assets/img/logo-en.png">
+                                <img (click)="nav([''])" [ngClass]="['logo', 'clickable', language]" src="/assets/img/logo-{{ language }}.png">
                             </div>
                         </div>
                     </div>
@@ -99,6 +99,7 @@ import { Router } from '@angular/router';
 export class NavbarComponent {
     @ViewChild('menu') menu;
     @Input() textBySlug;
+    @Input() language;
     visible = false;
     lastScrollTop = 0;
 

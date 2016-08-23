@@ -10,7 +10,7 @@ import { ContentService, ClientStorageService, LocalStorage } from './services';
     template: `
         <div class="background" [ngStyle]="{'direction': contentService.language==='ar' ? 'rtl' : 'ltr'}">
             <modal></modal>
-            <navbar [textBySlug]="textBySlug"></navbar>
+            <navbar [textBySlug]="textBySlug" [language]="language"></navbar>
             <tools (offsetchanged)="toolsOffset = $event"></tools>
             <div class="content-area" [style.right.px]="toolsOffset">
                 <router-outlet></router-outlet>
