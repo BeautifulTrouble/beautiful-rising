@@ -107,17 +107,14 @@ export class ContentService {
                         output.modulesByRegion = _.mapKeys(_.groupBy(output.modules, 'region'), (v,k) => slugify(k || 'all'));
                         // Collect and slugify tags & regions
                         output.modulesByTag = {};
-                        output.tagsBySlug = {}
                         for (let module of output.modules) {
                             for (let tag of module['tags'] || []) {
                                 let slugTag = slugify(tag);
                                 output.modulesByTag[slugTag] = output.modulesByTag[slugTag] || [];
                                 output.modulesByTag[slugTag].push(module);
-                                output.tagsBySlug[slugTag] = tag;
                             }
                             if (module.region) module.region = slugify(module.region);
                         }
-                        output.tags = _.keys(output.tagsBySlug).sort();
 
                         // Preprocess content before passing to markdown processor (90% of these tasks belong in the contentloader)
                         output.config.markdown.push('potential-risks-short');

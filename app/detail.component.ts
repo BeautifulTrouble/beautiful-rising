@@ -77,7 +77,7 @@ import { ContentService, ModuleSavingService } from './services';
                         <div *ngIf="module.tags">
                             <h3 class="border-bottom">{{ textBySlug.ui.module.tags }}</h3>
                             <span *ngFor="let tag of module.tags; let last=last">
-                                <a [routerLink]="['/tag', slugify(tag)]" class="tag">{{ tag }}</a><strong *ngIf="!last"> / </strong>
+                                <a [routerLink]="['/tag', slugify(tag)]" class="tag">{{ textBySlug.tags.all[slugify(tag)] }}</a><strong *ngIf="!last"> / </strong>
                             </span>
                         </div>
                         <h3 class="border-bottom">{{ textBySlug.ui.module.training }}</h3>

@@ -59,8 +59,8 @@ import { template } from './utilities';
                     <h3>{{ textBySlug.ui.list.tags }}</h3>
                     <div class="border-top">
                         <span *ngFor="let each of tags; let last=last">
-                            <a *ngIf="tag != each" [routerLink]="['/tag', each]" class="tag">{{ tagsBySlug[each] }}</a>
-                            <a *ngIf="tag == each" [routerLink]="['/']" class="tag selected">{{ tagsBySlug[each] }}</a>
+                            <a *ngIf="tag != each" [routerLink]="['/tag', each]" class="tag">{{ textBySlug.tags.all[each] }}</a>
+                            <a *ngIf="tag == each" [routerLink]="['/']" class="tag selected">{{ textBySlug.tags.all[each] }}</a>
                             <strong *ngIf="!last"> / </strong>
                         </span>
                     </div>
@@ -155,6 +155,7 @@ export class GalleryComponent {
 
         this.contentService.injectContent(this, (content) => {
             this.title.setTitle(content.textBySlug.ui.misc['site-title']);
+            this.tags = _.keys(content.textBySlug.tags.all).sort();
             if (!this.sub) {
                 this.sub = this.route.params.subscribe((params) => {
                     if (params.type) this.type = params.type;
