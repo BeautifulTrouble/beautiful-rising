@@ -440,7 +440,8 @@ tools {
         .module-unsave, .module-share {
             svg-inline {
                 display: inline-block;
-                vertical-align: middle;
+                vertical-align: bottom;
+                height: 20px;
             }
             text-transform: uppercase;
             font-weight: bold;
@@ -512,11 +513,13 @@ navbar {
         z-index: 2;
         position: absolute;
         top: 0;
+        @include sm-down {
+            border-right: 2px solid black;
+        }
     }
     .menu {
         height: 100%;
         width: 106%;
-        //background: white;
         overflow-y: scroll;
         overflow-x: hidden;
     }
@@ -531,13 +534,19 @@ navbar {
             display: inline-block;
             vertical-align: middle;
         }
+        @include sm-down {
+            border-right: none;
+        }
     }
     .menu-sections {
         background: white;
         border: 2px solid black;
-        border-right: 4px solid black;
         border-bottom: none;
+        border-right: 4px solid black;
         padding-top: $menu-heading-size - 18px;
+        @include sm-down {
+            border-right: none;
+        }
         @include xs {
             padding-top: $menu-heading-size -12px;
         }
