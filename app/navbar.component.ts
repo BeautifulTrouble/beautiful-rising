@@ -1,5 +1,6 @@
 
 import { Component, Input, ViewChild } from '@angular/core';
+import { Jsonp } from '@angular/http';
 import { Router } from '@angular/router';
 
 
@@ -15,7 +16,7 @@ import { Router } from '@angular/router';
                                 <svg-inline class="open-icon" src="/assets/img/hamburger.svg"></svg-inline>
                                 <h4>{{ textBySlug.ui.menu.title }}</h4>
                             </div>
-                            <svg-inline *ngIf="visible" class="close-icon clickable" (click)="visible = false" src="/assets/img/close.svg"></svg-inline>
+                            <svg-inline *ngIf="visible" class="close-icon clickable" (click)="hide()" src="/assets/img/close.svg"></svg-inline>
                         </div>
                         <div class="col-xs-9 col-sm-6 col-md-9">
                             <div class="logo-wrapper" [class.modified-background]="visible" [class.shifted]="!visible">
@@ -24,9 +25,9 @@ import { Router } from '@angular/router';
                         </div>
                     </div>
                     <div *ngIf="visible" class="row">
-                        <div class="overlay" [class.visible]="visible" (click)="visible = false"></div>
+                        <div class="overlay" [class.visible]="visible" (click)="hide()"></div>
                         <div class="col-xs-12 col-md-3 col-lg-3 menu-outer" (click)="$event.stopPropagation()">
-                            <div class="menu">
+                            <div #menu class="menu">
                                 <div class="col-md-12 menu-heading"></div>
                                 <div class="menu-sections">
                                     <div class="menu-section row">
@@ -78,12 +79,10 @@ import { Router } from '@angular/router';
                                             <a href="{{ textBySlug.ui.misc['twitter-link'] }}" target="_blank" style="color: white"><svg-inline src="/assets/img/Twitter.svg"></svg-inline></a>
                                             <a href="{{ textBySlug.ui.misc['facebook-link'] }}" target="_blank" style="color: white"><svg-inline src="/assets/img/facebook.svg"></svg-inline></a>
                                             <p class="subscribe">{{ textBySlug.ui.menu.subscribe }}</p>
-                                            <div class="form-wrapper">
-                                                <form action="//beautifulrising.us8.list-manage.com/subscribe/post?u=17cdfdd393d63b7891e9b3ef4&amp;id=29b9c2184c" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
-                                                    <input type="email" value="" name="EMAIL" placeholder="{{ textBySlug.ui.misc['placeholder-email'] }}">
-                                                    <span class="submit clickable">{{ textBySlug.ui.menu.submit }}</span>
-                                                    <input type="submit" value=" " name="{{ textBySlug.ui.menu.submit }}" id="mc-embedded-subscribe" class="button">
-                                                </form>
+                                            <div *ngIf="mailchimpHTML" class="form-message" [class.error]="mailchimpError" [innerMarkdown]="mailchimpHTML"></div>
+                                            <div class="form">
+                                                <input (keyup.enter)="subscribe()" [(ngModel)]="email" name="EMAIL" type="email" placeholder="{{ textBySlug.ui.misc['placeholder-email'] }}">
+                                                <span (click)="subscribe()" class="submit clickable">{{ textBySlug.ui.menu.submit }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -101,12 +100,38 @@ export class NavbarComponent {
     @Input() textBySlug;
     @Input() language;
     visible = false;
-    lastScrollTop = 0;
+    mailchimpError = false;
+    mailchimpHTML = '';
 
-    constructor(private router: Router) { }
+    constructor(
+        private router: Router,
+        private jsonp: Jsonp) { 
+    }
     nav(linkParam) {
         this.router.navigate(linkParam);
+        this.hide();
+    }
+    hide() {
         this.visible = false;
+        // Success message goes away
+        if (!this.mailchimpError) {
+            this.mailchimpHTML = '';
+            this.email = '';
+        }
+    }
+    subscribe() {
+        var email = encodeURIComponent(this.email);
+        var url = "https://beautifulrising.us8.list-manage.com/subscribe/post-json?c=JSONP_CALLBACK&u=17cdfdd393d63b7891e9b3ef4&id=29b9c2184c&subscribe=Subscribe&EMAIL=" + email;
+        this.jsonp.request(url)
+            .map(res => res.json())
+            .subscribe(res => {
+                this.mailchimpHTML = res.msg.replace(/^[0-9]\s+-\s+/, '');
+                this.mailchimpError = res.result == 'error';
+                setTimeout(() => {
+                    var menu = this.menu.nativeElement;
+                    menu.scrollTop = menu.scrollHeight;
+                });
+            });
     }
 }
 

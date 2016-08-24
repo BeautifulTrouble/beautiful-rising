@@ -541,7 +541,7 @@ navbar {
         }
     }
     .menu-section, .menu-heading {
-        padding: 18px 18px 0 18px;
+        padding: 24px 24px 18px 24px;
         border-bottom: 2px solid black;
         em {
             color: $lightgray;
@@ -579,7 +579,7 @@ navbar {
             top: 6px;
             margin-right: 18px;
         }
-        .form-wrapper { 
+        .form { 
             position: relative;
             border: 2px solid black;
             margin-bottom: 18px;
@@ -595,8 +595,14 @@ navbar {
                 font-weight: bold;
                 text-transform: uppercase;
                 text-decoration: underline;
-                right: 8px; top: 8px;
+                right: 8px; top: 6px;
             }
+        }
+        .form-message p {
+            width: 95%;
+        }
+        .form-message.error p {
+            color: $theory;
         }
     }
 }
