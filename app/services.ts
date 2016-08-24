@@ -125,10 +125,10 @@ export class ContentService {
                                 module['potential-risks-short'] = _.truncate(module['potential-risks'], {length: 470, separator: /\s+ /});
                             }
                             // Split epigraphs from attributions
-                            module.epigraphs = _.map(module.epigraphs || [], (text) => text.split(/\s+[—–―]([^\s].+)/, 2));
+                            module.epigraphs = _.map(module.epigraphs || [], (text) => text.split(/\s+[—–―-]([^\s].+)/, 2));
                             // Split key-module names from descriptions
                             for (let type of ['key-tactics', 'key-principles', 'key-theories', 'key-methodologies']) {
-                                if (module[type]) module[type] = _.map(module[type], text => [text.split(/\s+[-]\s+/, 1)[0], text.replace(/^.+\s+[-]\s+/, '')]);
+                                if (module[type]) module[type] = _.map(module[type], text => [text.split(/\s+[—–―-]\s+/, 1)[0], text.replace(/^.+\s+[—–―-]\s+/, '')]);
                             }
                             // Embed blockquotes into full-write-up
                             if (module['full-write-up'] && module['pull-quote']) {
