@@ -19,7 +19,7 @@ import { Router } from '@angular/router';
                             <svg-inline *ngIf="visible" class="close-icon clickable" (click)="hide()" src="/assets/img/close.svg"></svg-inline>
                         </div>
                         <div class="col-xs-9 col-sm-6 col-md-9">
-                            <div class="logo-wrapper" [class.modified-background]="visible" [class.shifted]="!visible">
+                            <div class="logo-wrapper" [class.has-background]="logoHasBackground()" [class.modified-background]="visible" [class.shifted]="!visible">
                                 <img (click)="nav([''])" [ngClass]="['logo', 'clickable', language]" src="/assets/img/logo-{{ language }}.png">
                             </div>
                         </div>
@@ -30,9 +30,9 @@ import { Router } from '@angular/router';
                             <div #menu class="menu">
                                 <div class="col-md-12 menu-heading"></div>
                                 <div class="menu-sections">
-                                    <div class="menu-section row">
+                                    <div class="menu-section row" [style.opacity]="location.pathname != '/' ? 1 : 0">
                                         <div class="col-xs-8 col-xs-offset-2 col-sm-6 col-sm-offset-3 col-md-12 col-md-offset-0">
-                                            <p class="clickable" (click)="nav([''])">{{ textBySlug.ui.menu.home }}</p>
+                                            <p *ngIf="location.pathname != '/'" class="clickable" (click)="nav([''])">{{ textBySlug.ui.menu.home }}</p>
                                         </div>
                                     </div>
                                     <div class="menu-section row">
@@ -81,7 +81,7 @@ import { Router } from '@angular/router';
                                             <p class="subscribe">{{ textBySlug.ui.menu.subscribe }}</p>
                                             <div *ngIf="mailchimpHTML" class="form-message" [class.error]="mailchimpError" [innerMarkdown]="mailchimpHTML"></div>
                                             <div class="form">
-                                                <input (keyup.enter)="subscribe()" [(ngModel)]="email" name="EMAIL" type="email" placeholder="{{ textBySlug.ui.misc['placeholder-email'] }}">
+                                                <input (keyup.enter)="subscribe()" [(ngModel)]="mailchimpEmail" name="EMAIL" type="email" placeholder="{{ textBySlug.ui.misc['placeholder-email'] }}">
                                                 <span (click)="subscribe()" class="submit clickable">{{ textBySlug.ui.menu.submit }}</span>
                                             </div>
                                         </div>
@@ -102,6 +102,7 @@ export class NavbarComponent {
     visible = false;
     mailchimpError = false;
     mailchimpHTML = '';
+    location = location;
 
     constructor(
         private router: Router,
@@ -116,11 +117,11 @@ export class NavbarComponent {
         // Success message goes away
         if (!this.mailchimpError) {
             this.mailchimpHTML = '';
-            this.email = '';
+            this.mailchimpEmail = '';
         }
     }
     subscribe() {
-        var email = encodeURIComponent(this.email);
+        var email = encodeURIComponent(this.mailchimpEmail);
         var url = "https://beautifulrising.us8.list-manage.com/subscribe/post-json?c=JSONP_CALLBACK&u=17cdfdd393d63b7891e9b3ef4&id=29b9c2184c&subscribe=Subscribe&EMAIL=" + email;
         this.jsonp.request(url)
             .map(res => res.json())
@@ -132,6 +133,9 @@ export class NavbarComponent {
                     menu.scrollTop = menu.scrollHeight;
                 });
             });
+    }
+    logoHasBackground() {
+        return this.visible || !/^\/tool\//.test(location.pathname)
     }
 }
 

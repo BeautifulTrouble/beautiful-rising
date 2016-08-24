@@ -472,7 +472,7 @@ navbar {
             @include sm { left: -48px; }
         }
     }
-    .logo-wrapper::after {
+    .logo-wrapper.has-background::after {
         //opacity: 0;
         content: "";
         position: absolute;
@@ -481,8 +481,8 @@ navbar {
         top: 0; bottom: 0;
         left: 0; right: 0;
     }
-    .logo-wrapper.modified-background::after {
-        @include lg { right: 54px; }
+    .logo-wrapper.has-background.modified-background::after {
+        @include lg { right: 52px; }
         @include md { right: 86px; }
     }
     .logo {
@@ -505,8 +505,8 @@ navbar {
     }
     .menu-outer {
         height: 100vh;
-        border: 2px solid black;
-        border-bottom: none; // This border is added to the inner
+        //border: 2px solid black;
+        //border-bottom: none; // This border is added to the inner
         padding: 0;
         overflow-x: hidden;
         z-index: 2;
@@ -516,7 +516,7 @@ navbar {
     .menu {
         height: 100%;
         width: 106%;
-        background: white;
+        //background: white;
         overflow-y: scroll;
         overflow-x: hidden;
     }
@@ -526,13 +526,17 @@ navbar {
         height: $menu-heading-size;
         background: white;
         z-index: 1;
-        border-bottom: 2px solid black;
+        border: 2px solid black;
         .home, .close-icon, .spacer {
             display: inline-block;
             vertical-align: middle;
         }
     }
     .menu-sections {
+        background: white;
+        border: 2px solid black;
+        border-right: 4px solid black;
+        border-bottom: none;
         padding-top: $menu-heading-size - 18px;
         @include xs {
             padding-top: $menu-heading-size -12px;
