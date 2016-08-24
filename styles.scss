@@ -339,6 +339,7 @@ tools {
             font-weight: bold;
             text-transform: uppercase;
             color: $lightgray;
+            margin: 0 -12px;    // Gives more space for spanish
         }
         &.active {
             .title {
@@ -599,6 +600,7 @@ navbar {
             }
         }
         .form-message p {
+            margin-top: 6px;
             width: 95%;
         }
         .form-message.error p {
