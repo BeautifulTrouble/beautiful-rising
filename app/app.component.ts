@@ -51,6 +51,7 @@ export class AppComponent {
         }
         // Attempt to guess and the language
         //this.language = this.language || (navigator.languages || ['en'])[0].slice(0,2);
+        if (subdomain == 'es-testing') this.language = 'es';
         this.contentService.language = this.language;
         // Get the content
         this.contentService.injectContent(this);
