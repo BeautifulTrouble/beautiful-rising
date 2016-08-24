@@ -1,7 +1,7 @@
 
 import { NgModule, enableProdMode } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HTTP_PROVIDERS } from '@angular/http';
+import { HttpModule, JsonpModule } from '@angular/http';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { RouterModule } from '@angular/router';
@@ -53,6 +53,8 @@ const appRoutes = [
     imports: [
         BrowserModule,
         FormsModule,
+        HttpModule,
+        JsonpModule,
         RouterModule.forRoot(appRoutes),
     ],
     declarations: [
@@ -73,7 +75,6 @@ const appRoutes = [
     ],
     providers: [
         APP_SERVICES,
-        HTTP_PROVIDERS,
         Title,
     ]
 })
