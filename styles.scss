@@ -506,16 +506,14 @@ navbar {
     }
     .menu-outer {
         height: 100vh;
-        //border: 2px solid black;
-        //border-bottom: none; // This border is added to the inner
+        border: 2px solid black;
+        background: white;
+        border-bottom: none; // This border is added to the inner
         padding: 0;
         overflow-x: hidden;
         z-index: 2;
         position: absolute;
         top: 0;
-        @include sm-down {
-            border-right: 2px solid black;
-        }
     }
     .menu {
         height: 100%;
@@ -529,24 +527,13 @@ navbar {
         height: $menu-heading-size;
         background: white;
         z-index: 1;
-        border: 2px solid black;
         .home, .close-icon, .spacer {
             display: inline-block;
             vertical-align: middle;
         }
-        @include sm-down {
-            border-right: none;
-        }
     }
     .menu-sections {
-        background: white;
-        border: 2px solid black;
-        border-bottom: none;
-        border-right: 4px solid black;
         padding-top: $menu-heading-size - 18px;
-        @include sm-down {
-            border-right: none;
-        }
         @include xs {
             padding-top: $menu-heading-size -12px;
         }
