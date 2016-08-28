@@ -413,7 +413,7 @@ tools {
     }
     .tool {
         padding-top: 24px;
-        overflow-x: hidden;
+        overflow: hidden;
         .module-title {
             border-top: 2px solid black;
             padding-bottom: 12px;
@@ -788,12 +788,14 @@ $search-height: 50px;
             font-size: 50px;
             position: absolute;
             z-index: 50;
-            right: 4px; top: 5 * $margin;
+            right: 4px; top: 30px;
         }
         svg-inline {
             position: absolute;
-            right: 0; top: 3 * $margin;
+            right: 0; top: 18px;
             width: 100%;
+            max-height: 160px;
+            overflow-y: hidden;
             @include sm {
                 width: 200%;
             }
