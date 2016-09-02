@@ -1,7 +1,7 @@
 // Any task which interacts with a data store should be abstracted to a service here.
 
 import { Injectable, OnDestroy, NgZone } from '@angular/core';
-import { Http, URLSearchParams } from '@angular/http';
+import { Http, URLSearchParams, Headers, RequestOptions } from '@angular/http';
 import { DomSanitizationService } from '@angular/platform-browser/src/security/dom_sanitization_service';
 
 import { Observable } from 'rxjs/Observable';
@@ -168,6 +168,23 @@ export class ContentService {
 }
 
 
+// Intake service (for submitting information to the API's adjunct intake handling functionality)
+@Injectable()
+export class IntakeService {
+    intakeUrl = 'https://api.beautifulrising.org/intake/';
+
+    constructor(private http: Http) { }
+    send(name, obj) {
+        var headers = new Headers({'Content-Type': 'application/json'});
+        var options = new RequestOptions({headers: headers});
+        console.log(this.http);
+        return this.http.post(this.intakeUrl + name, JSON.stringify(obj), options)
+            .map(res => res)
+            .catch(error => Observable.throw("Couldn't submit data!"));
+    }
+}
+
+
 // Run functions outside angular, only triggering change detection when those functions return true
 @Injectable()
 export class OutsideAngularService {
@@ -286,6 +303,7 @@ export class ModuleSavingService {
 
 export var APP_SERVICES = [
     ContentService,
+    IntakeService,
     ClientStorageService,
     ModuleSavingService,
     OutsideAngularService,

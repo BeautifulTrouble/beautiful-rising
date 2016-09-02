@@ -1330,13 +1330,13 @@ detail {
                 vertical-align: top;
                 transform: scale(1) translate(0,0) rotate(0deg);
             }
-            h3::after {
+            h3.after-arrow::after {
                 display: inline-block;
                 content: url('/assets/img/arrow.svg');
                 transform: scale(0.75) translate(10px,0px) rotate(180deg);
                 @include prefix(transition, transform $transition linear, webkit moz);
             }
-            h3.selected::after {
+            h3.after-arrow.selected::after {
                 content: url('/assets/img/arrow-black.svg');
                 transform: scale(0.75) translate(6px,0px) rotate(270deg);
             }
@@ -1398,6 +1398,54 @@ detail {
             }
             &.shifted {
                 background-position-x: 50%;
+            }
+        }
+        .contribute {
+            h4 { 
+                margin-bottom: 0; 
+            }
+            input, textarea {
+                border: 2px solid black;
+                border-bottom: none;
+                display: block;
+                width: 100%;
+                padding: 5px 10px;
+                &.missing {
+                    background: pink;
+                }
+            }
+            textarea {
+                border-bottom: 2px solid black;
+                max-width: 100%;
+                padding-right: 70px;
+                margin-bottom: 12px;
+            }
+            textarea::-webkit-input-placeholder, 
+            textarea::-moz-placeholder,
+            textarea:-ms-input-placeholder,
+            textarea:-moz-placeholder
+            input::-webkit-input-placeholder, 
+            input::-moz-placeholder,
+            input:-ms-input-placeholder,
+            input:-moz-placeholder {
+                font-style: italic;
+            }
+            textarea:focus, input:focus { 
+                outline: none;
+            }
+            .textarea-wrapper {
+                position: relative;
+            }
+            .submit {
+                color: $gray;
+                position: absolute;
+                font-weight: bold;
+                text-transform: uppercase;
+                text-decoration: underline;
+                right: 12px; bottom: 6px;
+            }
+            .recaptcha {
+                padding-top: 12px;
             }
         }
     }

@@ -28,7 +28,8 @@
     "lodash": "^4.10.0",
     "markdown-it": "^6.0.0",
     "markdown-it-footnote": "^2.0.0",
-    "elasticlunr": "git+https://github.com/weixsong/elasticlunr.js#v0.8.9"
+    "elasticlunr": "git+https://github.com/weixsong/elasticlunr.js#v0.8.9",
+    "angular2-recaptcha": "^0.1.3"
   },
   "devDependencies": {
     "angular2-template-loader": "^0.4.0",

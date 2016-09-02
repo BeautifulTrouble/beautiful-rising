@@ -6,6 +6,8 @@ import { BrowserModule, Title } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { RouterModule } from '@angular/router';
 
+import { ReCaptchaComponent } from 'angular2-recaptcha/angular2-recaptcha';
+
 import { APP_DIRECTIVES } from './directives';
 import { APP_SERVICES } from './services';
 import { APP_PIPES } from './utilities';
@@ -58,6 +60,8 @@ const appRoutes = [
         RouterModule.forRoot(appRoutes),
     ],
     declarations: [
+        ReCaptchaComponent, 
+
         APP_DIRECTIVES,
         APP_PIPES,
         AboutComponent,

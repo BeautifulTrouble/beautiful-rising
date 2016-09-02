@@ -6,7 +6,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import _ = require('lodash');
 
 import { plainString, slugify, template } from './utilities';
-import { ContentService, ModuleSavingService } from './services';
+import { ContentService, IntakeService, ModuleSavingService } from './services';
 
 
 @Component({
@@ -194,10 +194,10 @@ import { ContentService, ModuleSavingService } from './services';
                             </div>
                         </div>
 
-                        <div *ngIf="(module['real-world-examples'] || []).length" class="examples hidden-sm">
+                        <div #normalContent *ngIf="module.type != 'story'" class="examples hidden-sm">
                             <div (click)="topside = !topside" class="heading clickable">
                                 <svg-inline src="/assets/img/RWE_{{ module.type }}.svg"></svg-inline>
-                                <h3 class="bigger after-arrow" [class.selected]="!topside">{{ textBySlug.ui.module['real-world'] | template:{title: module.title } }}</h3>
+                                <h3 class="bigger" [class.after-arrow]="(module['real-world-examples'] || []).length" [class.selected]="!topside">{{ textBySlug.ui.module['real-world'] | template:{title: module.title } }}</h3>
                             </div>
                             <div *ngIf="!topside" class="example-wrapper">
                                 <div class="example" *ngFor="let example of module['real-world-examples']; let index=index;">
@@ -212,15 +212,36 @@ import { ContentService, ModuleSavingService } from './services';
                                         [class.staggered]="!(index%2)" [class.shifted]="!(index%3)" 
                                         [ngStyle]="{'background-image': 'url(/assets/patterns/snapshotoverlay/' + module.type +'.svg), url('+ config['asset-path'] +'/'+ module.image +')'}"></div>
                                 </div>
+                            </div>
+                            <div class="contribute">
+                                <h4>{{ textBySlug.ui.module.seen | template: {type: module.type} }}</h4>
+                                <div *ngIf="!showRecaptcha" class="form">
+                                    <p>{{ textBySlug.ui.module['seen-subheading'] }}</p>
+                                    <input type="url" [(ngModel)]="payload.link" [class.missing]="submitted && !payload.link"
+                                        placeholder="{{ textBySlug.ui.module['seen-placeholder-link'] }}">
+                                    <input type="text" [(ngModel)]="payload.title" [class.missing]="submitted && !payload.title"
+                                        placeholder="{{ textBySlug.ui.module['seen-placeholder-title'] }}">
+                                    <div class="textarea-wrapper">
+                                        <textarea #textarea rows="3" [(ngModel)]="payload.description" [class.missing]="submitted && !payload.description"
+                                            placeholder="{{ textBySlug.ui.module['seen-placeholder-description'] }}"></textarea>
+                                        <span *ngIf="!showRecaptcha" (click)="submit()" class="submit clickable">{{ textBySlug.ui.module.submit }}</span>
+                                    </div>
+                                </div>
+                                <div *ngIf="showRecaptcha" class="recaptcha">
+                                    <p>{{ textBySlug.ui.module['seen-recaptcha'] }}</p>
+                                    <re-captcha *ngIf="normalContent.offsetHeight != 0" (captchaResponse)="submit($event)" [language]="module.lang" site_key="6LeCpCgTAAAAAFc4TwetXb1yBzJvaYo-FvrQvAlx"></re-captcha>
+                                </div>
+                                <p *ngIf="showThanks" class="thanks">{{ textBySlug.ui.module['seen-thanks'] | template: {type: module.type} }}</p>
+                                <p *ngIf="showError" class="error">{{ textBySlug.ui.module['seen-error'] | template: {type: module.type} }}</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-sm-12 visible-sm"><!-- small only full width content -->
-                        <div *ngIf="(module['real-world-examples'] || []).length" class="examples">
+                    <div #smallContent class="col-sm-12 visible-sm"><!-- small only full width content -->
+                        <div *ngIf="module.type != 'story'" class="examples">
                             <div (click)="topside = !topside" class="heading clickable">
                                 <svg-inline src="/assets/img/RWE_{{ module.type }}.svg"></svg-inline>
-                                <h3 class="bigger after-arrow" [class.selected]="!topside">{{ textBySlug.ui.module['real-world'] | template:{title: module.title } }}</h3>
+                                <h3 class="bigger" [class.after-arrow]="(module['real-world-examples'] || []).length" [class.selected]="!topside">{{ textBySlug.ui.module['real-world'] | template:{title: module.title } }}</h3>
                             </div>
                             <div *ngIf="!topside" class="example-wrapper">
                                 <div class="example" *ngFor="let example of module['real-world-examples']; let index=index;">
@@ -235,6 +256,27 @@ import { ContentService, ModuleSavingService } from './services';
                                         [class.staggered]="!(index%2)" [class.shifted]="!(index%3)" 
                                         [ngStyle]="{'background-image': 'url(/assets/patterns/snapshotoverlay/' + module.type +'.svg), url('+ config['asset-path'] +'/'+ module.image +')'}"></div>
                                 </div>
+                            </div>
+                            <div class="contribute">
+                                <h4>{{ textBySlug.ui.module.seen | template: {type: module.type} }}</h4>
+                                <div *ngIf="!showRecaptcha" class="form">
+                                    <p>{{ textBySlug.ui.module['seen-subheading'] }}</p>
+                                    <input type="url" [(ngModel)]="payload.link" [class.missing]="submitted && !payload.link"
+                                        placeholder="{{ textBySlug.ui.module['seen-placeholder-link'] }}">
+                                    <input type="text" [(ngModel)]="payload.title" [class.missing]="submitted && !payload.title"
+                                        placeholder="{{ textBySlug.ui.module['seen-placeholder-title'] }}">
+                                    <div class="textarea-wrapper">
+                                        <textarea #textarea rows="3" [(ngModel)]="payload.description" [class.missing]="submitted && !payload.description"
+                                            placeholder="{{ textBySlug.ui.module['seen-placeholder-description'] }}"></textarea>
+                                        <span *ngIf="!showRecaptcha" (click)="submit()" class="submit clickable">{{ textBySlug.ui.module.submit }}</span>
+                                    </div>
+                                </div>
+                                <div *ngIf="showRecaptcha" class="recaptcha">
+                                    <p>{{ textBySlug.ui.module['seen-recaptcha'] }}</p>
+                                    <re-captcha *ngIf="smallContent.offsetHeight != 0" (captchaResponse)="submit($event)" [language]="module.lang" site_key="6LeCpCgTAAAAAFc4TwetXb1yBzJvaYo-FvrQvAlx"></re-captcha>
+                                </div>
+                                <p *ngIf="showThanks" class="thanks">{{ textBySlug.ui.module['seen-thanks'] | template: {type: module.type} }}</p>
+                                <p *ngIf="showError" class="error">{{ textBySlug.ui.module['seen-error'] | template: {type: module.type} }}</p>
                             </div>
                         </div>
                         <div *ngIf="module['potential-risks']" (click)="riskCollapsed = !riskCollapsed" class="risks" [class.clickable]="module['potential-risks-short']">
@@ -324,6 +366,7 @@ export class DetailComponent {
         private title: Title,
         private router: Router,
         private route: ActivatedRoute,
+        private intakeService: IntakeService,
         private contentService: ContentService,
         private savingService: ModuleSavingService) { 
     }
@@ -360,6 +403,13 @@ export class DetailComponent {
                 this.title.setTitle(this.module['title']);
                 window.scrollTo(0,0);
 
+                // Prepare the contribution form payload
+                this.payload = {
+                    document_title: this.module.document_title,
+                    document_link: this.module.document_link,
+                    slug: this.module.slug
+                };
+
                 isDevMode() && console.log(this.module);
             });
         });
@@ -389,5 +439,30 @@ export class DetailComponent {
     getRelated(type, fromCollection) {
         return _.filter(_.map((this.module[type] || []).sort(), (slug) => fromCollection[slug]));
     }
+    submit(event) {
+        this.submitted = true;
+        this.showThanks = this.showError = false;
+        if (!this.payload.link || !this.payload.title || !this.payload.description) return;
+        if (!this.showRecaptcha) {
+            this.showRecaptcha = true;
+            return;
+        }
+
+        this.payload['g-recaptcha-response'] = event;
+        this.intakeService.send('real-world-examples', this.payload)
+            .subscribe(
+                res => {
+                    this.payload.link = this.payload.title = this.payload.description = '';
+                    this.submitted = this.showRecaptcha = false;
+                    this.showThanks = true;
+                    setTimeout(() => { this.showThanks = false; }, 10000);
+                },
+                err => { 
+                    this.showRecaptcha = false;
+                    this.showError = true; 
+                }
+            );
+    }
 }
+
 
