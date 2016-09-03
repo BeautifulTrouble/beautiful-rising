@@ -2,7 +2,7 @@
 
 import { Injectable, OnDestroy, NgZone } from '@angular/core';
 import { Http, URLSearchParams, Headers, RequestOptions } from '@angular/http';
-import { DomSanitizationService } from '@angular/platform-browser/src/security/dom_sanitization_service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -41,7 +41,7 @@ export class CachedHttpService {
 // Common markdown rendering functionality
 @Injectable()
 export class MarkdownService {
-    constructor(private sanitizer: DomSanitizationService) {
+    constructor(private sanitizer: DomSanitizer) {
         this.md = new MarkdownIt({
             'html': true,
             'linkify': true,

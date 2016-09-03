@@ -217,6 +217,8 @@ import { ContentService, IntakeService, ModuleSavingService } from './services';
                                 <h4>{{ textBySlug.ui.module.seen | template: {type: module.type} }}</h4>
                                 <div *ngIf="!showRecaptcha" class="form">
                                     <p>{{ textBySlug.ui.module['seen-subheading'] }}</p>
+                                    <p *ngIf="showThanks" class="thanks">{{ textBySlug.ui.module['seen-thanks'] | template: {type: module.type} }}</p>
+                                    <p *ngIf="showError" class="error">{{ textBySlug.ui.module['seen-error'] | template: {type: module.type} }}</p>
                                     <input type="url" [(ngModel)]="payload.link" [class.missing]="submitted && !payload.link"
                                         placeholder="{{ textBySlug.ui.module['seen-placeholder-link'] }}">
                                     <input type="text" [(ngModel)]="payload.title" [class.missing]="submitted && !payload.title"
@@ -231,8 +233,6 @@ import { ContentService, IntakeService, ModuleSavingService } from './services';
                                     <p>{{ textBySlug.ui.module['seen-recaptcha'] }}</p>
                                     <re-captcha *ngIf="normalContent.offsetHeight != 0" (captchaResponse)="submit($event)" [language]="module.lang" site_key="6LeCpCgTAAAAAFc4TwetXb1yBzJvaYo-FvrQvAlx"></re-captcha>
                                 </div>
-                                <p *ngIf="showThanks" class="thanks">{{ textBySlug.ui.module['seen-thanks'] | template: {type: module.type} }}</p>
-                                <p *ngIf="showError" class="error">{{ textBySlug.ui.module['seen-error'] | template: {type: module.type} }}</p>
                             </div>
                         </div>
                     </div>
@@ -261,6 +261,8 @@ import { ContentService, IntakeService, ModuleSavingService } from './services';
                                 <h4>{{ textBySlug.ui.module.seen | template: {type: module.type} }}</h4>
                                 <div *ngIf="!showRecaptcha" class="form">
                                     <p>{{ textBySlug.ui.module['seen-subheading'] }}</p>
+                                    <p *ngIf="showThanks" class="thanks">{{ textBySlug.ui.module['seen-thanks'] | template: {type: module.type} }}</p>
+                                    <p *ngIf="showError" class="error">{{ textBySlug.ui.module['seen-error'] | template: {type: module.type} }}</p>
                                     <input type="url" [(ngModel)]="payload.link" [class.missing]="submitted && !payload.link"
                                         placeholder="{{ textBySlug.ui.module['seen-placeholder-link'] }}">
                                     <input type="text" [(ngModel)]="payload.title" [class.missing]="submitted && !payload.title"
@@ -275,8 +277,6 @@ import { ContentService, IntakeService, ModuleSavingService } from './services';
                                     <p>{{ textBySlug.ui.module['seen-recaptcha'] }}</p>
                                     <re-captcha *ngIf="smallContent.offsetHeight != 0" (captchaResponse)="submit($event)" [language]="module.lang" site_key="6LeCpCgTAAAAAFc4TwetXb1yBzJvaYo-FvrQvAlx"></re-captcha>
                                 </div>
-                                <p *ngIf="showThanks" class="thanks">{{ textBySlug.ui.module['seen-thanks'] | template: {type: module.type} }}</p>
-                                <p *ngIf="showError" class="error">{{ textBySlug.ui.module['seen-error'] | template: {type: module.type} }}</p>
                             </div>
                         </div>
                         <div *ngIf="module['potential-risks']" (click)="riskCollapsed = !riskCollapsed" class="risks" [class.clickable]="module['potential-risks-short']">
@@ -407,7 +407,6 @@ export class DetailComponent {
                 this.payload = {
                     document_title: this.module.document_title,
                     document_link: this.module.document_link,
-                    slug: this.module.slug
                 };
 
                 isDevMode() && console.log(this.module);
