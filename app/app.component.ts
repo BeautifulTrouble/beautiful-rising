@@ -8,9 +8,9 @@ import { ContentService, ClientStorageService, LocalStorage } from './services';
 @Component({
     selector: 'beautiful-rising',
     template: `
-        <div class="background" [ngStyle]="{'direction': contentService.language==='ar' ? 'rtl' : 'ltr'}">
+        <div class="background" [ngClass]="contentService.language" [ngStyle]="{'direction': contentService.language == 'ar' ? 'rtl' : 'ltr'}">
             <modal></modal>
-            <navbar [textBySlug]="textBySlug" [language]="language"></navbar>
+            <navbar></navbar>
             <tools (offsetchanged)="toolsOffset = $event"></tools>
             <div class="content-area" [style.right.px]="toolsOffset">
                 <router-outlet></router-outlet>
@@ -30,8 +30,7 @@ import { ContentService, ClientStorageService, LocalStorage } from './services';
     `
 })
 export class AppComponent {
-    //@LocalStorage() language;
-    language = 'en';
+    @LocalStorage() language;
     right = 0;
 
     constructor(
@@ -50,12 +49,9 @@ export class AppComponent {
             });
         }
         // Set the language
-        //this.language = this.language || (navigator.languages || ['en'])[0].slice(0,2);
-        var subdomain = location.hostname.split('.')[0];
-        if (subdomain == 'es-testing') {
-            this.language = 'es';
-        }
-        this.contentService.language = this.language;
+        this.language = this.language || (navigator.languages || ['en'])[0].slice(0,2);
+        if (this.language != 'en' && this.language != 'es') this.language = 'en';
+        this.contentService.setLanguage(this.language);
         // Get the content
         this.contentService.injectContent(this);
     }

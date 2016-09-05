@@ -3,6 +3,8 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { Jsonp } from '@angular/http';
 import { Router } from '@angular/router';
 
+import { ContentService } from './services';
+
 
 @Component({
     selector: 'navbar',
@@ -18,9 +20,16 @@ import { Router } from '@angular/router';
                             </div>
                             <svg-inline *ngIf="visible" class="close-icon clickable" (click)="hide()" src="/assets/img/close.svg"></svg-inline>
                         </div>
-                        <div class="col-xs-9 col-sm-6 col-md-9">
+                        <div class="col-xs-7 col-sm-6 col-md-9">
                             <div class="logo-wrapper" [class.has-background]="logoHasBackground()" [class.modified-background]="visible" [class.shifted]="!visible">
                                 <img (click)="nav([''])" [ngClass]="['logo', 'clickable', language]" src="/assets/img/logo-{{ language }}.png">
+                            </div>
+                        </div>
+                        <div class="col-xs-2 col-sm-4 col-md-2">
+                            <div class="language-switcher">
+                                <div *ngFor="let lang of ['en', 'es']" class="lang clickable" 
+                                    [class.selected]="language == lang"
+                                    (click)="contentService.setLanguage(lang)">{{ lang }}</div>
                             </div>
                         </div>
                     </div>
@@ -97,16 +106,18 @@ import { Router } from '@angular/router';
 })
 export class NavbarComponent {
     @ViewChild('menu') menu;
-    @Input() textBySlug;
-    @Input() language;
     visible = false;
     mailchimpError = false;
     mailchimpHTML = '';
     location = location;
 
     constructor(
+        private contentService: ContentService,
         private router: Router,
         private jsonp: Jsonp) { 
+    }
+    ngOnInit() {
+        this.contentService.injectContent(this);
     }
     nav(linkParam) {
         this.router.navigate(linkParam);

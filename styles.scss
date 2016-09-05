@@ -460,7 +460,7 @@ navbar {
     .fixed-container-wrapper .container {
         position: relative;
     }
-    .close-icon, .logo-wrapper {
+    .close-icon, .logo-wrapper, .language-switcher {
         position: relative;
         z-index: 3;
         top: 15px;
@@ -489,6 +489,30 @@ navbar {
     .logo {
         @include xs { 
             max-width: 200px;
+        }
+    }
+    .language-switcher {
+        float: right;
+        position: relative;
+        top: 20px;
+        div {
+            font-weight: bold;
+            text-transform: uppercase;
+            text-decoration: underline;
+            text-align: right;
+            color: $gray;
+            @include sm-up {
+                display: inline-block;
+                padding: 0 10px;
+                border-left: 2px solid black;
+            }
+        }
+        div:first-of-type {
+            border-left: none;
+        }
+        div.selected {
+            text-decoration: none;
+            color: black;
         }
     }
     .menu-toggle {
@@ -1807,27 +1831,6 @@ modal {
 
 
 // Development styles
-.language-selection {
-    display: none;
-    span {
-        cursor: pointer;
-        font-size: 30px;
-        border-left: 2px solid black;
-        padding: 5px;
-        &:first-of-type {
-            border-left: none;
-        }
-        &.selected {
-            font-weight: bold;
-            font-style: italic;
-        }
-        &.disabled {
-            pointer-events: none;
-            color: lightgray;
-        }
-    }
-}
-
 .module-share {
     cursor: not-allowed !important;
     color: #ddd !important;
