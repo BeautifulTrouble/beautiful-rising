@@ -373,7 +373,7 @@ export class DetailComponent {
     ngOnInit() {
         this.contentService.injectContent(this, (content) => {
             this.sub = this.route.params.subscribe((params) => {
-                this.module = this.modulesBySlug[params.slug];
+                this.module = content.modulesBySlug[params.slug];
                 if (!this.module) {
                     this.router.navigate(['/search', 'slug!' + params.slug]);
                     return;
