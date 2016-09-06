@@ -753,7 +753,7 @@ $search-height: 50px;
         position: absolute;
         border-left: 1px solid black;
         height: 40px; width: 0;
-        left: 51%; top: 95%;
+        left: 49.7%; top: 95%;
     }
     // Styles for selected 
     .type-list, .type-description {
@@ -844,7 +844,7 @@ $search-height: 50px;
         h3::before {
             content: '';
             position: relative;
-            border: 1px solid black;
+            border-left: 1px solid black;
             height: 30px; width: 0;
             left: 75%; top: 25px;
         }
@@ -1007,12 +1007,20 @@ $search-height: 50px;
         border-bottom: 2px solid black;
     }
     .module-content {
-        height: 40 * $margin;
-        @include lg { height: 36*$margin; }
+        height: 240px;
+        @include lg { height: 216px; }
         @include xs { height: initial; }
     }
     .module-snapshot {
         padding-top: 3 * $margin;
+    }
+}
+.es .gallery-module-list {
+    .module-content {
+        height: 255px;
+        @include md { height: 275px; }
+        @include sm { height: 250px; }
+        @include xs { height: 180px; }
     }
 }
 
