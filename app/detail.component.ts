@@ -371,7 +371,7 @@ export class DetailComponent {
         private savingService: ModuleSavingService) { 
     }
     ngOnInit() {
-        this.contentService.injectContent(this, () => {
+        this.contentService.injectContent(this, (content) => {
             this.sub = this.route.params.subscribe((params) => {
                 this.module = this.modulesBySlug[params.slug];
                 if (!this.module) {
@@ -381,12 +381,12 @@ export class DetailComponent {
                 this.topside = false; // A toggle between the article and examples
                 this.riskCollapsed = true;
 
-                this.authors = this.getRelated('authors', this.peopleBySlug);
-                this.stories = this.getRelated('stories', this.modulesBySlug);
-                this.tactics = this.getRelated('tactics', this.modulesBySlug);
-                this.theories = this.getRelated('theories', this.modulesBySlug);
-                this.principles = this.getRelated('principles', this.modulesBySlug);
-                this.methodologies = this.getRelated('methodologies', this.modulesBySlug);
+                this.authors = this.getRelated('authors', content.peopleBySlug);
+                this.stories = this.getRelated('stories', content.modulesBySlug);
+                this.tactics = this.getRelated('tactics', content.modulesBySlug);
+                this.theories = this.getRelated('theories', content.modulesBySlug);
+                this.principles = this.getRelated('principles', content.modulesBySlug);
+                this.methodologies = this.getRelated('methodologies', content.modulesBySlug);
 
                 // Attempt to split author name into first and last (this assignment syntax is called destructuring)
                 this.authors.forEach(author => [, author.firstname, author.lastname] = author.title.split(/^([^\s]+)\s+/))
