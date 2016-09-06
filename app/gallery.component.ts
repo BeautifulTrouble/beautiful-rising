@@ -171,7 +171,7 @@ export class GalleryComponent {
         });
     }
     ngAfterViewInit() {
-        window.scrollTo(0,0);
+        window.scrollTo(0,5);
     }
     ngOnDestroy() {
         this.sub && this.sub.unsubscribe();
