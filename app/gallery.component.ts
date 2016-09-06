@@ -30,7 +30,7 @@ import { template } from './utilities';
                          placeholder="{{ textBySlug && textBySlug.ui.list['search-text'] }}">
                         <input [(ngModel)]="query" (ngModelChange)="filterModules()" class="search-box visible-md visible-lg" 
                          placeholder="{{ textBySlug && textBySlug.ui.list['search-text'] }}" autofocus>
-                        <module-types (resized)="marginTop = $event" [region]="region" [type]="type" [textBySlug]="textBySlug" [modulesByRegion]="modulesByRegion"></module-types>
+                        <module-types (resized)="marginTop = $event < marginTop ? $event + 60 : $event" [region]="region" [type]="type" [textBySlug]="textBySlug" [modulesByRegion]="modulesByRegion"></module-types>
                     </div>
                 </div>
             </div>
