@@ -154,20 +154,20 @@ export class GalleryComponent {
         this.type = this.tag = this.query = this.region = null;
 
         this.contentService.injectContent(this, (content) => {
+            console.log('this init inject content callback is being called');
             this.title.setTitle(content.textBySlug.ui.misc['site-title']);
             this.tags = _.keys(content.textBySlug.tags.all).sort();
-            if (!this.sub) {
-                this.sub = this.route.params.subscribe((params) => {
-                    if (params.type) this.type = params.type;
-                    else if (params.tag) this.tag = params.tag;
-                    else if (params.query) this.query = decodeURIComponent(params.query);
-                    else if (params.region) {
-                        this.type = 'story'
-                        this.region = params.region;
-                    }
-                    this.filterModules();
-                });
-            }
+            this.sub && this.sub.unsubscribe();
+            this.sub = this.route.params.subscribe((params) => {
+                if (params.type) this.type = params.type;
+                else if (params.tag) this.tag = params.tag;
+                else if (params.query) this.query = decodeURIComponent(params.query);
+                else if (params.region) {
+                    this.type = 'story'
+                    this.region = params.region;
+                }
+                this.filterModules();
+            });
         });
     }
     ngAfterViewInit() {

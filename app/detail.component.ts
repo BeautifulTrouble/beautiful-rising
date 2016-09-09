@@ -372,6 +372,7 @@ export class DetailComponent {
     }
     ngOnInit() {
         this.contentService.injectContent(this, (content) => {
+            this.sub && this.sub.unsubscribe();
             this.sub = this.route.params.subscribe((params) => {
                 this.module = content.modulesBySlug[params.slug];
                 if (!this.module) {
