@@ -69,6 +69,7 @@ export class ContentService {
     language = 'en';
     contentUrl = 'https://api.beautifulrising.org/api/v1/all';
     cacheByLanguage = {};
+    injectionSubscriptions = {};
     
     constructor(
         private cachedHttp: CachedHttpService,
@@ -91,7 +92,6 @@ export class ContentService {
                 .map(res => res.json())
                 .catch(err => Observable.throw("Couldn't fetch API content!"))
                 .subscribe(content => {
-                    console.log('prep');
                     // Prepare the content for easy consumption by components
                     let output:any = {
                         ready: true,
@@ -164,7 +164,10 @@ export class ContentService {
         return this.observable;
     }
     injectContent(target: Scope, then) {
-        this.getContent().subscribe(content => {
+        var caller = target.constructor.name;
+        // Assume only one instance per component, prevent redundant subscriptions
+        this.injectionSubscriptions[caller] && this.injectionSubscriptions[caller].unsubscribe();
+        this.injectionSubscriptions[caller] = this.getContent().subscribe(content => {
             _.merge(target, content);
             if (then /* har */) then(content);
         });
@@ -181,7 +184,6 @@ export class IntakeService {
     send(name, obj) {
         var headers = new Headers({'Content-Type': 'application/json'});
         var options = new RequestOptions({headers: headers});
-        console.log(this.http);
         return this.http.post(this.intakeUrl + name, JSON.stringify(obj), options)
             .map(res => res)
             .catch(error => Observable.throw("Couldn't submit data!"));

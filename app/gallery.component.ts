@@ -154,7 +154,7 @@ export class GalleryComponent {
         this.type = this.tag = this.query = this.region = null;
 
         this.contentService.injectContent(this, (content) => {
-            console.log('this init inject content callback is being called');
+            //console.log('this init inject content callback is being called');
             this.title.setTitle(content.textBySlug.ui.misc['site-title']);
             this.tags = _.keys(content.textBySlug.tags.all).sort();
             this.sub && this.sub.unsubscribe();
