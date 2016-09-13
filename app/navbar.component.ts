@@ -72,15 +72,13 @@ import { ContentService } from './services';
                                             <p class="clickable" (click)="nav(['/contribute', 'how-it-works'])">{{ textBySlug.ui.menu['how-it-works'] }}</p>
                                         </div>
                                     </div>
-                                    <!--
-                                    <div class="menu-section">
+                                    <div class="menu-section row">
                                         <div class="col-xs-8 col-xs-offset-2 col-sm-6 col-sm-offset-3 col-md-12 col-md-offset-0">
                                             <h3 class="clickable" (click)="nav(['/resources'])">{{ textBySlug.ui.menu['training-and-resources'] }}</h3>
                                             <p class="clickable" (click)="nav(['/resources', 'training'])">{{ textBySlug.ui.menu.training }}</p>
                                             <p class="clickable" (click)="nav(['/resources', 'other'])">{{ textBySlug.ui.menu.other }}</p>
                                         </div>
                                     </div>
-                                    -->
                                     <div class="menu-section row">
                                         <div class="col-xs-8 col-xs-offset-2 col-sm-6 col-sm-offset-3 col-md-12 col-md-offset-0">
                                             <h3>{{ textBySlug.ui.menu['contact-us'] }}</h3>

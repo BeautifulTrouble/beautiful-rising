@@ -1741,7 +1741,7 @@ modal {
         .question { padding-bottom: 3 * $margin; }
     }
 }
-.platforms, .contribute {
+.platforms, .contribute, .resources {
     .page-heading {
         margin-bottom: 6 * $margin;
     }
@@ -1822,6 +1822,69 @@ modal {
         @include sm-down {
             >div { height: 250px; }
             //.description::before { display: none; }
+        }
+    }
+}
+.resources {
+    h3.bigger {
+        font-size: 40px;
+        line-height: 36px;
+    }
+    .training {
+        h4 { 
+            text-decoration: underline;
+            color: $gray;
+            margin: 24px 0;
+            &.selected {
+                text-decoration: none;
+                color: black;
+            }
+        }
+    }
+    .select {
+        h3 {
+            margin-top: 0;
+        }
+        h4 {
+            position: relative;
+        }
+        h4.selected::after {
+            content: "";
+            width: 40px;
+            border-top: 1px solid black;
+            position: absolute;
+            right: -90px;
+            top: 50%;
+        }
+        @include md-up {
+            .inner {
+                width: 80%;
+                padding-right: 60px;
+                border-right: 2px solid black;
+            }
+        }
+    }
+    .resources {
+        h3 {
+            padding-bottom: 36px;
+        }
+        h4.overline {
+            font-size: 19px;
+        }
+        .resource-type {
+            padding-bottom: 60px;
+        }
+        .resource {
+            a {
+                display: inline-block;
+                margin: 6px 0;
+                font-weight: bold;
+            }
+            p { 
+                font-style: italic;
+                font-size: 12px;
+                line-height: 18px;
+            }
         }
     }
 }
