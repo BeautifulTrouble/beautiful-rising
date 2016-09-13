@@ -18,16 +18,17 @@ import { ContentService } from './services';
                         <div class="inner">
                             <h3 class="bigger">{{ textBySlug.trouble.heading }}</h3>
                             <p>{{ textBySlug.trouble.lead }}</p>
-                            <h4 *ngFor="let each of textBySlug.trouble.content; let index=index" 
-                                (click)="troubleIndex = index"
-                                [class.selected]="troubleIndex == index" class="clickable">{{ each.heading }}</h4>
+                            <div *ngFor="let each of textBySlug.trouble.content; let index=index">
+                                <h4 (click)="troubleIndex = index" [class.selected]="troubleIndex == index" class="clickable">{{ each.heading }}</h4>
+                                <p *ngIf="troubleIndex == index" class="visible-xs visible-sm" [innerMarkdown]="textBySlug.trouble.content[troubleIndex].text"></p>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-6 detail">
                         <img src="{{ textBySlug.trouble.image }}">
                         <div class="row">
                             <div class="col-md-8">
-                                <p [innerMarkdown]="textBySlug.trouble.content[troubleIndex].text"></p>
+                                <p class="visible-md visible-lg" [innerMarkdown]="textBySlug.trouble.content[troubleIndex].text"></p>
                             </div>
                         </div>
                     </div>

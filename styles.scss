@@ -1566,6 +1566,11 @@ modal {
         height: 0;
     }
 }
+.page {
+    @include xs {
+        padding-top: 12px;
+    }
+}
 .page, .accordion {
     .page-heading {
         text-align: center;
@@ -1840,13 +1845,12 @@ modal {
                 color: black;
             }
         }
-    }
-    .select {
         h3 {
             margin-top: 0;
         }
         h4 {
             position: relative;
+            line-height: 22px;
         }
         h4.selected::after {
             content: "";
@@ -1855,6 +1859,12 @@ modal {
             position: absolute;
             right: -90px;
             top: 50%;
+        }
+        img {
+            padding-bottom: 36px;
+            @include sm-down {
+                padding-top: 36px;
+            }
         }
         @include md-up {
             .inner {
