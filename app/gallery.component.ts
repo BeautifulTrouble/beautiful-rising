@@ -156,13 +156,20 @@ export class GalleryComponent {
         this.contentService.injectContent(this, (content) => {
             this.title.setTitle(content.textBySlug.ui.misc['site-title']);
             this.tags = _.keys(content.textBySlug.tags.all).sort();
+
             this.sub && this.sub.unsubscribe();
             this.sub = this.route.params.subscribe((params) => {
+                // Detect the various circumstances which indicate navigating away from this component and detach subscription
+                if ((_.isEmpty(params) && this.router.url != '/') || (params.query && !/^\/search\//.test(this.router.url))) {
+                    this.sub && this.sub.unsubscribe();
+                    return;
+                }
+                // Parse params (be aware that searches which don't originate from urls don't trigger this callback)
                 if (params.type) this.type = params.type;
                 else if (params.tag) this.tag = params.tag;
                 else if (params.query) this.query = decodeURIComponent(params.query);
                 else if (params.region) {
-                    this.type = 'story'
+                    this.type = 'story';
                     this.region = params.region;
                 }
                 this.filterModules();
@@ -183,7 +190,6 @@ export class GalleryComponent {
         if (!this.query && this.query !== null) {
             history.replaceState(null, null, '');
             this.query = null;
-            //this.router.navigate(['/']);
         }
         if (this.query) {
             filterOutSnapshots = false;
