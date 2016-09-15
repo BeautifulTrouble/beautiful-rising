@@ -104,9 +104,11 @@ import { template } from './utilities';
                                         <div class="offset" [style.justify-content]="['center','flex-start','flex-end'][module.timestamp%3]">
                                             <div [ngClass]="['module-type', module.type]">{{ textBySlug.ui.types[module.type] }}</div>
                                             <div [class.story]="module.type == 'story'" class="module-title">{{ module.title }}</div>
-                                            <div (mouseover)="hover(false)" (mouseout)="hover(true)" (click)="savingService.toggleSaved(module); $event.stopPropagation()" [ngSwitch]="savingService.isSaved(module)">
-                                                <img *ngSwitchCase="true" src="/assets/img/-_tileandmodule.svg" class="module-save">
-                                                <img *ngSwitchCase="false" src="/assets/img/+_tileandmodule.svg" class="module-save">
+                                            <div [ngSwitch]="savingService.isSaved(module)" class="module-save"
+                                                (mouseover)="hover(false)" (mouseout)="hover(true)" 
+                                                (click)="savingService.toggleSaved(module); $event.stopPropagation()">
+                                                <img *ngSwitchCase="true" src="/assets/img/-_tileandmodule.svg">
+                                                <img *ngSwitchCase="false" src="/assets/img/+_tileandmodule.svg">
                                             </div>
                                         </div>
                                     </div>
