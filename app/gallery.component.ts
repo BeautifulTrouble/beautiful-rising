@@ -42,10 +42,10 @@ import { template } from './utilities';
                     <div class="border-top border-bottom view-as">
                         <div class="row">
                             <div class="col-xs-6">
-                                <svg-inline (click)="viewStyle='grid'" [class.selected]="viewStyle == 'grid'" class="clickable" src="/assets/img/grid.svg"></svg-inline>
+                                <svg-inline (click)="viewStyle='grid'" [class.selected]="isViewStyle('grid')" class="clickable" src="/assets/img/grid.svg"></svg-inline>
                             </div>
                             <div class="col-xs-6">
-                                <svg-inline (click)="viewStyle='list'" [class.selected]="viewStyle == 'list'" class="clickable" src="/assets/img/list.svg"></svg-inline>
+                                <svg-inline (click)="viewStyle='list'" [class.selected]="isViewStyle('list')" class="clickable" src="/assets/img/list.svg"></svg-inline>
                             </div>
                         </div>
                     </div>
@@ -71,8 +71,8 @@ import { template } from './utilities';
                 <div class="gallery-sort clearfix visible-xs visible-sm col-xs-12">
                     <h3>{{ textBySlug.ui.list.view }}</h3>
                     <span class="view-as">
-                        <svg-inline (click)="viewStyle='grid'" [class.selected]="viewStyle == 'grid'" class="clickable" src="/assets/img/grid.svg"></svg-inline>
-                        <svg-inline (click)="viewStyle='list'" [class.selected]="viewStyle == 'list'" class="clickable" src="/assets/img/list.svg"></svg-inline>
+                        <svg-inline (click)="viewStyle='grid'" [class.selected]="isViewStyle('grid')" class="clickable" src="/assets/img/grid.svg"></svg-inline>
+                        <svg-inline (click)="viewStyle='list'" [class.selected]="isViewStyle('list')" class="clickable" src="/assets/img/list.svg"></svg-inline>
                     </span>
                     <h3>{{ textBySlug.ui.list.sort }}</h3>
                     <span class="sort-by">
@@ -91,7 +91,7 @@ import { template } from './utilities';
                         </div>
                     </div>
 
-                    <div lazyBackgroundGroup *ngIf="viewStyle == 'grid'" class="row">
+                    <div lazyBackgroundGroup *ngIf="isViewStyle('grid')" class="row">
                         <div class="gallery-module-grid-wrapper">
                             <div *ngFor="let module of selectedModules" (click)="router.navigate(['/tool', module.slug])" class="col-xs-6 col-sm-4 gallery-module-grid">
                                 <div class="make-it-square"></div>
@@ -115,7 +115,7 @@ import { template } from './utilities';
                             </div>
                         </div>
                     </div>
-                    <div *ngIf="viewStyle == 'list'">
+                    <div *ngIf="isViewStyle('list')">
                         <div class="row">
                             <div class="col-md-11 col-md-offset-1">
                                 <div *ngFor="let module of selectedModules" (click)="router.navigate(['/tool', module.slug])" class="gallery-module-list col-sm-6">
@@ -154,7 +154,6 @@ export class GalleryComponent {
         this.type = this.tag = this.query = this.region = null;
 
         this.contentService.injectContent(this, (content) => {
-            //console.log('this init inject content callback is being called');
             this.title.setTitle(content.textBySlug.ui.misc['site-title']);
             this.tags = _.keys(content.textBySlug.tags.all).sort();
             this.sub && this.sub.unsubscribe();
@@ -190,7 +189,6 @@ export class GalleryComponent {
             filterOutSnapshots = false;
             history.replaceState(null, null, '/search/' + this.query);
             this.type = this.tag = null;
-            this.viewStyle = 'list';
             // Allow queries like "authors!andrew-boyd" which search a specific field
             var prefix = this.query.split(/\s*!\s*/)[0];
             var query = this.query.replace(/[^@]+!\s*/, '');
@@ -225,6 +223,10 @@ export class GalleryComponent {
         // Mutates selectedModules, which is what is directly displayed
         if (key) this.sortKey = key;
         this.selectedModules = _.orderBy(this.selectedModules, this.sortKey, this.sortKey == 'timestamp' ? 'desc' : 'asc');
+    }
+    isViewStyle(style) {
+        // Query temporarily sets the view style to list
+        return style == (this.query ? 'list' : this.viewStyle);
     }
 }
 
