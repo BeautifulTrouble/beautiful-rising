@@ -18,14 +18,14 @@ import { template } from './utilities';
                         <div class="arrow" [class.active]="isOpen">
                             <div class="button"><svg-inline src="/assets/img/arrow.svg"></svg-inline></div>
                         </div>
-                        <div (click)="activate('news'); $event.stopPropagation()" class="news-icon" [class.active]="isOpen && active == 'news'">
+                        <div (click)="activateToggle('news'); $event.stopPropagation()" class="news-icon" [class.active]="isOpen && active == 'news'">
                             <div class="button">
                                 <svg-inline src="/assets/img/News_Feed.svg"></svg-inline>
                                 <div class="title">{{ textBySlug.ui.sidebar.news }}</div>
                             </div>
                         </div>
-                        <div (click)="activate('tools'); $event.stopPropagation()" class="tools-icon" [class.active]="isOpen && active == 'tools'">
-                            <div class="button">
+                        <div (click)="activateToggle('tools'); $event.stopPropagation()" class="tools-icon" [class.active]="isOpen && active == 'tools'">
+                            <div class="button" [class.pulse]="firstSave">
                                 <svg-inline src="/assets/img/My_tools.svg"></svg-inline>
                                 <div class="title">{{ textBySlug.ui.sidebar.tools }}</div>
                             </div>
@@ -108,7 +108,6 @@ export class ToolsComponent {
     @ViewChild('mainPanel') mainPanel;
     @ViewChild('iconPanel') iconPanel;
     template = template;
-    _ = _;
 
     isOpen = false;
     active = 'tools';
@@ -124,9 +123,21 @@ export class ToolsComponent {
     }
     ngOnInit() {
         this.contentService.injectContent(this);
+        this.firstSaveSub = this.savingService.firstSave.subscribe(() => {
+            this.active = 'tools';
+            this.firstSave = true;
+            if (!this.isOpen) {
+                this.open();
+                setTimeout(() => {
+                    this.firstSave = false;
+                    if (this.active == 'tools' && this.isOpen) this.close();
+                }, 5000);
+            }
+        }
     }
     ngOnDestroy() {
-        this.sub && this.sub.unsubscribe();
+        this.closeSub && this.closeSub.unsubscribe();
+        this.firstSaveSub && this.firstSaveSub.unsubscribe();
     }
     open() {
         this.isOpen = true;
@@ -137,9 +148,10 @@ export class ToolsComponent {
             this.offsetchanged.next(diff);
             this.scrollTo(this.position || 0);
         }
-        this.sub = this.router.events.subscribe(event => {
+        this.closeSub && this.closeSub.unsubscribe();
+        this.closeSub = this.router.events.subscribe(event => {
             if (event instanceof NavigationEnd) {
-                this.sub && this.sub.unsubscribe();
+                this.closeSub && this.closeSub.unsubscribe();
                 this.close();
             }
         });
@@ -170,7 +182,7 @@ export class ToolsComponent {
             if (this.mainPanel) this.mainPanel.nativeElement.scrollTop = y;
         });
     }
-    activate(which) {
+    activateToggle(which) {
         if (which == this.active && this.isOpen) this.close();
         else if (which == this.active) this.open();
         else if (!this.isOpen) this.open();

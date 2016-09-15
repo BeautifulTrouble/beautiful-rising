@@ -1,6 +1,6 @@
 // Any task which interacts with a data store should be abstracted to a service here.
 
-import { Injectable, OnDestroy, NgZone } from '@angular/core';
+import { Injectable, OnDestroy, NgZone, EventEmitter } from '@angular/core';
 import { Http, URLSearchParams, Headers, RequestOptions } from '@angular/http';
 import { DomSanitizer } from '@angular/platform-browser';
 
@@ -268,7 +268,6 @@ function StorageDecoratorFactory(key, store) {
     }
 }
 
-// This is factored out of the service so callbacks and subscribers will persist when the service is re-instantiated
 class StorageEmitter {
     static callbacks = [];
     static zoneSubscribers = [];
@@ -295,6 +294,7 @@ export class ModuleSavingService {
 
     constructor() {
         this.savedModules = this.savedModules || [];
+        this.firstSave = new EventEmitter();
     }
     isSaved(module) {
         return _.includes(this.savedModules, module.slug);
@@ -302,6 +302,7 @@ export class ModuleSavingService {
     toggleSaved(module) {
         // TODO: implement backend API saving, auto-sort...
         if (!module.slug) return;
+        if (!this.savedModules.length) this.firstSave.emit();
         this.isSaved(module) ? _.pull(this.savedModules, module.slug) : this.savedModules.push(module.slug);
     }
 }

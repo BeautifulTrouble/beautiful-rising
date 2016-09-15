@@ -5,11 +5,33 @@
   }
   #{$property}: $value;
 }
+
 @mixin placeholder {
   &::-webkit-input-placeholder {@content}
-  &::-moz-placeholder          {@content}
-  &:-moz-placeholder           {@content}
-  &:-ms-input-placeholder      {@content}  
+  &::-moz-placeholder {@content}
+  &:-moz-placeholder {@content}
+  &:-ms-input-placeholder {@content}  
+}
+
+@mixin animation($animate...) {
+    $max: length($animate);
+    $animations: '';
+    @for $i from 1 through $max {
+        $animations: #{$animations + nth($animate, $i)};
+        @if $i < $max {
+            $animations: #{$animations + ", "};
+        }
+    }
+    -webkit-animation: $animations;
+    -moz-animation:    $animations;
+    -o-animation:      $animations;
+    animation:         $animations;
+}
+@mixin keyframes($animationName) {
+    @-webkit-keyframes #{$animationName} {@content;}
+    @-moz-keyframes #{$animationName} {@content;}
+    @-o-keyframes #{$animationName} {@content;}
+    @keyframes #{$animationName} {@content;}
 }
 
 
@@ -1917,4 +1939,23 @@ modal {
     svg * {
         fill: #ddd !important;
     }
+}
+
+
+// Animation
+@include keyframes(pulse) {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.5); }
+    100% { transform: scale(1); }
+}
+.pulse {
+    @include animation('pulse 1s');
+}
+
+@include keyframes(fade-in) {
+    0% {opacity: 0;}
+    100% {opacity: 1;}
+}
+.fade-in {
+    @include animation('fade-in 1s');
 }
