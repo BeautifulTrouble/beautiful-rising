@@ -93,20 +93,20 @@ import { template } from './utilities';
 
                     <div lazyBackgroundGroup *ngIf="isViewStyle('grid')" class="row">
                         <div class="gallery-module-grid-wrapper">
-                            <div *ngFor="let module of selectedModules" (click)="router.navigate(['/tool', module.slug])" class="col-xs-6 col-sm-4 gallery-module-grid">
+                            <div *ngFor="let module of selectedModules" (click)="router.navigate(['/tool', module.slug])" class="col-xs-6 col-sm-4 gallery-module-grid clickable">
                                 <div class="make-it-square"></div>
                                 <div *ngIf="module.image" [lazyBackground]="config['asset-path'] +'/medium-'+ module.image" class="module-image"></div>
                                 <div class="module-overlay"></div>
 
-                                <div class="module-content clickable">
+                                <div class="module-content" (mouseenter)="currentHover = $event.target; hover(true)" (mouseleave)="hover(false)">
                                     <div class="module-content-inner">
                                         <svg-inline *ngIf="module.region" src="/assets/img/{{ module.region }}.svg" class="region-icon"></svg-inline>
                                         <div class="offset" [style.justify-content]="['center','flex-start','flex-end'][module.timestamp%3]">
                                             <div [ngClass]="['module-type', module.type]">{{ textBySlug.ui.types[module.type] }}</div>
                                             <div [class.story]="module.type == 'story'" class="module-title">{{ module.title }}</div>
-                                            <div (click)="savingService.toggleSaved(module); $event.stopPropagation()" [ngSwitch]="savingService.isSaved(module)" class="module-save">
-                                                <svg-inline *ngSwitchCase="true" src="/assets/img/-_tileandmodule.svg"></svg-inline>
-                                                <svg-inline *ngSwitchCase="false" src="/assets/img/+_tileandmodule.svg"></svg-inline>
+                                            <div (mouseover)="hover(false)" (mouseout)="hover(true)" (click)="savingService.toggleSaved(module); $event.stopPropagation()" [ngSwitch]="savingService.isSaved(module)">
+                                                <img *ngSwitchCase="true" src="/assets/img/-_tileandmodule.svg" class="module-save">
+                                                <img *ngSwitchCase="false" src="/assets/img/+_tileandmodule.svg" class="module-save">
                                             </div>
                                         </div>
                                     </div>
@@ -233,6 +233,12 @@ export class GalleryComponent {
     isViewStyle(style) {
         // Query temporarily sets the view style to list
         return style == (this.query ? 'list' : this.viewStyle);
+    }
+    hover(state) {
+        if (this.currentHover) {
+            this.currentHover.querySelector('.module-snapshot').style.opacity = +state;
+            this.currentHover.querySelector('.module-content-inner').style.opacity = +!state;
+        }
     }
 }
 

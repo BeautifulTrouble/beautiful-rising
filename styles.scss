@@ -933,9 +933,7 @@ $search-height: 50px;
         margin-top: 110%;
     }
     .module-save {
-        padding: 2*$margin 0;
-        width: 50px;
-        svg path { fill: white; }
+        padding: 12px 12px 12px 0;
     }
     .region-icon {
         position: absolute;
@@ -992,7 +990,7 @@ $search-height: 50px;
         top: 2 * $margin; bottom: 2 * $margin;
         left: 2 * $margin; right: 2 * $margin;
         font-weight: bold;
-        z-index: -50;
+        z-index: -1;
         opacity: 0;
     }
     .module-snapshot, .module-content-inner, .module-overlay {
