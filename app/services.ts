@@ -163,7 +163,7 @@ export class ContentService {
         }
         return this.observable;
     }
-    injectContent(target: Scope, then) {
+    injectContent(target: any, then?: any) {
         var caller = target.constructor.name;
         // Assume only one instance per component, prevent redundant subscriptions
         this.injectionSubscriptions[caller] && this.injectionSubscriptions[caller].unsubscribe();

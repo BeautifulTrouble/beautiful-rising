@@ -6,7 +6,7 @@ import { BrowserModule, Title } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { RouterModule } from '@angular/router';
 
-import { ReCaptchaComponent } from 'angular2-recaptcha/angular2-recaptcha';
+import { ReCaptchaModule } from 'angular2-recaptcha/angular2-recaptcha';
 
 import { APP_DIRECTIVES } from './directives';
 import { APP_SERVICES } from './services';
@@ -57,11 +57,10 @@ const appRoutes = [
         FormsModule,
         HttpModule,
         JsonpModule,
+        ReCaptchaModule, 
         RouterModule.forRoot(appRoutes),
     ],
     declarations: [
-        ReCaptchaComponent, 
-
         APP_DIRECTIVES,
         APP_PIPES,
         AboutComponent,
