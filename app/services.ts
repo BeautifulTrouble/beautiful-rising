@@ -30,6 +30,7 @@ export class CachedHttpService {
         }
         if (!observable) {
             observable = CachedHttpService.cache[url] = this.http.get(url, options)
+                .catch(err => console.error("Couldn't fetch HTTP content!"))
                 .publishLast()
                 .refCount();
         }
@@ -90,7 +91,7 @@ export class ContentService {
             this.cacheByLanguage[this.language] = null;
             this.cachedHttp.get(`${this.contentUrl}?lang=${this.language}`)
                 .map(res => res.json())
-                .catch(err => Observable.throw("Couldn't fetch API content!"))
+                .catch(err => console.error("Couldn't fetch API content!"))
                 .subscribe(content => {
                     // Prepare the content for easy consumption by components
                     let output:any = {
