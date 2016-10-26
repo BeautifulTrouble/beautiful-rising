@@ -48,10 +48,14 @@ export class AppComponent {
                 }
             });
         }
-        // Set the language
+
+        // Detect and set the language
         this.language = this.language || (navigator.languages || ['en'])[0].slice(0,2);
-        if (this.language != 'en' && this.language != 'es') this.language = 'en';
+        if (this.language != 'en' && this.language != 'es') {
+            this.language = 'en';
+        }
         this.contentService.setLanguage(this.language);
+
         // Get the content
         this.contentService.injectContent(this);
     }

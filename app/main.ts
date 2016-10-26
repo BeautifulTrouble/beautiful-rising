@@ -29,12 +29,6 @@ import '../styles.scss';
 
 // Define routes
 const appRoutes = [
-    {path: '',                      component: GalleryComponent},
-    {path: 'search/:query',         component: GalleryComponent},
-    {path: 'tag/:tag',              component: GalleryComponent},
-    {path: 'type/:type',            component: GalleryComponent},
-    {path: 'type/story/:region',    component: GalleryComponent},
-
     {path: 'module',                redirectTo: 'tool', pathMatch: 'prefix'},
     {path: 'tool/:slug',            component: DetailComponent},
 
@@ -45,7 +39,17 @@ const appRoutes = [
     {path: 'resources',             component: ResourcesComponent},
     {path: 'resources/:section',    component: ResourcesComponent},
     {path: 'contribute',            component: ContributeComponent},
-    {path: 'contribute/:section',   component: ContributeComponent}
+    {path: 'contribute/:section',   component: ContributeComponent},
+
+    {path: 'search/:query',         component: GalleryComponent},
+    {path: 'tag/:tag',              component: GalleryComponent},
+    {path: 'type/:type',            component: GalleryComponent},
+    {path: 'type/story/:region',    component: GalleryComponent},
+
+    // Temporary solution to the multilingual routing issue
+    {path: ':lang',                 component: GalleryComponent},
+
+    {path: '',                      component: GalleryComponent}
 ];
 
 

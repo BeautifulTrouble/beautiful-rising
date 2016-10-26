@@ -151,6 +151,13 @@ export class GalleryComponent {
         private savingService: ModuleSavingService) { 
     }
     ngOnInit() {
+        // Temporary solution to the multilingual routing issue
+        var lang = this.route.snapshot.params.lang;
+        if (lang) {
+            if (_.includes(['en', 'es'], lang) this.contentService.setLanguage(lang);
+            this.router.navigate(['/']);
+        }
+
         this.sortKey = this.sortKey || 'timestamp';
         this.viewStyle = this.viewStyle || 'grid';
         this.type = this.tag = this.query = this.region = null;
