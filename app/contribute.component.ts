@@ -49,11 +49,13 @@ import { ContentService } from './services';
 })
 export class ContributeComponent {
     activeType = 'story';
+    textBySlug;
     types = [['story', 'stories'], 
              ['tactic', 'tactics'], 
              ['principle', 'principles'], 
              ['theory', 'theories'], 
              ['methodology', 'methodologies']];
+
     constructor(
         private router: Router,
         private contentService: ContentService) {

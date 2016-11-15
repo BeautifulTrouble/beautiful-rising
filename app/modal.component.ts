@@ -39,6 +39,8 @@ import { ContentService, LocalStorage } from './services';
 export class ModalComponent {
     @LocalStorage() dismissedExplicitly;
     dismissedImplicitly;
+    textBySlug;
+
     constructor(
         private router: Router,
         private contentService: ContentService) { 

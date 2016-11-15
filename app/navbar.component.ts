@@ -103,11 +103,13 @@ import { ContentService } from './services';
     `
 })
 export class NavbarComponent {
-    @ViewChild('menu') menu;
-    visible = false;
-    mailchimpError = false;
-    mailchimpHTML = '';
     location = location;
+    mailchimpError = false;
+    mailchimpEmail = '';
+    mailchimpHTML = '';
+    @ViewChild('menu') menu;
+    textBySlug;
+    visible = false;
 
     constructor(
         private contentService: ContentService,

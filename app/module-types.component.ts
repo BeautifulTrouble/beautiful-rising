@@ -2,7 +2,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
 
-import _ = require('lodash');
+import * as _ from 'lodash';
 
 import { ContentService } from './services';
 
@@ -109,6 +109,7 @@ export class ModuleTypeComponent {
     @Input() modulesByRegion;
     @Output() resized = new EventEmitter();
     expanded = true;
+    overrideExpanded = false;
     types = [['story', 'stories'], 
              ['tactic', 'tactics'], 
              ['principle', 'principles'], 
@@ -128,7 +129,10 @@ export class ModuleTypeComponent {
         }
     }
     regionHasModules(region) {
-        return _.some(this.modulesByRegion[region] || [], m => !/SNAPSHOT/.test(m.document_title));
+        return _.some(
+            this.modulesByRegion[region] || [], 
+            m => !/SNAPSHOT/.test(m['document_title'])
+        );
     }
 }
 

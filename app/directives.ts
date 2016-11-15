@@ -3,8 +3,8 @@ import { Http } from '@angular/http';
 import { Directive, OnInit, Input, Output, Optional, EventEmitter, ElementRef, HostBinding, HostListener } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 
-import _ = require('lodash');
-import MarkdownIt = require('markdown-it');
+import * as _ from 'lodash';
+import * as MarkdownIt from 'markdown-it';
 
 import { CachedHttpService, OutsideAngularService, MarkdownService } from './services';
 
@@ -13,14 +13,22 @@ import { CachedHttpService, OutsideAngularService, MarkdownService } from './ser
 @Directive({ selector: 'svg-inline' })
 export class InlineSVGDirective {
 	@Input() src;
-    constructor(private el: ElementRef, private cachedHttp: CachedHttpService) { }
+
+    constructor(
+        private el: ElementRef, 
+        private cachedHttp: CachedHttpService) { 
+    }
     getSVG() {
         this.cachedHttp.get(this.src)
             .map(res => res.text())
             .subscribe(data => { this.el.nativeElement.innerHTML = data; });
     }
-    ngOnInit() { this.getSVG(); }
-    ngOnChanges() { this.getSVG(); }
+    ngOnInit() { 
+        this.getSVG(); 
+    }
+    ngOnChanges(changes) { 
+        this.getSVG(); 
+    }
 }
 
 
@@ -36,15 +44,20 @@ export class InlineSVGDirective {
 export class AccordionDirective {
     @Input('accordion') active;
     els = [];
+
     add(el) {
-        if (this.active !== false) el.hidden = true;
+        if (this.active !== false) {
+            el.hidden = true;
+        }
         this.els.push(el);
     }
     remove(el) {
         _.pull(this.els, el);
     }
     toggle(el) {
-        if (this.active === false) return;
+        if (this.active === false) {
+            return;
+        }
         var state = el.hidden;
         _.map(this.els, (el) => { el.hidden = true; });
         el.hidden = !state;
@@ -81,7 +94,10 @@ export class AccordionToggleDirective {
 @Directive({ selector: '[lazyBackgroundGroup]'})
 export class LazyBackgroundGroupDirective {
     elements = [];
-    constructor(private outside: OutsideAngularService) { }
+
+    constructor(
+        private outside: OutsideAngularService) { 
+    }
     ngOnInit() {
         this.outside.addEventListener(window, 'scroll', this.lazyLoad);
         this.outside.addEventListener(window, 'resize', this.lazyLoad);
@@ -108,9 +124,11 @@ export class LazyBackgroundGroupDirective {
         }
     }
 }
+
 @Directive({ selector: '[lazyBackground]'})
 export class LazyBackgroundDirective {
     @Input('lazyBackground') url;
+
     constructor(
         private el: ElementRef,
         private lazyBackground: LazyBackgroundGroupDirective) {
@@ -132,8 +150,11 @@ export class LazyBackgroundDirective {
 @Directive({ selector: '[innerMarkdown]' })
 export class MarkdownDirective {
     @Input() innerMarkdown;
-    constructor(private el: ElementRef, private md: MarkdownService) { }
-    ngOnChanges() { 
+
+    constructor(
+        private el: ElementRef, private md: MarkdownService) { 
+    }
+    ngOnChanges(changes) { 
         this.updateContent(); 
     }
     updateContent() { 
@@ -153,10 +174,12 @@ export class MarkdownDirective {
 @Directive({ selector: '[addSectionToRoute],[thresholdElement],[thresholdOffset]' })
 export class SectionRouteDirective {
     @Input() addSectionToRoute;
+    currentlyNavigating = false;
+    sections = {};
+    sub;
     @Input() thresholdElement;
     @Input() thresholdOffset;
-    sections = {};
-    currentlyNavigating = false;
+
     constructor(
         private router: Router, 
         private route: ActivatedRoute) {
@@ -165,8 +188,10 @@ export class SectionRouteDirective {
         this.thresholdOffset = parseInt(this.thresholdOffset || 0);
         this.sub = this.router.events.subscribe(event => {
             if (event instanceof NavigationEnd) {
-                if (this.currentlyNavigating) return this.currentlyNavigating = false;
-                this.setSection(this.route.snapshot.params.section)
+                if (this.currentlyNavigating) {
+                    return this.currentlyNavigating = false;
+                }
+                this.setSection(this.route.snapshot.params['section'])
             }
         });
     }
@@ -175,7 +200,7 @@ export class SectionRouteDirective {
     }
     ngAfterViewInit() {
         // TODO: If this is called before the page is ready, the positioning is slightly off
-        this.setSection(this.route.snapshot.params.section);
+        this.setSection(this.route.snapshot.params['section']);
     }
     add(section, el) {
         this.sections[section] = el;
@@ -190,7 +215,9 @@ export class SectionRouteDirective {
             position = document.body.scrollTop + sectionEl.getBoundingClientRect().top - this.thresholdOffset;
             if (this.thresholdElement) {
                 var tEl = document.querySelector(this.thresholdElement);
-                if (tEl) position -= tEl.getBoundingClientRect().bottom;
+                if (tEl) {
+                    position -= tEl.getBoundingClientRect().bottom;
+                }
             }
         }
         this.currentlyNavigating = true;
@@ -202,10 +229,14 @@ export class SectionRouteDirective {
         var threshold = this.thresholdOffset;
         if (this.thresholdElement) {
             var tEl = document.querySelector(this.thresholdElement);
-            if (tEl) threshold = tEl.getBoundingClientRect().bottom + this.thresholdOffset;
+            if (tEl) {
+                threshold = tEl.getBoundingClientRect().bottom + this.thresholdOffset;
+            }
         }
         for (let section in this.sections) {
-            if (this.sections[section].getBoundingClientRect().top < threshold) visibleSection = section;
+            if (this.sections[section].getBoundingClientRect().top < threshold) {
+                visibleSection = section;
+            }
         }
         if (visibleSection) {
             this.currentlyNavigating = true;
@@ -213,18 +244,24 @@ export class SectionRouteDirective {
         }
     };
 }
+
 @Directive({ selector: 'section[name]' })
 export class SectionDirective {
     @Input() name;
+
     constructor(
         private el: ElementRef,
         @Optional() private routeDirective: SectionRouteDirective) {
     }
     ngOnInit() {
-        if (this.routeDirective) this.routeDirective.add(this.name, this.el.nativeElement);
+        if (this.routeDirective) {
+            this.routeDirective.add(this.name, this.el.nativeElement);
+        }
     }
     ngOnDestroy() {
-        if (this.routeDirective) this.routeDirective.remove(this.name);
+        if (this.routeDirective) {
+            this.routeDirective.remove(this.name);
+        }
     }
 }
 
@@ -239,9 +276,13 @@ export class SectionDirective {
  */
 @Directive({ selector: '[heightPolling], [widthPolling]' })
 export class SizePollingDirective {
+    defaultInterval = 100;
+    hLast;
+    hIntervalId;
+    wLast;
+    wIntervalId;
     @Output() heightChanged = new EventEmitter();
     @Output() widthChanged = new EventEmitter();
-    defaultInterval = 100;
 
     constructor(
         private outside: OutsideAngularService,

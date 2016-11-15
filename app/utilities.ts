@@ -3,7 +3,7 @@
 import { Http } from '@angular/http';
 import { Pipe, PipeTransform } from '@angular/core';
 
-import _ = require('lodash');
+import * as _ from 'lodash';
 
 
 // Note that these are NOT the same slugs used by the API

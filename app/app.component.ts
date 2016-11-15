@@ -30,13 +30,17 @@ import { ContentService, ClientStorageService, LocalStorage } from './services';
     `
 })
 export class AppComponent {
+    contentService;
     @LocalStorage() language;
     right = 0;
+    toolsOffset;
+    textBySlug;
 
     constructor(
         private router: Router,
         private clientStorageService: ClientStorageService,
-        private contentService: ContentService) {
+        contentService: ContentService) {
+        this.contentService = contentService; 
     }
     ngOnInit() {
         // Send pageviews to Google Analytics
@@ -50,7 +54,7 @@ export class AppComponent {
         }
 
         // Detect and set the language
-        this.language = this.language || (navigator.languages || ['en'])[0].slice(0,2);
+        this.language = this.language || (navigator['languages'] || ['en'])[0].slice(0,2);
         if (this.language != 'en' && this.language != 'es') {
             this.language = 'en';
         }

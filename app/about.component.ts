@@ -19,7 +19,13 @@ import { ContentService } from './services';
     `
 })
 export class AboutComponent {
-    constructor(private contentService: ContentService) { }
-    ngOnInit() { this.contentService.injectContent(this); }
+    textBySlug;
+
+    constructor(
+        private contentService: ContentService) { 
+    }
+    ngOnInit() { 
+        this.contentService.injectContent(this); 
+    }
 }
 

@@ -40,6 +40,8 @@ import { ContentService } from './services';
     `
 })
 export class PlatformsComponent {
+    textBySlug;
+    
     constructor(
         private router: Router,
         private contentService: ContentService) {

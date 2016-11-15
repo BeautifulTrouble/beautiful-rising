@@ -3,8 +3,8 @@ import { Component } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 
-import _ = require('lodash');
-import ElasticLunr = require('elasticlunr');
+import * as _ from 'lodash';
+import * as ElasticLunr from 'elasticlunr';
 
 import { ContentService, ModuleSavingService, LocalStorage } from './services';
 import { template } from './utilities';
@@ -137,11 +137,27 @@ import { template } from './utilities';
     `
 })
 export class GalleryComponent {
+    config;
+    currentHover;
+    index;
+    marginTop = 0;
+    modules;
+    modulesByRegion;
+    modulesBySlug;
+    modulesByType;
+    modulesByTag;
+    query;
+    ready;
+    region;
+    selectedModules;
     @LocalStorage() sortKey;
-    @LocalStorage() viewStyle;
+    sub;
+    tag;
+    tags;
     template = template;
     textBySlug;
-    marginTop = 0;
+    type;
+    @LocalStorage() viewStyle;
 
     constructor(
         private title: Title,
@@ -152,9 +168,9 @@ export class GalleryComponent {
     }
     ngOnInit() {
         // Temporary solution to the multilingual routing issue
-        var lang = this.route.snapshot.params.lang;
+        var lang = this.route.snapshot.params['lang'];
         if (lang) {
-            if (_.includes(['en', 'es'], lang) this.contentService.setLanguage(lang);
+            if (_.includes(['en', 'es'], lang)) this.contentService.setLanguage(lang);
             this.router.navigate(['/']);
         }
 
@@ -169,17 +185,17 @@ export class GalleryComponent {
             this.sub && this.sub.unsubscribe();
             this.sub = this.route.params.subscribe((params) => {
                 // Detect the various circumstances which indicate navigating away from this component and detach subscription
-                if ((_.isEmpty(params) && this.router.url != '/') || (params.query && !/^\/search\//.test(this.router.url))) {
+                if ((_.isEmpty(params) && this.router.url != '/') || (params['query'] && !/^\/search\//.test(this.router.url))) {
                     this.sub && this.sub.unsubscribe();
                     return;
                 }
                 // Parse params (be aware that searches which don't originate from urls don't trigger this callback)
-                if (params.type) this.type = params.type;
-                else if (params.tag) this.tag = params.tag;
-                else if (params.query) this.query = decodeURIComponent(params.query);
-                else if (params.region) {
+                if (params['type']) this.type = params['type'];
+                else if (params['tag']) this.tag = params['tag'];
+                else if (params['query']) this.query = decodeURIComponent(params['query']);
+                else if (params['region']) {
                     this.type = 'story';
-                    this.region = params.region;
+                    this.region = params['region'];
                 }
                 this.filterModules();
             });
@@ -209,7 +225,7 @@ export class GalleryComponent {
             var query = this.query.replace(/[^@]+!\s*/, '');
             var config = { bool: /\s/.test(query) ? 'AND' : 'OR', expand: true };
             if (prefix != query && _.includes(this.config.search, prefix)) {
-                config.fields = {}; config.fields[prefix] = {boost: 5};
+                config['fields'] = {}; config['fields'][prefix] = {boost: 5};
             }
             if (!this.index) {
                 ElasticLunr.tokenizer.setSeperator(/[-\s]+/);
@@ -218,11 +234,11 @@ export class GalleryComponent {
                 this.config.search.forEach(field => this.index.addField(field));
                 this.modules.forEach(module => this.index.addDoc(module)); 
             }
-            this.selectedModules = _.map(this.index.search(query, config), obj => this.modulesBySlug[obj.ref]);
+            this.selectedModules = _.map(this.index.search(query, config), obj => this.modulesBySlug[obj['ref']]);
         } else if (this.type) {
             this.selectedModules = this.modulesByType[this.type] || [];
             if (this.region) {
-                this.selectedModules = _.filter(this.selectedModules, m => m.region == this.region);
+                this.selectedModules = _.filter(this.selectedModules, m => m['region'] == this.region);
                 if (!this.selectedModules.length) setTimeout(() => this.router.navigate(['/type', this.type]), 1000);
             }
         } else if (this.tag) {
@@ -231,10 +247,10 @@ export class GalleryComponent {
         } else {
             this.selectedModules = this.modules;
         }
-        if (filterOutSnapshots) this.selectedModules = _.filter(this.selectedModules, m => !/SNAPSHOT/.test(m.document_title));
+        if (filterOutSnapshots) this.selectedModules = _.filter(this.selectedModules, m => !/SNAPSHOT/.test(m['document_title']));
         this.sortModules();
     }
-    sortModules(key) {
+    sortModules(key?) {
         // Mutates selectedModules, which is what is directly displayed
         if (key) this.sortKey = key;
         this.selectedModules = _.orderBy(this.selectedModules, this.sortKey, this.sortKey == 'timestamp' ? 'desc' : 'asc');

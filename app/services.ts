@@ -6,9 +6,9 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 import { Observable } from 'rxjs/Observable';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
-import _ = require('lodash');
-import MarkdownIt = require('markdown-it');
-import markdownitFootnote = require('markdown-it-footnote');
+import * as _ from 'lodash';
+import * as MarkdownIt from 'markdown-it';
+import * as markdownitFootnote from 'markdown-it-footnote';
 
 import { slugify } from './utilities';
 
@@ -20,7 +20,7 @@ export class CachedHttpService {
     static cache = {};
 
     constructor(private http: Http) { }
-    get(url, options) {
+    get(url, options?) {
         var observable;
         options = options || {};
         if (options.reload) {
@@ -30,7 +30,7 @@ export class CachedHttpService {
         }
         if (!observable) {
             observable = CachedHttpService.cache[url] = this.http.get(url, options)
-                .catch(err => console.error("Couldn't fetch HTTP content!"))
+                .catch(error => Observable.throw("Couldn't fetch HTTP content!"))
                 .publishLast()
                 .refCount();
         }
@@ -42,6 +42,8 @@ export class CachedHttpService {
 // Common markdown rendering functionality
 @Injectable()
 export class MarkdownService {
+    md;
+
     constructor(private sanitizer: DomSanitizer) {
         this.md = new MarkdownIt({
             'html': true,
@@ -67,10 +69,12 @@ export class MarkdownService {
 // Content Service (for fetching and transforming API content)
 @Injectable()
 export class ContentService {
-    language = 'en';
-    contentUrl = 'https://api.beautifulrising.org/api/v1/all';
     cacheByLanguage = {};
+    contentUrl = 'https://api.beautifulrising.org/api/v1/all';
     injectionSubscriptions = {};
+    language = 'en';
+    observable;
+    subject;
     
     constructor(
         private cachedHttp: CachedHttpService,
@@ -107,7 +111,7 @@ export class ContentService {
                     output.textBySlug = _.keyBy(output.contentByType.text, 'slug');
                     output.peopleBySlug = _.keyBy(output.contentByType.person, 'slug');
                     // Prepare a few more useful representations of modules
-                    output.moduleTypes = _.map(output.config['types-modules'], t => t.one);
+                    output.moduleTypes = _.map(output.config['types-modules'], t => t['one']);
                     output.modulesByType = _.pick(output.contentByType, output.moduleTypes);
                     output.modules = _.flatten(_.values(output.modulesByType)); // XXX: does this result in copied data?
                     output.modulesBySlug = _.keyBy(output.modules, 'slug');
@@ -132,10 +136,10 @@ export class ContentService {
                             module['potential-risks-short'] = _.truncate(module['potential-risks'], {length: 470, separator: /\s+ /});
                         }
                         // Split epigraphs from attributions
-                        module.epigraphs = _.map(module.epigraphs || [], (text) => text.split(/\s+[—–―-]([^\s].+)/, 2));
+                        module.epigraphs = _.map(module.epigraphs || [], (text: string) => text.split(/\s+[—–―-]([^\s].+)/, 2));
                         // Split key-module names from descriptions
                         for (let type of ['key-tactics', 'key-principles', 'key-theories', 'key-methodologies']) {
-                            if (module[type]) module[type] = _.map(module[type], text => [text.split(/\s+[—–―-]\s+/, 1)[0], text.replace(/^.+\s+[—–―-]\s+/, '')]);
+                            if (module[type]) module[type] = _.map(module[type], (text: string) => [text.split(/\s+[—–―-]\s+/, 1)[0], text.replace(/^.+\s+[—–―-]\s+/, '')]);
                         }
                         // Embed blockquotes into full-write-up
                         if (module['full-write-up'] && module['pull-quote']) {
@@ -244,8 +248,8 @@ export class ClientStorageService implements OnDestroy {
 }
 
 // These automagic decorators are to be used like: @LocalStorage() variableNameHere;
-export var LocalStorage = (key) => StorageDecoratorFactory(key, localStorage);
-export var SessionStorage = (key) => StorageDecoratorFactory(key, sessionStorage);
+export var LocalStorage = (key?) => StorageDecoratorFactory(key, localStorage);
+export var SessionStorage = (key?) => StorageDecoratorFactory(key, sessionStorage);
 
 function StorageDecoratorFactory(key, store) {
     return (obj, propertyName) => {
@@ -291,6 +295,7 @@ class StorageEmitter {
 // Module Saving Service (save to localStorage and backend server)
 @Injectable()
 export class ModuleSavingService {
+    firstSave;
     @LocalStorage() savedModules;
 
     constructor() {

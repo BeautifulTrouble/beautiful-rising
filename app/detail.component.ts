@@ -3,7 +3,7 @@ import { Component, ElementRef, isDevMode } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import _ = require('lodash');
+import * as _ from 'lodash';
 
 import { plainString, slugify, template } from './utilities';
 import { ContentService, IntakeService, ModuleSavingService } from './services';
@@ -18,14 +18,14 @@ import { ContentService, IntakeService, ModuleSavingService } from './services';
                     <div class="col-sm-12">
                         <div class="module-image" [ngStyle]="{'background-image': module.image ? 'url('+config['asset-path']+'/'+module.image+')' : ''}">
                             <div class="overlay"></div>
-                            <div *ngIf="!snapshot" [ngClass]="['pattern', module.type]">
+                            <div *ngIf="!isSnapshot" [ngClass]="['pattern', module.type]">
                                 <div *ngIf="module.type != 'story'">
                                     <svg-inline *ngIf="!patternTypes.length" src="/assets/patterns/3rows/{{ module.type }}.svg"></svg-inline>
                                     <svg-inline *ngIf="patternTypes.length" src="/assets/patterns/3rowsoverlay/{{ module.type }}.svg"></svg-inline>
                                 </div>
                                 <svg-inline *ngFor="let type of patternTypes" src="/assets/patterns/3rowsoverlay/{{ type }}.svg"></svg-inline>
                             </div>
-                            <div *ngIf="snapshot" 
+                            <div *ngIf="isSnapshot" 
                                 [ngClass]="['pattern', 'pattern-snapshot', module.type]" 
                                 [ngStyle]="{'background-image': 'url(/assets/patterns/snapshotoverlay/'+module.type+'.svg)'}"></div>
                             <div class="module-header">
@@ -124,7 +124,7 @@ import { ContentService, IntakeService, ModuleSavingService } from './services';
                     </div>
 
                     <div class="col-xs-12 col-sm-8 col-sm-offset-4 col-md-5 col-md-offset-0 col-lg-offset-1 content">
-                        <div *ngIf="snapshot">
+                        <div *ngIf="isSnapshot">
                             <p [innerHTML]="module.snapshot"></p>
                             <p><strong>{{ textBySlug.ui.module.snapshot | template: {type: textBySlug.ui.types[module.type].toLowerCase()} }}</strong></p>
                             <div class="row contribute-message">
@@ -136,8 +136,8 @@ import { ContentService, IntakeService, ModuleSavingService } from './services';
                                 </div>
                             </div>
                         </div>
-                        <div *ngIf="!snapshot">
-                            <div *ngIf="gallery">
+                        <div *ngIf="!isSnapshot">
+                            <div *ngIf="isGallery">
                                 <div *ngFor="let epigraph of module.epigraphs" class="epigraphs">
                                     <div class="epigraph" [innerHTML]="epigraph[0]"></div>
                                     <div class="attribution" [innerHTML]="epigraph[1]"></div>
@@ -147,7 +147,7 @@ import { ContentService, IntakeService, ModuleSavingService } from './services';
                                     <strong [innerMarkdown]="template(textBySlug.ui.module.gallery, {form: textBySlug.ui.forms[module.type]})"></strong>
                                 </div>
                             </div>
-                            <div *ngIf="!gallery">
+                            <div *ngIf="!isGallery">
                                 <div *ngIf="!topside">
                                     <div class="short-write-up" [innerHTML]="module['short-write-up']"></div>
                                     <h5 class="button" (click)="topside = true">{{ textBySlug.ui.module['read-more'] }}</h5>
@@ -357,9 +357,27 @@ import { ContentService, IntakeService, ModuleSavingService } from './services';
 })
 export class DetailComponent {
     _ = _;
-    slugify = slugify;
-    template = template;
+    authors;
+    isGallery;
+    methodologies;
+    module;
+    patternTypes;
+    payload;
     plainString = plainString;
+    principles;
+    riskCollapsed;
+    showThanks;
+    showError;
+    showRecaptcha;
+    slugify = slugify;
+    isSnapshot;
+    stories;
+    sub;
+    submitted;
+    tactics;
+    template = template;
+    theories;
+    topside;
 
     constructor(
         private el: ElementRef,
@@ -374,9 +392,9 @@ export class DetailComponent {
         this.contentService.injectContent(this, (content) => {
             this.sub && this.sub.unsubscribe();
             this.sub = this.route.params.subscribe((params) => {
-                this.module = content.modulesBySlug[params.slug];
+                this.module = content.modulesBySlug[params['slug']];
                 if (!this.module) {
-                    this.router.navigate(['/search', 'slug!' + params.slug]);
+                    this.router.navigate(['/search', 'slug!' + params['slug']]);
                     return;
                 }
                 this.topside = false; // A toggle between the article and examples
@@ -392,8 +410,8 @@ export class DetailComponent {
                 // Attempt to split author name into first and last (this assignment syntax is called destructuring)
                 this.authors.forEach(author => [, author.firstname, author.lastname] = author.title.split(/^([^\s]+)\s+/))
 
-                this.snapshot = this.module['module-type'] == 'snapshot';
-                this.gallery = this.module['module-type'] == 'gallery';
+                this.isSnapshot = this.module['module-type'] == 'snapshot';
+                this.isGallery = this.module['module-type'] == 'gallery';
 
                 // Compose the module's pattern
                 var types = {'tactics':'tactic', 'principles':'principle', 'theories':'theory', 'methodologies':'methodology'};
@@ -417,12 +435,15 @@ export class DetailComponent {
     ngAfterViewChecked() {
         // HACK: Ensure fragment links don't reload the page
         var links = this.el.nativeElement.querySelectorAll('a[href^="#"]');
-        if (links.length) _.map(links, el => el.setAttribute('href', location.pathname + el.hash));
+        if (links.length) {
+            var setAt = (el: HTMLAnchorElement) => el.setAttribute('href', location.pathname + el.hash);
+            _.map(links, setAt);
+        }
 
         // HACK: Prevent module links rendered from markdown from reloading the page
         var links = this.el.nativeElement.querySelectorAll('a[href^="/tool"]');
         if (links.length) {
-            _.map(links, el => {
+            _.map(links, (el: HTMLAnchorElement) => {
                 if (el.hash) return; // Don't rewrite links with fragment ids
                 var elClone = el.cloneNode(true);
                 el.parentNode.replaceChild(elClone, el);
@@ -437,7 +458,7 @@ export class DetailComponent {
         this.sub && this.sub.unsubscribe();
     }
     getRelated(type, fromCollection) {
-        return _.filter(_.map((this.module[type] || []).sort(), (slug) => fromCollection[slug]));
+        return _.filter(_.map((this.module[type] || []).sort(), (slug: string) => fromCollection[slug]));
     }
     submit(event) {
         this.submitted = true;

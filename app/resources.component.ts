@@ -57,7 +57,9 @@ import { ContentService } from './services';
     `
 })
 export class ResourcesComponent {
+    textBySlug;
     troubleIndex = 0;
+
     constructor(
         private router: Router,
         private contentService: ContentService) {

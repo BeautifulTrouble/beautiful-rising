@@ -2,7 +2,7 @@
 import { Component, ViewChild, EventEmitter, Output } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 
-import _ = require('lodash');
+import * as _ from 'lodash';
 
 import { ContentService, ModuleSavingService } from './services';
 import { template } from './utilities';
@@ -103,18 +103,23 @@ import { template } from './utilities';
     `
 })
 export class ToolsComponent {
-    @Output() offsetchanged = new EventEmitter();
-    @ViewChild('master') master;
-    @ViewChild('mainPanel') mainPanel;
-    @ViewChild('iconPanel') iconPanel;
-    template = template;
-
-    isOpen = false;
     active = 'tools';
-    newsTab = 'twitter';
-    toolsTab = null;
+    closeSub;
+    firstSaveSub;
+    firstSave;
     iconHTML = '<img src="/assets/img/+_intext.svg" width="25px" class="clickable">';
+    @ViewChild('iconPanel') iconPanel;
+    isOpen = false;
+    @ViewChild('mainPanel') mainPanel;
+    @ViewChild('master') master;
     marginLeft = 0;
+    modulesBySlug;
+    newsTab = 'twitter';
+    @Output() offsetchanged = new EventEmitter();
+    position;
+    template = template;
+    textBySlug;
+    toolsTab = null;
 
     constructor(
         private router: Router,
@@ -133,7 +138,7 @@ export class ToolsComponent {
                     if (this.active == 'tools' && this.isOpen) this.close();
                 }, 5000);
             }
-        }
+        });
     }
     ngOnDestroy() {
         this.closeSub && this.closeSub.unsubscribe();
@@ -193,7 +198,7 @@ export class ToolsComponent {
         if (match) this.savingService.toggleSaved({slug: match[1]});
     }
     getSavedModules() {
-        return _.filter(_.map(this.savingService.savedModules.sort(), (slug) => this.modulesBySlug[slug]));
+        return _.filter(_.map(this.savingService.savedModules.sort(), (slug: string) => this.modulesBySlug[slug]));
     }
 }
 
