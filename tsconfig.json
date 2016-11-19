@@ -9,5 +9,8 @@
     "removeComments": true,
     "noImplicitAny": false,
     "suppressImplicitAnyIndexErrors": true
-  }
+  },
+  "files": [
+    "app/vendor.d.ts"
+  ]
 }
