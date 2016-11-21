@@ -1,0 +1,80 @@
+@mixin animation($animate...) {
+    $max: length($animate);
+    $animations: '';
+    @for $i from 1 through $max {
+        $animations: #{$animations + nth($animate, $i)};
+        @if $i < $max {
+            $animations: #{$animations + ", "};
+        }
+    }
+    -webkit-animation: $animations;
+    -moz-animation:    $animations;
+    -o-animation:      $animations;
+    animation:         $animations;
+}
+@mixin keyframes($animationName) {
+    @-webkit-keyframes #{$animationName} {@content;}
+    @-moz-keyframes #{$animationName} {@content;}
+    @-o-keyframes #{$animationName} {@content;}
+    @keyframes #{$animationName} {@content;}
+}
+
+
+@include keyframes(loader) {
+    0% { opacity: 1; transform: scale(1.3, 1.3); }
+    50% { opacity: .1; transform: scale(1, 1); }
+    100% { opacity: 1; transform: scale(1, 1); }
+}
+
+.loader div {
+    box-sizing: border-box;
+}
+.loader > div {
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 26px;
+}
+.loader1 {
+    @include animation('loader 2s ease-in-out infinite');
+    margin-left: 18px;
+    padding-right: 14px;
+    border-left: 5px solid black;
+    height: 22px;
+}
+.loader1:after, .loader1:before {
+    background: black;
+    content: ""; display: block;
+    width: 5px; height: 24px;
+    transform-origin: bottom;
+}
+.loader1:before { transform: translate(-24px, 6px) rotate(60deg); }
+.loader1:after { transform: translate(14px, -18px) rotate(-60deg); }
+.loader2 {
+    @include animation('loader 2s ease-in-out -1.5s infinite');
+    width: 36px; height: 32px;
+    border-left: 5px solid black;
+    border-right: 5px solid black;
+}
+.loader3 {
+    @include animation('loader 2s ease-in-out -1s infinite');
+    width: 34px; height: 34px; 
+    background: initial !important;
+    border-radius: 100%;
+    border: 5px solid black;
+}
+.loader4 {
+    @include animation('loader 2s ease-in-out -.5s infinite');
+    left: -8px;
+    border-right: 5px solid black;
+    position: relative;
+    width: 40px; height: 12px;
+}
+.loader4:before, .loader4:after {
+    content: ""; display: block;
+    position: absolute;
+    width: 15px; height: 16px;
+    border-top: 5px solid black;
+    border-left: 5px solid black;
+}
+.loader4:before { top: 7px; right: 0px; }
+.loader4:after { top: 18px; left: 5px; }

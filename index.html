@@ -28,48 +28,135 @@
 
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
         <style>
+            @-webkit-keyframes loader {
+              0% {
+                opacity: 1;
+                transform: scale(1.3, 1.3); }
+              50% {
+                opacity: .1;
+                transform: scale(1, 1); }
+              100% {
+                opacity: 1;
+                transform: scale(1, 1); } }
+
+            @-moz-keyframes loader {
+              0% {
+                opacity: 1;
+                transform: scale(1.3, 1.3); }
+              50% {
+                opacity: .1;
+                transform: scale(1, 1); }
+              100% {
+                opacity: 1;
+                transform: scale(1, 1); } }
+
+            @-o-keyframes loader {
+              0% {
+                opacity: 1;
+                transform: scale(1.3, 1.3); }
+              50% {
+                opacity: .1;
+                transform: scale(1, 1); }
+              100% {
+                opacity: 1;
+                transform: scale(1, 1); } }
+
+            @keyframes loader {
+              0% {
+                opacity: 1;
+                transform: scale(1.3, 1.3); }
+              50% {
+                opacity: .1;
+                transform: scale(1, 1); }
+              100% {
+                opacity: 1;
+                transform: scale(1, 1); } }
+
+            .loader div {
+              box-sizing: border-box; }
+
+            .loader > div {
+              display: inline-block;
+              vertical-align: top;
+              margin-right: 26px; }
+
+            .loader1 {
+              -webkit-animation: loader 2s ease-in-out infinite;
+              -moz-animation: loader 2s ease-in-out infinite;
+              -o-animation: loader 2s ease-in-out infinite;
+              animation: loader 2s ease-in-out infinite;
+              margin-left: 18px;
+              padding-right: 14px;
+              border-left: 5px solid black;
+              height: 22px; }
+
+            .loader1:after, .loader1:before {
+              background: black;
+              content: "";
+              display: block;
+              width: 5px;
+              height: 24px;
+              transform-origin: bottom; }
+
+            .loader1:before {
+              transform: translate(-24px, 6px) rotate(60deg); }
+
+            .loader1:after {
+              transform: translate(14px, -18px) rotate(-60deg); }
+
+            .loader2 {
+              -webkit-animation: loader 2s ease-in-out -1.5s infinite;
+              -moz-animation: loader 2s ease-in-out -1.5s infinite;
+              -o-animation: loader 2s ease-in-out -1.5s infinite;
+              animation: loader 2s ease-in-out -1.5s infinite;
+              width: 36px;
+              height: 32px;
+              border-left: 5px solid black;
+              border-right: 5px solid black; }
+
+            .loader3 {
+              -webkit-animation: loader 2s ease-in-out -1s infinite;
+              -moz-animation: loader 2s ease-in-out -1s infinite;
+              -o-animation: loader 2s ease-in-out -1s infinite;
+              animation: loader 2s ease-in-out -1s infinite;
+              width: 34px;
+              height: 34px;
+              background: initial !important;
+              border-radius: 100%;
+              border: 5px solid black; }
+
+            .loader4 {
+              -webkit-animation: loader 2s ease-in-out -.5s infinite;
+              -moz-animation: loader 2s ease-in-out -.5s infinite;
+              -o-animation: loader 2s ease-in-out -.5s infinite;
+              animation: loader 2s ease-in-out -.5s infinite;
+              left: -8px;
+              border-right: 5px solid black;
+              position: relative;
+              width: 40px;
+              height: 12px; }
+
+            .loader4:before, .loader4:after {
+              content: "";
+              display: block;
+              position: absolute;
+              width: 15px;
+              height: 16px;
+              border-top: 5px solid black;
+              border-left: 5px solid black; }
+
+            .loader4:before {
+              top: 7px;
+              right: 0px; }
+
+            .loader4:after {
+              top: 18px;
+              left: 5px; }
+
             .loader-wrapper {
                 display: flex; 
                 justify-content: center; 
                 align-items: center;
-            }
-            .loader {
-                margin: auto;
-                position: relative;
-                border-top: 1.1em solid rgba(179,179,179, 0.2);
-                border-right: 1.1em solid rgba(179,179,179, 0.2);
-                border-bottom: 1.1em solid rgba(179,179,179, 0.2);
-                border-left: 1.1em solid #b3b3b3;
-                -webkit-transform: translateZ(0);
-                -ms-transform: translateZ(0);
-                transform: translateZ(0);
-                -webkit-animation: load8 1.1s infinite linear;
-                animation: load8 1.1s infinite linear;
-            }
-            .loader, .loader:after {
-                border-radius: 50%; 
-                width: 5em; 
-                height: 5em;
-            }
-            @-webkit-keyframes load8 {
-                0% { 
-                    -webkit-transform: rotate(0deg); 
-                    transform: rotate(0deg); 
-                }
-                100% { 
-                    -webkit-transform: rotate(360deg); 
-                    transform: rotate(360deg); 
-                }
-            }
-            @keyframes load8 {
-                0% { 
-                    -webkit-transform: rotate(0deg); 
-                    transform: rotate(0deg); 
-                }
-                100% { 
-                    -webkit-transform: rotate(360deg); 
-                    transform: rotate(360deg); 
-                }
             }
         </style>
         <script>
@@ -83,7 +170,12 @@
     <body>
         <beautiful-rising>
             <div class="loader-wrapper" style="height:100vh;">
-                <div class="loader"></div>
+                <div class="loader">
+                    <div class="loader1"></div>
+                    <div class="loader2"></div>
+                    <div class="loader3"></div>
+                    <div class="loader4"></div>
+                </div>
             </div>
         </beautiful-rising>
     </body>

@@ -14,7 +14,12 @@ import { ContentService } from './services';
          (window:scroll)="setExpanded()" [ngClass]="['module-types', expanded ? 'expanded' : 'collapsed']">
 
             <div *ngIf="!textBySlug" class="loader-wrapper">
-                <div class="loader"></div>
+                <div class="loader">
+                    <div class="loader1"></div>
+                    <div class="loader2"></div>
+                    <div class="loader3"></div>
+                    <div class="loader4"></div>
+                </div>
             </div>
             <div *ngIf="textBySlug">
                 <div *ngIf="!type">
