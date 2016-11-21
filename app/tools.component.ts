@@ -12,7 +12,6 @@ import { template } from './utilities';
     selector: 'tools',
     template: `
         <div class="container visible-md visible-lg">
-            <div *ngIf="textBySlug">
                 <div #master class="master col-xs-12 col-md-5 col-lg-4" [style.margin-left.px]="marginLeft" (mouseenter)="!isOpen && slide()" (mouseleave)="!isOpen && unslide()">
                     <div #iconPanel class="col-md-3 icon-panel" (click)="isOpen ? close() : open()">
                         <div class="arrow" [class.active]="isOpen">
@@ -21,13 +20,13 @@ import { template } from './utilities';
                         <div (click)="activateToggle('news'); $event.stopPropagation()" class="news-icon" [class.active]="isOpen && active == 'news'">
                             <div class="button">
                                 <svg-inline src="/assets/img/News_Feed.svg"></svg-inline>
-                                <div class="title">{{ textBySlug.ui.sidebar.news }}</div>
+                                <div *ngIf="ready" class="title">{{ textBySlug.ui.sidebar.news }}</div>
                             </div>
                         </div>
                         <div (click)="activateToggle('tools'); $event.stopPropagation()" class="tools-icon" [class.active]="isOpen && active == 'tools'">
                             <div class="button" [class.pulse]="firstSave">
                                 <svg-inline src="/assets/img/My_tools.svg"></svg-inline>
-                                <div class="title">{{ textBySlug.ui.sidebar.tools }}</div>
+                                <div *ngIf="ready" class="title">{{ textBySlug.ui.sidebar.tools }}</div>
                             </div>
                         </div>
                     </div>
@@ -59,7 +58,7 @@ import { template } from './utilities';
                             </div>
                         </div>
                     </div>
-                    <div #mainPanel *ngIf="isOpen" class="col-md-9 main-panel">
+                    <div #mainPanel *ngIf="ready && isOpen" class="col-md-9 main-panel">
                         <div class="row">
                             <div class="col-md-12 content">
                                 <div *ngIf="active == 'news'" class="row">
@@ -98,7 +97,6 @@ import { template } from './utilities';
                         </div>
                     </div>
                 </div>
-            </div>
         </div>
     `
 })
@@ -117,6 +115,7 @@ export class ToolsComponent {
     newsTab = 'twitter';
     @Output() offsetchanged = new EventEmitter();
     position;
+    ready;
     template = template;
     textBySlug;
     toolsTab = null;

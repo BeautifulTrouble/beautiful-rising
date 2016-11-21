@@ -27,18 +27,18 @@ import { template } from './utilities';
                 <div class="row">
                     <div class="col-xs-12">
                         <input [(ngModel)]="query" (ngModelChange)="filterModules()" class="search-box visible-xs visible-sm" 
-                         placeholder="{{ textBySlug && textBySlug.ui.list['search-text'] }}">
+                         placeholder="{{ textBySlug && textBySlug?.ui.list['search-text'] }}">
                         <input [(ngModel)]="query" (ngModelChange)="filterModules()" class="search-box visible-md visible-lg" 
-                         placeholder="{{ textBySlug && textBySlug.ui.list['search-text'] }}" autofocus>
+                         placeholder="{{ textBySlug && textBySlug?.ui.list['search-text'] }}" autofocus>
                         <module-types (resized)="marginTop = $event < marginTop ? $event + 60 : $event" [region]="region" [type]="type" [textBySlug]="textBySlug" [modulesByRegion]="modulesByRegion"></module-types>
                     </div>
                 </div>
             </div>
         </div>
-        <div *ngIf="textBySlug" class="container">
+        <div class="container">
             <div class="row gallery" [style.margin-top.px]="marginTop">
                 <div class="gallery-sort visible-md visible-lg col-md-3">
-                    <h3>{{ textBySlug.ui.list.view }}</h3>
+                    <h3>{{ textBySlug?.ui.list.view }}</h3>
                     <div class="border-top border-bottom view-as">
                         <div class="row">
                             <div class="col-xs-6">
@@ -49,14 +49,14 @@ import { template } from './utilities';
                             </div>
                         </div>
                     </div>
-                    <h3>{{ textBySlug.ui.list.sort }}</h3>
+                    <h3>{{ textBySlug?.ui.list.sort }}</h3>
                     <div class="border-top border-bottom sort-by">
                         <div class="row">
-                            <div (click)="sortModules('title')" [class.selected]="sortKey == 'title'" class="col-xs-6 clickable">{{ textBySlug.ui.list.alphabetical }}</div>
-                            <div (click)="sortModules('timestamp')" [class.selected]="sortKey == 'timestamp'" class="col-xs-6 clickable">{{ textBySlug.ui.list.newest }}</div>
+                            <div (click)="sortModules('title')" [class.selected]="sortKey == 'title'" class="col-xs-6 clickable">{{ textBySlug?.ui.list.alphabetical }}</div>
+                            <div (click)="sortModules('timestamp')" [class.selected]="sortKey == 'timestamp'" class="col-xs-6 clickable">{{ textBySlug?.ui.list.newest }}</div>
                         </div>
                     </div>
-                    <h3>{{ textBySlug.ui.list.tags }}</h3>
+                    <h3>{{ textBySlug?.ui.list.tags }}</h3>
                     <div class="border-top">
                         <span *ngFor="let each of tags; let last=last">
                             <a *ngIf="tag != each" [routerLink]="['/tag', each]" class="tag">{{ textBySlug.tags.all[each] }}</a>
@@ -65,19 +65,19 @@ import { template } from './utilities';
                         </span>
                     </div>
                     <div *ngIf="tag" class="gallery-info gray">
-                        <span [routerLink]="['/']" class="gallery-clear clickable"><span class="icon">&#9746;</span> {{ textBySlug.ui.list['tags-clear'] }}</span>
+                        <span [routerLink]="['/']" class="gallery-clear clickable"><span class="icon">&#9746;</span> {{ textBySlug?.ui.list['tags-clear'] }}</span>
                     </div>
                 </div>
                 <div class="gallery-sort clearfix visible-xs visible-sm col-xs-12">
-                    <h3>{{ textBySlug.ui.list.view }}</h3>
+                    <h3>{{ textBySlug?.ui.list.view }}</h3>
                     <span class="view-as">
                         <svg-inline (click)="viewStyle='grid'" [class.selected]="isViewStyle('grid')" class="clickable" src="/assets/img/grid.svg"></svg-inline>
                         <svg-inline (click)="viewStyle='list'" [class.selected]="isViewStyle('list')" class="clickable" src="/assets/img/list.svg"></svg-inline>
                     </span>
-                    <h3>{{ textBySlug.ui.list.sort }}</h3>
+                    <h3>{{ textBySlug?.ui.list.sort }}</h3>
                     <span class="sort-by">
-                        <span (click)="sortModules('title')" [class.selected]="sortKey == 'title'" class="clickable">{{ textBySlug.ui.list.alphabetical }}</span>
-                        <span (click)="sortModules('timestamp')" [class.selected]="sortKey == 'timestamp'" class="clickable">{{ textBySlug.ui.list.newest }}</span>
+                        <span (click)="sortModules('title')" [class.selected]="sortKey == 'title'" class="clickable">{{ textBySlug?.ui.list.alphabetical }}</span>
+                        <span (click)="sortModules('timestamp')" [class.selected]="sortKey == 'timestamp'" class="clickable">{{ textBySlug?.ui.list.newest }}</span>
                     </span>
                 </div>
                 <div *ngIf="selectedModules" class="gallery-list col-xs-12 col-md-9">
@@ -85,8 +85,8 @@ import { template } from './utilities';
                     <div *ngIf="query" class="row">
                         <div class="col-sm-12">
                             <div class="col-md-11 col-md-offset-1 gallery-info gray">
-                                <span (click)="query = ''; filterModules()" class="gallery-clear clickable"><span class="icon">&#9746;</span> {{ textBySlug.ui.list['search-clear'] }}</span>
-                                <span>{{ textBySlug.ui.list.results | template:{query: query, count: selectedModules.length} }}</span>
+                                <span (click)="query = ''; filterModules()" class="gallery-clear clickable"><span class="icon">&#9746;</span> {{ textBySlug?.ui.list['search-clear'] }}</span>
+                                <span>{{ textBySlug?.ui.list.results | template:{query: query, count: selectedModules.length} }}</span>
                             </div>
                         </div>
                     </div>
@@ -102,7 +102,7 @@ import { template } from './utilities';
                                     <div class="module-content-inner">
                                         <svg-inline *ngIf="module.region" src="/assets/img/{{ module.region }}.svg" class="region-icon"></svg-inline>
                                         <div class="offset" [style.justify-content]="['center','flex-start','flex-end'][module.timestamp%3]">
-                                            <div [ngClass]="['module-type', module.type]">{{ textBySlug.ui.types[module.type] }}</div>
+                                            <div [ngClass]="['module-type', module.type]">{{ textBySlug?.ui.types[module.type] }}</div>
                                             <div [class.story]="module.type == 'story'" class="module-title">{{ module.title }}</div>
                                             <div [ngSwitch]="savingService.isSaved(module)" class="module-save"
                                                 (mouseover)="hover(false)" (mouseout)="hover(true)" 
@@ -123,7 +123,7 @@ import { template } from './utilities';
                                 <div *ngFor="let module of selectedModules" (click)="router.navigate(['/tool', module.slug])" class="gallery-module-list col-sm-6">
                                     <div class="module-content clickable">
                                         <div class="module-type-accent"></div>
-                                        <div [ngClass]="['module-type', module.type]">{{ textBySlug.ui.types[module.type] }}</div>
+                                        <div [ngClass]="['module-type', module.type]">{{ textBySlug?.ui.types[module.type] }}</div>
                                         <div class="module-title">{{ module.title }}</div>
                                         <div [innerHTML]="module.snapshot" class="module-snapshot"></div>
                                     </div>

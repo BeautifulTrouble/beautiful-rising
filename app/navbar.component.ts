@@ -9,20 +9,19 @@ import { ContentService } from './services';
 @Component({
     selector: 'navbar',
     template: `
-        <div *ngIf="textBySlug">
             <div id="fixed-nav" class="fixed-container-wrapper">
                 <div class="container">
                     <div class="row">
                         <div class="col-xs-3 col-md-1" [class.col-sm-2]="!visible" [class.col-sm-3]="visible">
                             <div *ngIf="!visible" (click)="visible = true" class="menu-toggle clickable">
                                 <svg-inline class="open-icon" src="/assets/img/hamburger.svg"></svg-inline>
-                                <h4>{{ textBySlug.ui.menu.title }}</h4>
+                                <h4 *ngIf="ready">{{ textBySlug.ui.menu.title }}</h4>
                             </div>
                             <svg-inline *ngIf="visible" class="close-icon clickable" (click)="hide()" src="/assets/img/close.svg"></svg-inline>
                         </div>
                         <div class="col-xs-7 col-sm-6 col-md-9">
                             <div class="logo-wrapper" [class.has-background]="logoHasBackground()" [class.modified-background]="visible" [class.shifted]="!visible">
-                                <img (click)="nav([''])" [ngClass]="['logo', 'clickable', language]" src="/assets/img/logo-{{ language }}.png">
+                                <img *ngIf="ready" (click)="nav([''])" [ngClass]="['logo', 'clickable', language]" src="/assets/img/logo-{{ language }}.png">
                             </div>
                         </div>
                         <div class="col-xs-2 col-sm-4 col-md-2">
@@ -99,7 +98,6 @@ import { ContentService } from './services';
                     </div>
                 </div>
             </div>
-        </div>
     `
 })
 export class NavbarComponent {
@@ -108,6 +106,7 @@ export class NavbarComponent {
     mailchimpEmail = '';
     mailchimpHTML = '';
     @ViewChild('menu') menu;
+    ready;
     textBySlug;
     visible = false;
 
