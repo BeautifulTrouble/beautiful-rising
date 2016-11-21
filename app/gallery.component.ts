@@ -68,6 +68,7 @@ import { template } from './utilities';
                         <span [routerLink]="['/']" class="gallery-clear clickable"><span class="icon">&#9746;</span> {{ textBySlug?.ui.list['tags-clear'] }}</span>
                     </div>
                 </div>
+
                 <div class="gallery-sort clearfix visible-xs visible-sm col-xs-12">
                     <h3>{{ textBySlug?.ui.list.view }}</h3>
                     <span class="view-as">
@@ -80,8 +81,8 @@ import { template } from './utilities';
                         <span (click)="sortModules('timestamp')" [class.selected]="sortKey == 'timestamp'" class="clickable">{{ textBySlug?.ui.list.newest }}</span>
                     </span>
                 </div>
-                <div *ngIf="selectedModules" class="gallery-list col-xs-12 col-md-9">
 
+                <div *ngIf="selectedModules" class="gallery-list col-xs-12 col-md-9">
                     <div *ngIf="query" class="row">
                         <div class="col-sm-12">
                             <div class="col-md-11 col-md-offset-1 gallery-info gray">

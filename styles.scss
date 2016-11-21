@@ -890,6 +890,7 @@ $search-height: 50px;
 // Gallery
 .gallery {
     padding-top: $search-height;
+    display: flex;
     //@include prefix(transition, margin-top $transition linear, webkit moz);
 }
 .gallery-sort {
