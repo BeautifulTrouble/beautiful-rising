@@ -189,7 +189,8 @@ import { ContentService, IntakeService, ModuleSavingService } from './services';
                                 <h4 *ngIf="first">{{ textBySlug.ui.module['learn-more'] }}</h4>
                                 <p>
                                     <a target="_blank" href="{{ learn.link | notags | trim }}">{{ learn.title | notags | trim }}</a>
-                                    <span *ngIf="plainString(learn.source)"> | {{ learn.source | notags }}<span *ngIf="plainString(learn.year)">, {{ learn.year | notags }}</span></span>
+                                    <span *ngIf="plainString(learn.source) && plainString(learn.year)"> | {{ learn.source | notags }}, {{ learn.year | notags }}</span>
+                                    <span *ngIf="plainString(learn.source) && !plainString(learn.year)"> | {{ learn.source | notags }}, {{ learn.year | notags }}</span>
                                 </p>
                             </div>
                         </div>
