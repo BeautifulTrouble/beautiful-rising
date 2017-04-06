@@ -254,7 +254,7 @@ export class GalleryComponent {
     sortModules(key?) {
         // Mutates selectedModules, which is what is directly displayed
         if (key) this.sortKey = key;
-        this.selectedModules = _.orderBy(this.selectedModules, this.sortKey, this.sortKey == 'timestamp' ? 'desc' : 'asc');
+        this.selectedModules = _.orderBy(this.selectedModules, m => _.replace(_.deburr(m[this.sortKey]), /[^a-z0-9]+/gi, ''), this.sortKey == 'timestamp' ? 'desc' : 'asc');
     }
     isViewStyle(style) {
         // Query temporarily sets the view style to list
