@@ -459,7 +459,7 @@ export class DetailComponent {
         this.sub && this.sub.unsubscribe();
     }
     getRelated(type, fromCollection) {
-        return _.filter(_.map((this.module[type] || []).sort(), (slug: string) => fromCollection[slug]));
+        return _.filter(_.map(this.module[type] || [], (slug: string) => fromCollection[slug]));
     }
     submit(event) {
         this.submitted = true;
