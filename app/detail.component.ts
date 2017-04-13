@@ -163,7 +163,7 @@ import { ContentService, IntakeService, ModuleSavingService } from './services';
                             </div>
                             <div *ngIf="module['how-to-use']" class="how-to-use">
                                 <h4>{{ textBySlug.ui.module['how-to-use'] }}</h4>
-                                <div [innerMarkdown]="module['how-to-use']"></div>
+                                <div [innerHTML]="module['how-to-use']"></div>
                             </div>
                             <div *ngIf="module['why-it-worked']" class="why-worked-or-failed">
                                 <h4>{{ textBySlug.ui.module['why-it-worked'] }}</h4>
