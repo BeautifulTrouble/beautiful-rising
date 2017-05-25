@@ -136,7 +136,7 @@ a:link, a:visited, a:hover, a:active {
 */
 @font-face {
     font-family: 'Painthand';
-    src: url('/assets/fonts/Paint-hand_fixed.ttf');
+    src: url('/assets/fonts/Paint-hand_limited-set.ttf');
 }
 
 
@@ -210,6 +210,7 @@ blockquote {
     &.pull-quote {
         width: 50%;
         float: left;
+        .rtl & { float: right; }
         quotes: "“ " " ”" "‘ " " ’";
     }
     &.pull-quote p::before {
@@ -237,7 +238,6 @@ blockquote::before {
         font-size: 16px
     }
 }
-
 svg * {
     @include prefix(transition, fill $transition linear, webkit moz);
     fill: $lightgray;
@@ -271,6 +271,9 @@ svg-inline.selected * {
 }
 .nop > p { // For [innerHTML] bindings where you don't want markdown's surrounding <p> tag
     display: inline;
+}
+.rtl { // The descent into spaghetti begins here
+    direction: rtl;
 }
 
 
@@ -515,6 +518,7 @@ navbar {
     }
     .language-switcher {
         float: right;
+        .rtl & { float: left; }
         position: relative;
         top: 20px;
         div {
@@ -695,6 +699,7 @@ $search-height: 50px;
 // Types
 .type-representation {
     text-align: left;
+    .rtl & { text-align: right; }
     > div { 
         padding-top: $margin; 
     }
@@ -740,6 +745,7 @@ $search-height: 50px;
     z-index: 0;
     .outside-pattern {
         height: 265px;
+        .rtl & { float: right; }
     }
     .pattern {
         position: absolute;
@@ -1004,6 +1010,9 @@ $search-height: 50px;
         position: absolute;
         top: 4 * $margin; bottom: 0;
         left: 10px; right: 15px; // Just as bootstrap grid would do
+        .rtl & {
+            left: 15px; right: 10px;
+        }
         @include md-down {
             top: 12px;
             left: 6px; right: 6px;
@@ -1113,6 +1122,9 @@ detail {
             position: absolute;
             top: 18%; bottom: 0;
             left: 7%; right: 4%;
+            .rtl & {
+                right: 7%; left: 4%;
+            }
             color: white;
             z-index: 100;
         }
@@ -1161,12 +1173,19 @@ detail {
             top: -2*$margin;
             right: 0; 
             text-align: right;
+            .rtl & { 
+                text-align: left; 
+                left: 0; right: initial;
+            }
             font-weight: bold;
             text-transform: uppercase;
             svg-inline {
                 height: 40px;
                 position: absolute;
                 right: 0;
+                .rtl & {
+                    left: 0; right: initial;
+                }
                 svg { height: 100%; }
             }
         }
@@ -1252,6 +1271,11 @@ detail {
         position: absolute;
         left: 100%;
         top: -65%;
+        .rtl & {
+            left: initial; right: 100%;
+            top: -115%;
+            transform: scaleX(-1);
+        }
         @include sm {
             transform: rotateY(180deg) rotateZ(90deg);
             left: 0; right: 100%;
@@ -1793,7 +1817,8 @@ modal {
         font-size: 48px; 
     }
     svg-inline { 
-        float: right;   //TODO: fix for bidirectional site
+        float: right;
+        .rtl & { float: left; }
         position: relative;
         top: 28px;
         svg * { fill: $darkgray !important; }

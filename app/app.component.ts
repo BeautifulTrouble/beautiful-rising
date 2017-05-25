@@ -8,7 +8,9 @@ import { ContentService, ClientStorageService, LocalStorage } from './services';
 @Component({
     selector: 'beautiful-rising',
     template: `
-        <div class="background" [ngClass]="contentService.language" [ngStyle]="{'direction': contentService.language == 'ar' ? 'rtl' : 'ltr'}">
+        <div class="background" 
+         [ngClass]="[contentService.language, contentService.language == 'ar' ? 'rtl' : 'ltr']" 
+         [ngStyle]="{'direction': contentService.language == 'ar' ? 'rtl' : 'ltr'}">
             <modal></modal>
             <navbar></navbar>
             <tools (offsetchanged)="toolsOffset = $event"></tools>
@@ -55,7 +57,12 @@ export class AppComponent {
 
         // Detect and set the language
         this.language = this.language || (navigator['languages'] || ['en'])[0].slice(0,2);
-        if (this.language != 'en' && this.language != 'es') {
+
+        // Another temporary solution: providing a window on arabic for team editorial
+        // The other component to make this work is in gallery.component.ts
+        if (/develop|localhost/.test(window.location.hostname) && this.language == 'ar') {
+            console.log('Arabic bypass enabled');
+        } else if (this.language != 'en' && this.language != 'es') {
             this.language = 'en';
         }
         this.contentService.setLanguage(this.language);

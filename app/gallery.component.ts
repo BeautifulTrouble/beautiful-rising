@@ -171,6 +171,10 @@ export class GalleryComponent {
         // Temporary solution to the multilingual routing issue
         var lang = this.route.snapshot.params['lang'];
         if (lang) {
+            // Another temporary solution: providing window on arabic for team editorial
+            // The other component to make this work is in app.component.ts
+            if (/develop|localhost/.test(window.location.hostname) && lang == 'ar') this.contentService.setLanguage(lang);
+
             if (_.includes(['en', 'es'], lang)) this.contentService.setLanguage(lang);
             this.router.navigate(['/']);
         }
