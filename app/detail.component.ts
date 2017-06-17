@@ -471,6 +471,7 @@ export class DetailComponent {
         }
 
         this.payload['g-recaptcha-response'] = event;
+        this.payload['g-recaptcha-version'] = 'v2';
         this.intakeService.send('real-world-examples', this.payload)
             .subscribe(
                 res => {
