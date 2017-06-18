@@ -1,0 +1,86 @@
+/* Font use counter for Avenir & PaintHand >_> */
+@import url("//hello.myfonts.net/count/34004a");
+
+/* Lines & Numbers */
+@font-face {
+    font-family: 'PaintHand';
+    src: url('/assets/fonts/34004A_0_0.eot');
+    src: url('/assets/fonts/34004A_0_0.eot?#iefix') format('embedded-opentype'),
+         url('/assets/fonts/34004A_0_0.woff2') format('woff2'),
+         url('/assets/fonts/34004A_0_0.woff') format('woff'),
+         url('/assets/fonts/34004A_0_0.ttf') format('truetype');
+}
+
+/* Linotype */
+@font-face {
+    font-family: 'Avenir';
+    font-weight: normal;
+    font-style: italic;
+    src: url('/assets/fonts/34004A_1_0.eot');
+    src: url('/assets/fonts/34004A_1_0.eot?#iefix') format('embedded-opentype'),
+         url('/assets/fonts/34004A_1_0.woff2') format('woff2'),
+         url('/assets/fonts/34004A_1_0.woff') format('woff'),
+         url('/assets/fonts/34004A_1_0.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Avenir';
+    font-weight: normal;
+    font-style: normal;
+    src: url('/assets/fonts/34004A_2_0.eot');
+    src: url('/assets/fonts/34004A_2_0.eot?#iefix') format('embedded-opentype'),
+         url('/assets/fonts/34004A_2_0.woff2') format('woff2'),
+         url('/assets/fonts/34004A_2_0.woff') format('woff'),
+         url('/assets/fonts/34004A_2_0.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Avenir';
+    font-weight: bold;
+    font-style: normal;
+    src: url('/assets/fonts/34004A_3_0.eot');
+    src: url('/assets/fonts/34004A_3_0.eot?#iefix') format('embedded-opentype'),
+         url('/assets/fonts/34004A_3_0.woff2') format('woff2'),
+         url('/assets/fonts/34004A_3_0.woff') format('woff'),
+         url('webfonts/34004A_3_0.ttf') format('truetype');
+}
+
+/* 29LT */
+@font-face {
+    font-family: 'Kaff';
+    font-weight: normal;
+    font-style: normal;
+    src: url('/assets/fonts/Kaff-Regular.EOT');
+    src: url('/assets/fonts/Kaff-Regular.EOT?#iefix') format('embedded-opentype'),
+         url('/assets/fonts/Kaff-Regular.WOFF') format('woff');
+}
+@font-face {
+    font-family: 'Kaff';
+    font-weight: bold;
+    font-style: normal;
+    src: url('/assets/fonts/Kaff-Bold.EOT');
+    src: url('/assets/fonts/Kaff-Bold.EOT?#iefix') format('embedded-opentype'),
+         url('/assets/fonts/Kaff-Bold.WOFF') format('woff');
+}
+@font-face {
+    font-family: 'MassiraSpray';
+    src: url('/assets/fonts/Massira-Spray.EOT');
+    src: url('/assets/fonts/Massira-Spray.EOT?#iefix') format('embedded-opentype'),
+         url('/assets/fonts/Massira-Spray.WOFF') format('woff');
+}
+
+@font-face {
+    font-family: 'KnockoutBantam';
+    src: url('/assets/fonts/Knockout-HTF67-FullBantamwtMod.otf');
+}
+
+/* TPTQ */
+/* If there's any problem with this, use <link rel="stylesheet" href="https://fonts.tptq-arabic.com/WF-000156-000039.css" type="text/css" /> */
+@font-face {
+    font-family: "GretaCondensedSemibold";
+    src: url("https://s3.amazonaws.com/fonts.tptq-arabic.com/WF-000156-000039-000051-f4ee0957afcbb2233d42dc7777d1e102.eot");
+    src: url("https://s3.amazonaws.com/fonts.tptq-arabic.com/WF-000156-000039-000051-f4ee0957afcbb2233d42dc7777d1e102.eot?#iefix") format("embedded-opentype"), 
+         url("https://s3.amazonaws.com/fonts.tptq-arabic.com/WF-000156-000039-000051-f4ee0957afcbb2233d42dc7777d1e102.woff2") format("woff2"), 
+         url("https://s3.amazonaws.com/fonts.tptq-arabic.com/WF-000156-000039-000051-f4ee0957afcbb2233d42dc7777d1e102.woff") format("woff"); 
+}
+
+
+
