@@ -1,3 +1,6 @@
+// Use external font CSS
+@import '/assets/fonts/fonts.css';
+
 // Mixins & Utilities
 @mixin prefix($property, $value, $prefixes: ()) {
   @each $prefix in $prefixes {
@@ -110,36 +113,6 @@ a:link, a:visited, a:hover, a:active {
 }
 
 
-// Typography
-@font-face {
-    font-family: 'Avenir';
-    src: url('/assets/fonts/Avenir-Book.ttf');
-}
-@font-face {
-    font-family: 'Avenir';
-    font-weight: bold;
-    src: url('/assets/fonts/Avenir-Black.ttf');
-}
-@font-face {
-    font-family: 'KnockoutBantam';
-    src: url('/assets/fonts/Knockout-HTF67-FullBantamwtMod.otf');
-}
-/*
-@font-face {
-    font-family: 'KnockoutCruiser';
-    src: url('/assets/fonts/Knockout-HTF72-FullCruiserwt.otf');
-}
-@font-face {
-    font-family: 'MyriadPro';
-    src: url('/assets/fonts/MyriadPro-Regular.otf');
-}
-*/
-@font-face {
-    font-family: 'Painthand';
-    src: url('/assets/fonts/Paint-hand_fixed.ttf');
-}
-
-
 // General
 $margin: 6px;
 $transition: 0.1s;
@@ -196,7 +169,7 @@ h4 {
     line-height: 1;
 }
 blockquote {
-    font-family: 'Painthand';
+    font-family: 'PaintHand';
     font-size: 20px;
     text-transform: uppercase;
     border-left: none;
@@ -229,7 +202,7 @@ blockquote::before {
     border-top: 2px solid black;
 }
 .module-type {
-    font-family: 'Painthand';
+    font-family: 'PaintHand';
     text-transform: uppercase;
     font-size: 20px;
     line-height: 22px;
